@@ -1,0 +1,66 @@
+.relationship-link {
+    stroke: #ef4444;
+    stroke-width: 2;
+    stroke-opacity: 0.6;
+}
+
+.table-node {
+    cursor: move;
+}
+
+.table-node:hover rect {
+    stroke: #f87171;
+    stroke-width: 3;
+}
+
+.table-node text {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+#visualization-container {
+    border: 1px solid #374151;
+    background-color: #111827;
+    min-height: 500px;
+    height: calc(100vh - 400px);
+}
+
+#schema-content {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.visualization-wrapper {
+    flex: 1;
+    min-height: 0;
+    position: relative;
+}
+
+.explanation-panel {
+    height: 200px;
+    overflow-y: auto;
+    border-top: 1px solid #374151;
+}
+
+/* Scrollbar styles */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #1f2937;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #4b5563;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #6b7280;
+}

@@ -1,0 +1,11 @@
+{
+    "script": "In a parallel database system, queries flow through several key components. The Query Processor is the first stop, where queries are parsed, optimized, and transformed into execution plans. Next, the Data Partitioner determines how to distribute data across multiple nodes using techniques like horizontal and vertical partitioning. Finally, the Execution Engine manages parallel query execution across distributed nodes and aggregates the results.",
+    "component_mappings": {
+        "query": "query_processor",
+        "processor": "query_processor",
+        "partitioner": "data_partitioner",
+        "partitioning": "data_partitioner",
+        "execution": "execution_engine",
+        "engine": "execution_engine"
+    }
+}

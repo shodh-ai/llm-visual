@@ -1,0 +1,24 @@
+{
+    "nodes": [
+      {
+        "id": "originalTable",
+        "name": "Original Table",
+        "properties": ["ID", "Name", "Department", "Location"]
+      },
+      {
+        "id": "table1",
+        "name": "Table 1",
+        "properties": ["ID", "Name"]
+      },
+      {
+        "id": "table2",
+        "name": "Table 2",
+        "properties": ["ID", "Department", "Location"]
+      }
+    ],
+    "edges": [
+      { "source": "originalTable", "target": "table1" },
+      { "source": "originalTable", "target": "table2" }
+    ]
+  }
+  

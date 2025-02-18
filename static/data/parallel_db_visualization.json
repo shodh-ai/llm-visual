@@ -1,0 +1,54 @@
+{
+    "nodes": [
+        {
+            "id": "query_processor",
+            "name": "Query Processor",
+            "type": "component",
+            "properties": [
+                "Query parsing",
+                "Query optimization",
+                "Execution plan generation"
+            ]
+        },
+        {
+            "id": "data_partitioner",
+            "name": "Data Partitioner",
+            "type": "component",
+            "properties": [
+                "Horizontal partitioning",
+                "Vertical partitioning",
+                "Load balancing"
+            ]
+        },
+        {
+            "id": "execution_engine",
+            "name": "Execution Engine",
+            "type": "component",
+            "properties": [
+                "Parallel query execution",
+                "Resource management",
+                "Result aggregation"
+            ]
+        }
+    ],
+    "edges": [
+        {
+            "source": "query_processor",
+            "target": "data_partitioner",
+            "type": "flow",
+            "description": "Sends partitioning requirements"
+        },
+        {
+            "source": "data_partitioner",
+            "target": "execution_engine",
+            "type": "flow",
+            "description": "Provides data distribution plan"
+        }
+    ],
+    "layout": {
+        "width": 800,
+        "height": 600,
+        "node_spacing": 250,
+        "edge_strength": -1500
+    }
+}

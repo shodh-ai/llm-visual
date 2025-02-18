@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Visualization</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        #visualization-container {
+            width: 800px;
+            height: 600px;
+            border: 1px solid #ccc;
+            margin: 20px auto;
+        }
+        .controls {
+            text-align: center;
+            margin: 20px;
+        }
+        select {
+            padding: 8px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="controls">
+        <select id="topic-selector">
+            <option value="parallel_db">Parallel Database</option>
+            <option value="schema">Schema</option>
+            <option value="intro_to_normalization">Intro to Normalization</option> 
+            <option value="normal_form_types">Normal Form Types</option>
+        </select>
+    </div>
+    <div id="visualization-container"></div>
+
+    <script>
+        async function loadVisualization(topic) {
+            try {
+                const response = await fetch(`http://localhost:8000/api/visualization/${topic}`);
+                const data = await response.json();
+                
+                // Clear previous visualization
+                const container = document.getElementById('visualization-container');
+                container.innerHTML = '';
+
+                // Create a script element with the received JavaScript code
+                const scriptElement = document.createElement('script');
+                scriptElement.textContent = data.js_code;
+                document.body.appendChild(scriptElement);
+
+                // Call the appropriate visualization function based on the topic
+                if (topic === 'parallel_db') {
+                    createParallelDBVisualization(data);
+                } else if (topic === 'schema') {
+                    createSchemaVisualization(data);
+                } else if (topic === 'intro_to_normalization') {  // ✅ Added new case
+                    createNormalizationVisualization(data);
+                }
+                else if (topic === 'normal_form_types') {
+                    createNormalFormVisualization(data);
+                }
+            } catch (error) {
+                console.error('Error loading visualization:', error);
+                document.getElementById('visualization-container').innerHTML = 
+                    `<p style="color: red; text-align: center;">Error loading visualization: ${error.message}</p>`;
+            }
+        }
+
+        // Add event listener for topic selection
+        document.getElementById('topic-selector').addEventListener('change', (e) => {
+            loadVisualization(e.target.value);
+        });
+
+        // Load initial visualization
+        loadVisualization('parallel_db');
+    </script>
+</body>
+</html>

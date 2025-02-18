@@ -1,0 +1,10 @@
+{
+    "script": "Let's explore this database schema. At the core, we have the Users table which stores essential user information. Each user can place multiple Orders, creating a one-to-many relationship between Users and Orders. The Orders table tracks important information like total amount and status. Finally, we have the Products table, which has a many-to-many relationship with Orders, allowing each order to contain multiple products and each product to be part of multiple orders.",
+    "component_mappings": {
+        "users": "users",
+        "orders": "orders",
+        "products": "products",
+        "one-to-many": "users",
+        "many-to-many": "products"
+    }
+}

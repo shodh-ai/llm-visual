@@ -1,0 +1,110 @@
+{
+    "nodes": [
+        {
+            "id": "users",
+            "name": "Users",
+            "columns": [
+                { "name": "id", "type": "INTEGER", "isPrimary": true },
+                { "name": "email", "type": "VARCHAR(255)" },
+                { "name": "username", "type": "VARCHAR(50)" },
+                { "name": "password_hash", "type": "VARCHAR(255)" },
+                { "name": "created_at", "type": "TIMESTAMP" },
+                { "name": "last_login", "type": "TIMESTAMP" }
+            ]
+        },
+        {
+            "id": "products",
+            "name": "Products",
+            "columns": [
+                { "name": "id", "type": "INTEGER", "isPrimary": true },
+                { "name": "name", "type": "VARCHAR(100)" },
+                { "name": "description", "type": "TEXT" },
+                { "name": "price", "type": "DECIMAL(10,2)" },
+                { "name": "stock", "type": "INTEGER" },
+                { "name": "category_id", "type": "INTEGER", "isForeign": true },
+                { "name": "created_at", "type": "TIMESTAMP" }
+            ]
+        },
+        {
+            "id": "categories",
+            "name": "Categories",
+            "columns": [
+                { "name": "id", "type": "INTEGER", "isPrimary": true },
+                { "name": "name", "type": "VARCHAR(50)" },
+                { "name": "description", "type": "TEXT" },
+                { "name": "parent_id", "type": "INTEGER", "isForeign": true }
+            ]
+        },
+        {
+            "id": "orders",
+            "name": "Orders",
+            "columns": [
+                { "name": "id", "type": "INTEGER", "isPrimary": true },
+                { "name": "user_id", "type": "INTEGER", "isForeign": true },
+                { "name": "status", "type": "VARCHAR(20)" },
+                { "name": "total_amount", "type": "DECIMAL(10,2)" },
+                { "name": "created_at", "type": "TIMESTAMP" }
+            ]
+        },
+        {
+            "id": "order_items",
+            "name": "Order Items",
+            "columns": [
+                { "name": "id", "type": "INTEGER", "isPrimary": true },
+                { "name": "order_id", "type": "INTEGER", "isForeign": true },
+                { "name": "product_id", "type": "INTEGER", "isForeign": true },
+                { "name": "quantity", "type": "INTEGER" },
+                { "name": "unit_price", "type": "DECIMAL(10,2)" }
+            ]
+        },
+        {
+            "id": "reviews",
+            "name": "Reviews",
+            "columns": [
+                { "name": "id", "type": "INTEGER", "isPrimary": true },
+                { "name": "product_id", "type": "INTEGER", "isForeign": true },
+                { "name": "user_id", "type": "INTEGER", "isForeign": true },
+                { "name": "rating", "type": "INTEGER" },
+                { "name": "comment", "type": "TEXT" },
+                { "name": "created_at", "type": "TIMESTAMP" }
+            ]
+        }
+    ],
+    "edges": [
+        {
+            "source": "users",
+            "target": "orders",
+            "type": "ONE_TO_MANY"
+        },
+        {
+            "source": "users",
+            "target": "reviews",
+            "type": "ONE_TO_MANY"
+        },
+        {
+            "source": "products",
+            "target": "order_items",
+            "type": "ONE_TO_MANY"
+        },
+        {
+            "source": "products",
+            "target": "reviews",
+            "type": "ONE_TO_MANY"
+        },
+        {
+            "source": "categories",
+            "target": "products",
+            "type": "ONE_TO_MANY"
+        },
+        {
+            "source": "categories",
+            "target": "categories",
+            "type": "SELF_REFERENCE"
+        },
+        {
+            "source": "orders",
+            "target": "order_items",
+            "type": "ONE_TO_MANY"
+        }
+    ]
+}
