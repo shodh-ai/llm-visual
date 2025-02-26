@@ -6,6 +6,7 @@ import RelationalQueryVisualization from './RelationalqueryVisualization';
 import NormalFormVisualization from './NormalizationVisualization';
 import ActiveDBVisualization from './ActivedbVisualization';
 import QueryProcessingVisualization from './QueryprocessingVisualization';
+import MobiledbVisualization from './MobiledbVisualization';
 
 const VISUALIZATIONS = {
     'hierarchical': HierarchicalVisualization,
@@ -14,7 +15,8 @@ const VISUALIZATIONS = {
     'relationalQuery': RelationalQueryVisualization,
     'normalization': NormalFormVisualization,
     'activedb': ActiveDBVisualization,
-    'queryprocessing': QueryProcessingVisualization
+    'queryprocessing': QueryProcessingVisualization,
+    'mobiledb': MobiledbVisualization
 };
 
 
@@ -100,6 +102,7 @@ const App = () => {
                     <option value="normalization">Normal Form Visualization</option>
                     <option value="activedb">Active Database Visualization</option>
                     <option value="queryprocessing">Query Processing Visualization</option>
+                    <option value="mobiledb">Mobile Database Visualization</option>
                 </select>
             </div>
             <div className="content-container">
