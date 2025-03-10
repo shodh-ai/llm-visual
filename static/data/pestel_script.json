@@ -1,0 +1,13 @@
+{
+    "script": "This visualization illustrates the PESTEL framework, a strategic tool used by businesses to assess and understand the external factors that can impact their operations. PESTEL stands for Political, Economic, Social, Technological, Environmental, and Legal factors.\n\n1. Political Factors : These include government policies, stability, corruption levels, and other political influences that can affect business operations.\n\n2. Economic Factors : This factor covers elements like economic growth, inflation rates, interest rates, employment conditions, and household income. These factors directly influence an organization's profitability and market conditions.\n\n3. Social Factors : Social aspects such as population trends, aging demographics, career preferences, lifestyle changes, and cultural barriers shape consumer behavior and workforce availability.\n\n4. Technological Factors : Innovation, automation, technological incentives, and R&D activities significantly influence business processes and industry trends.\n\n5. Environmental Factors : Aspects like climate change, ethical practices, recycling methods, and sustainability efforts are crucial for businesses to align with global environmental concerns.\n\n6. Legal Factors : These include laws regarding antitrust, labor rights, intellectual property, data protection, and health and safety regulations, which organizations must comply with to avoid legal risks.\n\nBy understanding these key factors, businesses can strategically adapt to external changes, ensuring resilience and sustainable growth.",
+    "component_mappings": {
+        "pestel": "framework",
+        "political": "political",
+        "economic": "economic",
+        "social": "social",
+        "technology": "technology",
+        "environment": "environment",
+        "legal": "legal"
+    }
+}
+

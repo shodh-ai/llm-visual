@@ -1,0 +1,10 @@
+{
+    "script": "This visualization outlines key strategic elements for organizations:\n\n1. 'Vision' is the aspirational description of what the organization aims to achieve in the long-term future. For example, 'To become the world's most customer-centric company.'\n\n2. 'Mission' defines the organization's core purpose and focus, often remaining stable over time. For instance, 'To organize the world's information and make it universally accessible and useful.'\n\n3. 'Business Definition' clarifies what business the organization is in and identifies its customers. An example is, 'We provide cloud computing services to businesses of all sizes.'\n\n4. 'Business Model' describes how the organization creates, delivers, and captures value. For example, 'A subscription-based SaaS platform with tiered pricing.'\n\n5. 'Goals and Objectives' define specific, measurable outcomes the organization aims to achieve, such as 'Increase market share by 15% within 18 months.'\n\nThe hierarchy links these components, showing that vision shapes mission, mission informs business definition, business definition influences the business model, and the business model drives goals and objectives.",
+    "component_mappings": {
+        "vision": "strategic_level",
+        "mission": "strategic_level",
+        "business_definition": "strategic_level",
+        "business_model": "strategic_level",
+        "goals_objectives": "strategic_level"
+    }
+}

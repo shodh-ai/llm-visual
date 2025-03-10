@@ -1,0 +1,13 @@
+{
+    "script": "This visualization explores various Market Structures, which classify markets based on competition.\n\n1. 'Monopolistic Competition' features many sellers offering differentiated products, with some price control and easy entry/exit. Examples include restaurants and clothing stores.\n\n2. 'Perfect Competition' describes markets with many buyers and sellers, homogeneous products, and no barriers to entry or exit. Agricultural markets exemplify this structure.\n\n3. 'Oligopsony' has few buyers and many sellers, giving buyers strong market power. Agricultural processors are common examples.\n\n4. 'Monopsony' involves a single powerful buyer influencing prices, such as in company towns.\n\n5. 'Oligopoly' consists of a few large sellers with interdependent decisions and high entry barriers, seen in telecom and airline industries.\n\n6. 'Duopoly' features two dominant sellers that strategically interact, like Visa/Mastercard or Boeing/Airbus.\n\n7. 'Monopoly' is defined by a single seller, no close substitutes, and strong control over pricing. Utilities and patented products are typical examples.",
+    "component_mappings": {
+        "market_structure": "central",
+        "monopolistic_competition": "monopolistic",
+        "perfect_competition": "perfect",
+        "oligopsony": "oligopsony",
+        "monopsony": "monopsony",
+        "oligopoly": "oligopoly",
+        "duopoly": "duopoly",
+        "monopoly": "monopoly"
+    }
+}

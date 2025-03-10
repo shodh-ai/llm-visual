@@ -1,0 +1,118 @@
+{
+    "nodes": [
+      {
+        "id": "pestel",
+        "name": "PESTEL",
+        "type": "framework",
+        "properties": [
+          "Business environment analysis framework"
+        ]
+      },
+      {
+        "id": "political",
+        "name": "Political",
+        "type": "factor",
+        "properties": [
+          "Policies & laws",
+          "Stability",
+          "Corruption"
+        ]
+      },
+      {
+        "id": "economic",
+        "name": "Economic",
+        "type": "factor",
+        "properties": [
+          "Growth",
+          "Inflation",
+          "Interest rates",
+          "Employment",
+          "HH Income"
+        ]
+      },
+      {
+        "id": "social",
+        "name": "Social",
+        "type": "factor",
+        "properties": [
+          "Population",
+          "Ageing",
+          "Career views",
+          "Lifestyle",
+          "Cultural barrier"
+        ]
+      },
+      {
+        "id": "technology",
+        "name": "Technology",
+        "type": "factor",
+        "properties": [
+          "Technology incentives",
+          "Innovation",
+          "Automation",
+          "R&D activity"
+        ]
+      },
+      {
+        "id": "environment",
+        "name": "Environment",
+        "type": "factor",
+        "properties": [
+          "Climate change",
+          "Ethical",
+          "Recycling & disposal",
+          "Sustainability"
+        ]
+      },
+      {
+        "id": "legal",
+        "name": "Legal",
+        "type": "factor",
+        "properties": [
+          "Antitrust",
+          "Labour",
+          "Copyright",
+          "Data protection",
+          "Health & safety"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "source": "pestel",
+        "target": "political",
+        "type": "component",
+        "description": "Political factors of PESTEL analysis"
+      },
+      {
+        "source": "pestel",
+        "target": "economic",
+        "type": "component",
+        "description": "Economic factors of PESTEL analysis"
+      },
+      {
+        "source": "pestel",
+        "target": "social",
+        "type": "component",
+        "description": "Social factors of PESTEL analysis"
+      },
+      {
+        "source": "pestel",
+        "target": "technology",
+        "type": "component",
+        "description": "Technological factors of PESTEL analysis"
+      },
+      {
+        "source": "pestel",
+        "target": "environment",
+        "type": "component",
+        "description": "Environmental factors of PESTEL analysis"
+      },
+      {
+        "source": "pestel",
+        "target": "legal",
+        "type": "component",
+        "description": "Legal factors of PESTEL analysis"
+      }
+    ]
+  }

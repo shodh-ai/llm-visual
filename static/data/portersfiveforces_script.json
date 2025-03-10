@@ -1,0 +1,11 @@
+{
+    "script": "This visualization represents Porter's Five Forces framework, a model used to analyze the competitive forces shaping an industry. At the center of the framework is 'Industry Rivalry', which represents the competition among existing firms. Factors like market concentration, industry growth rates, fixed costs, and product differentiation influence this rivalry.\n\nSurrounding 'Industry Rivalry' are four key forces that shape its intensity:\n\n1. Threat of Entry : New entrants pose a threat by introducing additional competition. Factors like entry barriers, economies of scale, capital requirements, and government policies influence this force.\n\n2. Bargaining Power of Suppliers : Strong suppliers can pressure firms by raising prices or reducing product quality. Factors such as supplier concentration, switching costs, and the threat of forward integration determine supplier power.\n\n3. Bargaining Power of Buyers : Buyers can influence pricing and product quality through their purchase volumes, switching costs, and sensitivity to price changes.\n\n4. Threat of Substitutes : Substitute products can cap industry profitability by offering alternative solutions to consumers. Factors like product differentiation, switching costs, and the number of substitutes influence this threat.\n\nThese forces collectively determine the competitive intensity and profit potential within an industry.",
+    "component_mappings": {
+      "industry_rivalry": "central_force",
+      "threat_of_entry": "force",
+      "supplier_power": "force",
+      "buyer_power": "force",
+      "threat_of_substitutes": "force"
+    }
+}
+

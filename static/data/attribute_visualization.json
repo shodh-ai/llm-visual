@@ -85,13 +85,5 @@
             "target": "courses",
             "type": "connection"
         }
-    ],
-    "layout": {
-        "width": 800,
-        "height": 600,
-        "node_spacing": 120,
-        "edge_strength": -800,
-        "link_distance": 120,
-        "collision_radius": 60
-    }
+    ]
 }

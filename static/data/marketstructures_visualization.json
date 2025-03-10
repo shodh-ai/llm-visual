@@ -1,0 +1,138 @@
+{
+    "nodes": [
+      {
+        "id": "market_structure",
+        "name": "Market Structures",
+        "type": "central",
+        "properties": [
+          "Classification of markets based on competition"
+        ]
+      },
+      {
+        "id": "monopolistic_competition",
+        "name": "Monopolistic competition",
+        "type": "monopolistic",
+        "properties": [
+          "Many sellers",
+          "Differentiated products",
+          "Easy entry and exit",
+          "Some price control"
+        ],
+        "example": "Restaurants, clothing stores"
+      },
+      {
+        "id": "perfect_competition",
+        "name": "Perfect competition",
+        "type": "perfect",
+        "properties": [
+          "Many buyers and sellers",
+          "Homogeneous products",
+          "Perfect information",
+          "No barriers to entry/exit",
+          "Price takers"
+        ],
+        "example": "Agricultural markets"
+      },
+      {
+        "id": "oligopsony",
+        "name": "Oligopsony",
+        "type": "oligopsony",
+        "properties": [
+          "Few buyers, many sellers",
+          "Buyers have market power",
+          "Significant barriers to entry"
+        ],
+        "example": "Agricultural processors"
+      },
+      {
+        "id": "monopsony",
+        "name": "Monopsony",
+        "type": "monopsony",
+        "properties": [
+          "Single buyer, many sellers",
+          "Buyer has significant market power",
+          "Can influence prices"
+        ],
+        "example": "Company towns"
+      },
+      {
+        "id": "oligopoly",
+        "name": "Oligopoly",
+        "type": "oligopoly",
+        "properties": [
+          "Few large sellers",
+          "High barriers to entry",
+          "Interdependent decision making",
+          "Product differentiation possible"
+        ],
+        "example": "Telecommunications, airlines"
+      },
+      {
+        "id": "duopoly",
+        "name": "Duopoly",
+        "type": "duopoly",
+        "properties": [
+          "Two dominant sellers",
+          "High barriers to entry",
+          "Strategic interaction"
+        ],
+        "example": "Visa/Mastercard, Boeing/Airbus"
+      },
+      {
+        "id": "monopoly",
+        "name": "Monopoly",
+        "type": "monopoly",
+        "properties": [
+          "Single seller",
+          "No close substitutes",
+          "Significant barriers to entry",
+          "Price maker"
+        ],
+        "example": "Utilities, patents"
+      }
+    ],
+    "edges": [
+      {
+        "source": "market_structure",
+        "target": "monopolistic_competition",
+        "type": "type",
+        "description": "Type of market structure"
+      },
+      {
+        "source": "market_structure",
+        "target": "perfect_competition",
+        "type": "type",
+        "description": "Type of market structure"
+      },
+      {
+        "source": "market_structure",
+        "target": "oligopsony",
+        "type": "type",
+        "description": "Type of market structure"
+      },
+      {
+        "source": "market_structure",
+        "target": "monopsony",
+        "type": "type",
+        "description": "Type of market structure"
+      },
+      {
+        "source": "market_structure",
+        "target": "oligopoly",
+        "type": "type",
+        "description": "Type of market structure"
+      },
+      {
+        "source": "market_structure",
+        "target": "duopoly",
+        "type": "type",
+        "description": "Type of market structure"
+      },
+      {
+        "source": "market_structure",
+        "target": "monopoly",
+        "type": "type",
+        "description": "Type of market structure"
+      }
+    ]
+  }

@@ -235,7 +235,7 @@ async def get_visualization(request: VisualizationRequest):
         'schema', 'parallel_db', 'hierarchical', 'network', 'er', 'document', 'history', 'xml', 
         'entity', 'attribute', 'shared_memory', 'shared_disk', 'shared_nothing', 'distributed_database', 
         'oop_concepts', 'relational', 'relationalQuery', 'normalization', 'activedb', 'queryprocessing', 
-        'mobiledb', 'gis']
+        'mobiledb', 'gis', 'pestel', 'portersfiveforces', 'swot', 'industrylifecycle', 'marketstructures', 'strategicintent']
     
     if request.topic not in valid_topics:
         error_msg = f"Invalid topic '{request.topic}'. Must be one of: {', '.join(valid_topics)}"
@@ -344,11 +344,21 @@ async def get_visualization(request: VisualizationRequest):
 @app.post("/api/narration/{topic}", response_model=NarrationData, tags=["Narration"])
 async def generate_narration(topic: str, request: Request):
     try:
-        logging.info(f"Received narration request for topic: {topic}")
-        
-        # Validate topic
-        if topic not in ['schema', 'parallel_db', 'hierarchical', 'network', 'er', 'document', 'history', 'xml', 'entity', 'attribute', 'shared_memory', 'shared_disk', 'shared_nothing', 'distributed_database', 'oop_concepts', 'relational', 'relationalQuery', 'normalization', 'activedb', 'queryprocessing', 'mobiledb', 'gis']:            
-            raise HTTPException(status_code=400, detail="Invalid topic")
+      
+        if topic not in ['schema', 'parallel_db', 'hierarchical', 'network', 'er', 'document', 'history', 'xml', 'entity', 'attribute', 'shared_memory', 'shared_disk', 'shared_nothing', 'distributed_database', 'oop_concepts', 'relational', 'relationalQuery', 'normalization', 'activedb', 'queryprocessing', 'mobiledb', 'gis', 'pestel', 'portersfiveforces', 'swot', 'industrylifecycle', 'marketstructures', 'strategicintent']:            
+          raise HTTPException(status_code=400, detail="Invalid topic")
+
+        # Load the narration script
+        script_data = load_narration_script(topic)
+        script = script_data['script']
+        component_mappings = script_data.get('component_mappings', {})
+
+        # Generate audio using OpenAI's text-to-speech
+        audio_response = openai_client.audio.speech.create(
+            model="tts-1",
+            voice="alloy",
+            input=script
+        )
 
         # Get request body
         try:
@@ -521,7 +531,7 @@ async def serve_audio(filename: str):
 def get_highlights(topic: str, timestamp: int):
     """Get component highlights for a specific timestamp"""
     try:
-        if topic not in ['schema', 'parallel_db', 'hierarchical', 'network', 'er', 'document', 'history', 'xml', 'entity', 'attribute', 'shared_memory', 'shared_disk', 'shared_nothing', 'distributed_database', 'oop_concepts', 'relational', 'relationalQuery', 'normalization', 'activedb', 'queryprocessing', 'mobiledb', 'gis']:
+        if topic not in ['schema', 'parallel_db', 'hierarchical', 'network', 'er', 'document', 'history', 'xml', 'entity', 'attribute', 'shared_memory', 'shared_disk', 'shared_nothing', 'distributed_database', 'oop_concepts', 'relational', 'relationalQuery', 'normalization', 'activedb', 'queryprocessing', 'mobiledb', 'gis', 'pestel', 'portersfiveforces', 'swot', 'industrylifecycle', 'marketstructures', 'strategicintent']:
 
             return JSONResponse(status_code=400, content={'error': 'Invalid topic'})
         # Load narration script to get component mappings and word timings
