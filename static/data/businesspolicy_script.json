@@ -1,0 +1,49 @@
+{
+    "script": "Business policy is a formalized set of guidelines and principles that guide an organization’s strategic direction and daily operations. In this visualization, we highlight five key components of business policy: Decision-Making Guidelines, Organizational Culture, Corporate Governance Frameworks, Sustainability and Ethics Policies, and Risk Management Strategies. By implementing these core components, organizations can ensure consistency, accountability, and resilience in achieving their goals.",
+    "narration_timestamps": [
+      {
+        "word": "Introduction",
+        "start_time": 0,
+        "end_time": 5000,
+        "node_id": null
+      },
+      {
+        "word": "Decision-Making Guidelines",
+        "start_time": 5000,
+        "end_time": 10000,
+        "node_id": "step1"
+      },
+      {
+        "word": "Organizational Culture",
+        "start_time": 10000,
+        "end_time": 15000,
+        "node_id": "step2"
+      },
+      {
+        "word": "Corporate Governance Frameworks",
+        "start_time": 15000,
+        "end_time": 20000,
+        "node_id": "step3"
+      },
+      {
+        "word": "Sustainability and Ethics Policies",
+        "start_time": 20000,
+        "end_time": 25000,
+        "node_id": "step4"
+      },
+      {
+        "word": "Risk Management Strategies",
+        "start_time": 25000,
+        "end_time": 30000,
+        "node_id": "step5"
+      }
+    ],
+    "component_mappings": {
+      "step1": "Decision-Making Guidelines",
+      "step2": "Organizational Culture",
+      "step3": "Corporate Governance Frameworks",
+      "step4": "Sustainability and Ethics Policies",
+      "step5": "Risk Management Strategies"
+    }
+  }
+  

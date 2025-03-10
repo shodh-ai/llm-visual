@@ -1,0 +1,291 @@
+{
+  "nodes": [
+    {
+      "id": "bcg_center",
+      "name": "BCG Matrix",
+      "type": "strategy"
+    },
+    {
+      "id": "bcg_stars",
+      "name": "Stars",
+      "type": "strategy_type"
+    },
+    {
+      "id": "bcg_question",
+      "name": "Question Marks",
+      "type": "strategy_type"
+    },
+    {
+      "id": "bcg_cashcows",
+      "name": "Cash Cows",
+      "type": "strategy_type"
+    },
+    {
+      "id": "bcg_dogs",
+      "name": "Dogs",
+      "type": "strategy_type"
+    },
+    {
+      "id": "bcg_target1",
+      "name": "",
+      "type": "target"
+    },
+    {
+      "id": "bcg_target2",
+      "name": "",
+      "type": "target"
+    },
+    {
+      "id": "bcg_target3",
+      "name": "",
+      "type": "target"
+    },
+    {
+      "id": "ge_center",
+      "name": "GE Matrix",
+      "type": "strategy"
+    },
+    {
+      "id": "ge_cell1",
+      "name": "Grow/Invest",
+      "type": "strategy_type"
+    },
+    {
+      "id": "ge_cell2",
+      "name": "Grow/Invest",
+      "type": "strategy_type"
+    },
+    {
+      "id": "ge_cell3",
+      "name": "Hold/Protect",
+      "type": "strategy_type"
+    },
+    {
+      "id": "ge_cell4",
+      "name": "Grow/Invest",
+      "type": "strategy_type"
+    },
+    {
+      "id": "ge_cell5",
+      "name": "Hold/Protect",
+      "type": "strategy_type"
+    },
+    {
+      "id": "ge_cell6",
+      "name": "Harvest/Divest",
+      "type": "strategy_type"
+    },
+    {
+      "id": "ge_cell7",
+      "name": "Hold/Protect",
+      "type": "strategy_type"
+    },
+    {
+      "id": "ge_cell8",
+      "name": "Harvest/Divest",
+      "type": "strategy_type"
+    },
+    {
+      "id": "ge_cell9",
+      "name": "Harvest/Divest",
+      "type": "strategy_type"
+    },
+    {
+      "id": "ge_target1",
+      "name": "",
+      "type": "target"
+    },
+    {
+      "id": "ge_target2",
+      "name": "",
+      "type": "target"
+    },
+    {
+      "id": "ge_target3",
+      "name": "",
+      "type": "target"
+    },
+    {
+      "id": "ge_target4",
+      "name": "",
+      "type": "target"
+    },
+    {
+      "id": "ge_target5",
+      "name": "",
+      "type": "target"
+    },
+    {
+      "id": "ge_target6",
+      "name": "",
+      "type": "target"
+    },
+    {
+      "id": "ge_target7",
+      "name": "",
+      "type": "target"
+    },
+    {
+      "id": "ge_target8",
+      "name": "",
+      "type": "target"
+    },
+    {
+      "id": "ge_target9",
+      "name": "",
+      "type": "target"
+    }
+  ],
+  "edges": [
+    {
+      "source": "bcg_center",
+      "target": "bcg_stars",
+      "type": "matrix_line",
+      "description": "BCG-Stars"
+    },
+    {
+      "source": "bcg_center",
+      "target": "bcg_question",
+      "type": "matrix_line",
+      "description": "BCG-Question Marks"
+    },
+    {
+      "source": "bcg_center",
+      "target": "bcg_cashcows",
+      "type": "matrix_line",
+      "description": "BCG-Cash Cows"
+    },
+    {
+      "source": "bcg_center",
+      "target": "bcg_dogs",
+      "type": "matrix_line",
+      "description": "BCG-Dogs"
+    },
+    {
+      "source": "bcg_stars",
+      "target": "bcg_target1",
+      "type": "matrix_goal",
+      "description": "BCG-Target"
+    },
+    {
+      "source": "bcg_question",
+      "target": "bcg_target2",
+      "type": "matrix_goal",
+      "description": "BCG-Target"
+    },
+    {
+      "source": "bcg_cashcows",
+      "target": "bcg_target3",
+      "type": "matrix_goal",
+      "description": "BCG-Target"
+    },
+    {
+      "source": "ge_center",
+      "target": "ge_cell1",
+      "type": "matrix_line",
+      "description": "GE-High/High"
+    },
+    {
+      "source": "ge_center",
+      "target": "ge_cell2",
+      "type": "matrix_line",
+      "description": "GE-High/Medium"
+    },
+    {
+      "source": "ge_center",
+      "target": "ge_cell3",
+      "type": "matrix_line",
+      "description": "GE-High/Low"
+    },
+    {
+      "source": "ge_center",
+      "target": "ge_cell4",
+      "type": "matrix_line",
+      "description": "GE-Medium/High"
+    },
+    {
+      "source": "ge_center",
+      "target": "ge_cell5",
+      "type": "matrix_line",
+      "description": "GE-Medium/Medium"
+    },
+    {
+      "source": "ge_center",
+      "target": "ge_cell6",
+      "type": "matrix_line",
+      "description": "GE-Medium/Low"
+    },
+    {
+      "source": "ge_center",
+      "target": "ge_cell7",
+      "type": "matrix_line",
+      "description": "GE-Low/High"
+    },
+    {
+      "source": "ge_center",
+      "target": "ge_cell8",
+      "type": "matrix_line",
+      "description": "GE-Low/Medium"
+    },
+    {
+      "source": "ge_center",
+      "target": "ge_cell9",
+      "type": "matrix_line",
+      "description": "GE-Low/Low"
+    },
+    {
+      "source": "ge_cell1",
+      "target": "ge_target1",
+      "type": "matrix_goal",
+      "description": "GE-Target"
+    },
+    {
+      "source": "ge_cell2",
+      "target": "ge_target2",
+      "type": "matrix_goal",
+      "description": "GE-Target"
+    },
+    {
+      "source": "ge_cell3",
+      "target": "ge_target3",
+      "type": "matrix_goal",
+      "description": "GE-Target"
+    },
+    {
+      "source": "ge_cell4",
+      "target": "ge_target4",
+      "type": "matrix_goal",
+      "description": "GE-Target"
+    },
+    {
+      "source": "ge_cell5",
+      "target": "ge_target5",
+      "type": "matrix_goal",
+      "description": "GE-Target"
+    },
+    {
+      "source": "ge_cell6",
+      "target": "ge_target6",
+      "type": "matrix_goal",
+      "description": "GE-Target"
+    },
+    {
+      "source": "ge_cell7",
+      "target": "ge_target7",
+      "type": "matrix_goal",
+      "description": "GE-Target"
+    },
+    {
+      "source": "ge_cell8",
+      "target": "ge_target8",
+      "type": "matrix_goal",
+      "description": "GE-Target"
+    },
+    {
+      "source": "ge_cell9",
+      "target": "ge_target9",
+      "type": "matrix_goal",
+      "description": "GE-Target"
+    }
+  ]
+}

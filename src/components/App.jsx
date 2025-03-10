@@ -18,6 +18,10 @@ import QueryProcessingVisualization from './QueryprocessingVisualization';
 import MobiledbVisualization from './MobiledbVisualization';
 import GISVisualization from './GisVisualization';
 import VisualizationController from './VisualizationController';
+import BusinessPolicyFlow from './BusinesspolicyVisualization';
+import CorporateStrategyVisualization from './CorporateVisualization';
+import MatrixVisualization from './MatrixVisualization';
+import StrategicManagementVisualization from './StrategicVisualization';
 
 // Define the VISUALIZATIONS object
 const VISUALIZATIONS = {
@@ -36,7 +40,11 @@ const VISUALIZATIONS = {
     activedb: ActiveDBVisualization,
     queryprocessing: QueryProcessingVisualization,
     mobiledb: MobiledbVisualization,
-    gis: GISVisualization
+    gis: GISVisualization,
+    businesspolicy: BusinessPolicyFlow,
+    corporate: CorporateStrategyVisualization,
+    matrix: MatrixVisualization,
+    strategic: StrategicManagementVisualization
 };
 
 const App = () => {
@@ -343,6 +351,10 @@ const App = () => {
                     <option value="queryprocessing">Query Processing Visualization</option>
                     <option value="mobiledb">Mobile Database Visualization</option>
                     <option value="gis">GISVisualization</option>
+                    <option value="businesspolicy">BusinessPolicyFlow</option>
+                    <option value="corporate">CorporateStrategyVisualization</option>
+                    <option value="matrix">MatrixVisualization</option>
+                    <option value="strategic">StrategicManagementVisualization</option>
                 </select>
             </div>
             <div className="content-container">

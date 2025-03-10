@@ -1,0 +1,84 @@
+{
+    "nodes": [
+      {
+        "id": "strategic_management",
+        "name": "Strategic Management",
+        "fields": ["Analyze", "Decide", "Implement"]
+      },
+      {
+        "id": "corporate",
+        "name": "Corporate Strategy",
+        "fields": ["Vision", "Diversification", "Integration"]
+      },
+      {
+        "id": "business",
+        "name": "Business Strategy",
+        "fields": ["Competitive Advantage", "Market Position", "Resource Allocation"]
+      },
+      {
+        "id": "functional",
+        "name": "Functional Strategy",
+        "fields": ["Marketing", "Finance", "Operations", "HR"]
+      },
+      {
+        "id": "planning",
+        "name": "Strategic Planning",
+        "fields": ["Long-term Goals", "Forecasting", "Budgeting"]
+      },
+      {
+        "id": "tools",
+        "name": "Strategic Tools",
+        "fields": ["SWOT Analysis", "Porter's Five Forces", "Balanced Scorecard", "PESTEL"]
+      }
+    ],
+    "edges": [
+      {
+        "source": "strategic_management",
+        "target": "corporate",
+        "type": "includes",
+        "label": "Encompasses"
+      },
+      {
+        "source": "strategic_management",
+        "target": "business",
+        "type": "includes",
+        "label": "Encompasses"
+      },
+      {
+        "source": "strategic_management",
+        "target": "functional",
+        "type": "includes",
+        "label": "Encompasses"
+      },
+      {
+        "source": "corporate",
+        "target": "business",
+        "type": "influences",
+        "label": "Guides"
+      },
+      {
+        "source": "business",
+        "target": "functional",
+        "type": "influences",
+        "label": "Directs"
+      },
+      {
+        "source": "strategic_management",
+        "target": "planning",
+        "type": "utilizes",
+        "label": "Incorporates"
+      },
+      {
+        "source": "strategic_management",
+        "target": "tools",
+        "type": "utilizes",
+        "label": "Employs"
+      },
+      {
+        "source": "planning",
+        "target": "tools",
+        "type": "utilizes",
+        "label": "Requires"
+      }
+    ]
+  }

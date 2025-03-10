@@ -46,8 +46,8 @@ async def read_root():
         return f.read()
 
 # Initialize API clients
-openai_client = OpenAI(api_key=os.environ.get('OPENAI_API_KEY'))
-anthropic_client = Anthropic(api_key=os.environ.get('ANTHROPIC_API_KEY'))
+#openai_client = OpenAI(api_key=os.environ.get('OPENAI_API_KEY'))
+#anthropic_client = Anthropic(api_key=os.environ.get('ANTHROPIC_API_KEY'))
 
 # Create directory for audio files
 AUDIO_DIR = Path('static/audio')
@@ -235,7 +235,7 @@ async def get_visualization(request: VisualizationRequest):
         'schema', 'parallel_db', 'hierarchical', 'network', 'er', 'document', 'history', 'xml', 
         'entity', 'attribute', 'shared_memory', 'shared_disk', 'shared_nothing', 'distributed_database', 
         'oop_concepts', 'relational', 'relationalQuery', 'normalization', 'activedb', 'queryprocessing', 
-        'mobiledb', 'gis']
+        'mobiledb', 'gis', 'businesspolicy', 'corporate', 'matrix', 'strategic']
     
     if request.topic not in valid_topics:
         error_msg = f"Invalid topic '{request.topic}'. Must be one of: {', '.join(valid_topics)}"
@@ -254,7 +254,7 @@ async def get_visualization(request: VisualizationRequest):
         if not jsx_path.exists():
             error_msg = f"JSX code not found for topic '{request.topic}'"
             logging.error(error_msg)
-            raise HTTPException(status_code=404, detail=error_msg)
+            raise HTTPException(status_code=404, detail=error+_msg)
         
         with open(jsx_path) as f:
             jsx_code = f.read()
@@ -347,7 +347,7 @@ async def generate_narration(topic: str, request: Request):
         logging.info(f"Received narration request for topic: {topic}")
         
         # Validate topic
-        if topic not in ['schema', 'parallel_db', 'hierarchical', 'network', 'er', 'document', 'history', 'xml', 'entity', 'attribute', 'shared_memory', 'shared_disk', 'shared_nothing', 'distributed_database', 'oop_concepts', 'relational', 'relationalQuery', 'normalization', 'activedb', 'queryprocessing', 'mobiledb', 'gis']:            
+        if topic not in ['schema', 'parallel_db', 'hierarchical', 'network', 'er', 'document', 'history', 'xml', 'entity', 'attribute', 'shared_memory', 'shared_disk', 'shared_nothing', 'distributed_database', 'oop_concepts', 'relational', 'relationalQuery', 'normalization', 'activedb', 'queryprocessing', 'mobiledb', 'gis', 'businesspolicy', 'corporate', 'matrix', 'strategic']:            
             raise HTTPException(status_code=400, detail="Invalid topic")
 
         # Get request body
@@ -521,7 +521,7 @@ async def serve_audio(filename: str):
 def get_highlights(topic: str, timestamp: int):
     """Get component highlights for a specific timestamp"""
     try:
-        if topic not in ['schema', 'parallel_db', 'hierarchical', 'network', 'er', 'document', 'history', 'xml', 'entity', 'attribute', 'shared_memory', 'shared_disk', 'shared_nothing', 'distributed_database', 'oop_concepts', 'relational', 'relationalQuery', 'normalization', 'activedb', 'queryprocessing', 'mobiledb', 'gis']:
+        if topic not in ['schema', 'corporate', 'parallel_db', 'hierarchical', 'network', 'er', 'document', 'history', 'xml', 'entity', 'attribute', 'shared_memory', 'shared_disk', 'shared_nothing', 'distributed_database', 'oop_concepts', 'relational', 'relationalQuery', 'normalization', 'activedb' ,'queryprocessing', 'mobiledb', 'gis', 'businesspolicy', 'matrix', 'strategic']:
 
             return JSONResponse(status_code=400, content={'error': 'Invalid topic'})
         # Load narration script to get component mappings and word timings

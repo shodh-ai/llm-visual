@@ -1,0 +1,12 @@
+{
+    "script": "1. Strategic Management:\nStrategic Management is the process of defining an organization’s strategy, making decisions on allocating resources, and ensuring long-term goals are achieved. It encompasses various levels of strategy and employs strategic tools for effective decision-making.\n\n2. Strategic Planning:\nStrategic Planning is a structured process that helps organizations set priorities, focus resources, and ensure stakeholders are aligned towards common goals. It utilizes strategic tools for analysis and decision-making.\n\n3. Strategic Tools:\nOrganizations utilize various Strategic Tools to assess internal and external environments. Common tools include SWOT analysis, PESTEL analysis, Porter’s Five Forces, and Value Chain analysis, which aid in strategic decision-making.\n\n4. Corporate Strategy:\nCorporate Strategy is the highest level of strategic planning, determining the overall scope and direction of the organization. It includes decisions on acquisitions, diversification, and resource allocation across business units.\n\n5. Business Strategy:\nBusiness Strategy focuses on how a business unit competes within its industry. It involves differentiation, cost leadership, and market positioning. Business Strategy is influenced by Functional Strategy and broader corporate goals.\n\n6. Functional Strategy:\nFunctional Strategy includes plans and actions within specific departments such as marketing, finance, operations, and human resources. It ensures that each function aligns with business and corporate strategies.\n\nThrough these interconnected strategies and tools, organizations ensure effective decision-making, competitive advantage, and sustainable growth.",
+    "component_mappings": {
+      "strategic_management": "core concept",
+      "strategic_planning": "process",
+      "strategic_tools": "tools",
+      "corporate_strategy": "strategy level",
+      "business_strategy": "strategy level",
+      "functional_strategy": "strategy level"
+    }
+  }
+  

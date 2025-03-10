@@ -1,0 +1,77 @@
+{
+  "nodes": [
+    {
+      "id": "step1",
+      "name": "Business Policies",
+      "type": "step"
+    },
+    {
+      "id": "step2",
+      "name": "Mission, Vision, and Values",
+      "type": "step"
+    },
+    {
+      "id": "step3",
+      "name": "Risk Management",
+      "type": "step"
+    },
+    {
+      "id": "step4",
+      "name": "Organizational Culture",
+      "type": "step"
+    },
+    {
+      "id": "step5",
+      "name": "Corporate Policies",
+      "type": "step"
+    },
+    {
+      "id": "step6",
+      "name": "Functional Policies",
+      "type": "step"
+    },
+    {
+      "id": "step7",
+      "name": "Operational Policies",
+      "type": "step"
+    }
+  ],
+  "edges": [
+    {
+      "source": "step2",
+      "target": "step1",
+      "type": "unidirectional",
+      "description": "flow"
+    },
+    {
+      "source": "step3",
+      "target": "step1",
+      "type": "unidirectional",
+      "description": "flow"
+    },
+    {
+      "source": "step4",
+      "target": "step1",
+      "type": "unidirectional",
+      "description": "flow"
+    },
+    {
+      "source": "step1",
+      "target": "step5",
+      "type": "unidirectional",
+      "description": "flow"
+    },
+    {
+      "source": "step1",
+      "target": "step6",
+      "type": "unidirectional",
+      "description": "flow"
+    },
+    {
+      "source": "step1",
+      "target": "step7",
+      "type": "unidirectional",
+      "description": "flow"
+    }
+  ]
+}

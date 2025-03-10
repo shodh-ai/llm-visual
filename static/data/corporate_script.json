@@ -1,0 +1,15 @@
+{
+    "script": "This visualization represents a comprehensive framework for corporate growth strategies. At its core, the 'Growth Strategies' node represents the central strategic focus from which all other approaches emanate. The framework is broken down into seven key strategic options. Market Penetration emphasizes increasing market share by boosting sales of existing products in current markets through competitive pricing, enhanced customer service, and advertising. Market Development involves exploring new geographic areas or customer segments with existing products, expanding the market footprint. Product Development focuses on innovating or refining products to better serve existing customers and address emerging needs. Diversification represents the pursuit of new product lines or market segments to spread risk and seize fresh opportunities – and its associated target is deliberately positioned to the left to highlight its distinct approach. Mergers & Acquisitions capture the strategy of consolidating competitive strength by merging with or acquiring other companies. Stability is about maintaining current operations and a steady market position when conditions are favorable, while Retrenchment focuses on scaling back or divesting non-core operations to optimize efficiency during challenging times. Each peripheral strategy is connected to the central Growth Strategies node, and the corresponding targets (illustrated as bullseyes) indicate the specific focus or outcome desired from each approach.",
+    "component_mappings": {
+      "growth_strategies": "strategy",
+      "market_penetration": "strategy_type",
+      "market_development": "strategy_type",
+      "product_development": "strategy_type",
+      "diversification": "strategy_type",
+      "mergers_acquisitions": "strategy_type",
+      "stability": "strategy_type",
+      "retrenchment": "strategy_type",
+      "target": "target"
+    }
+  }
+  

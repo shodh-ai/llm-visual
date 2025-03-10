@@ -1,0 +1,15 @@
+{
+    "script": "Let me explain how the BCG and GE-McKinsey matrices work. The BCG Matrix is a 2x2 framework that categorizes a company's products or business units into four quadrants: Stars, Question Marks, Cash Cows, and Dogs. These quadrants are defined by two factors: market growth rate and relative market share. Stars represent high-growth, high-share opportunities that often require substantial investment. Question Marks have high growth but low share, requiring strategic decisions on whether to invest further. Cash Cows have high share but lower growth, typically generating steady cash flow with minimal investment. Finally, Dogs operate in low-growth, low-share environments and often yield minimal returns. Meanwhile, the GE-McKinsey Matrix is a 3x3 tool that assesses business units based on industry attractiveness and business unit strength. Each cell corresponds to one of three strategic options: Grow/Invest for promising areas, Hold/Protect for moderately appealing segments, and Harvest/Divest for underperforming or less strategic units. By combining these two frameworks, organizations can prioritize resources and determine the best strategy for each product or business unit, ensuring both short-term gains and long-term success.",
+    "component_mappings": {
+      "bcg": "bcg",
+      "stars": "stars",
+      "question marks": "question_marks",
+      "cash cows": "cash_cows",
+      "dogs": "dogs",
+      "ge": "ge",
+      "grow/invest": "grow_invest",
+      "hold/protect": "hold_protect",
+      "harvest/divest": "harvest_divest"
+    }
+  }
+  

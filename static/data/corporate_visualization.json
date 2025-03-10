@@ -1,0 +1,110 @@
+{
+    "nodes": [
+      {
+        "id": "growth",
+        "name": "Growth",
+        "type": "strategy"
+      },
+      {
+        "id": "mergers",
+        "name": "Mergers & Acquisitions",
+        "type": "strategy_type"
+      },
+      {
+        "id": "market_penetration",
+        "name": "Market Penetration",
+        "type": "strategy_type"
+      },
+      {
+        "id": "market_development",
+        "name": "Market Development",
+        "type": "strategy_type"
+      },
+      {
+        "id": "product_development",
+        "name": "Product Development",
+        "type": "strategy_type"
+      },
+      {
+        "id": "diversification",
+        "name": "Diversification",
+        "type": "strategy_type"
+      },
+      {
+        "id": "target1",
+        "name": "",
+        "type": "target"
+      },
+      {
+        "id": "target2",
+        "name": "",
+        "type": "target"
+      },
+      {
+        "id": "target3",
+        "name": "",
+        "type": "target"
+      },
+      {
+        "id": "target4",
+        "name": "",
+        "type": "target"
+      }
+    ],
+    "edges": [
+      {
+        "source": "growth",
+        "target": "mergers",
+        "type": "strategy",
+        "description": "Growth-Mergers"
+      },
+      {
+        "source": "growth",
+        "target": "market_penetration",
+        "type": "strategy",
+        "description": "Growth-Market Penetration"
+      },
+      {
+        "source": "growth",
+        "target": "market_development",
+        "type": "strategy",
+        "description": "Growth-Market Development"
+      },
+      {
+        "source": "growth",
+        "target": "product_development",
+        "type": "strategy",
+        "description": "Growth-Product Development"
+      },
+      {
+        "source": "growth",
+        "target": "diversification",
+        "type": "strategy",
+        "description": "Growth-Diversification"
+      },
+      {
+        "source": "mergers",
+        "target": "target1",
+        "type": "strategy_goal",
+        "description": "Strategy-Target"
+      },
+      {
+        "source": "market_penetration",
+        "target": "target2",
+        "type": "strategy_goal",
+        "description": "Strategy-Target"
+      },
+      {
+        "source": "market_development",
+        "target": "target3",
+        "type": "strategy_goal",
+        "description": "Strategy-Target"
+      },
+      {
+        "source": "product_development",
+        "target": "target4",
+        "type": "strategy_goal",
+        "description": "Strategy-Target"
+      }
+    ]
+  }
