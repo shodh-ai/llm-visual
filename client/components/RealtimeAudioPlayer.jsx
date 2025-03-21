@@ -1,6 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useImperativeHandle, forwardRef } from 'react';
 
-const RealtimeAudioPlayer = ({ topic, doubt, sessionId, onComplete, visualizationData }) => {
+const RealtimeAudioPlayer = forwardRef(({ topic, doubt, sessionId, onComplete, visualizationData }, ref) => {
   const [isConnected, setIsConnected] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
@@ -67,6 +67,9 @@ const RealtimeAudioPlayer = ({ topic, doubt, sessionId, onComplete, visualizatio
   const audioTimeUpdateRef = useRef(null);
   // Add state to track if audio is currently playing
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
+  
+  // Add a ref for narration audio
+  const narrationAudioRef = useRef(null);
   
   // Add a debounce function at the top of the component
   const useDebounce = (callback, delay) => {
@@ -338,512 +341,491 @@ const RealtimeAudioPlayer = ({ topic, doubt, sessionId, onComplete, visualizatio
       setConnectionStatus('Starting session...');
       addDebugInfo(`Starting WebRTC session for topic: ${topic}, doubt: ${doubt}`);
       
-      // Get an ephemeral key from the server
-      const baseUrl = window.location.origin; // Get the base URL from the current window location
-      let tokenUrl = `${baseUrl}/token?topic=${encodeURIComponent(topic)}&doubt=${encodeURIComponent(doubt)}`;
+      // Use only the Ngrok URL
+      const tokenUrl = `https://9c75-103-129-109-37.ngrok-free.app/token?topic=${encodeURIComponent(topic)}&doubt=${encodeURIComponent(doubt)}`;
       addDebugInfo(`Fetching token from ${tokenUrl}`);
       
-      let tokenResponse;
+      // Try to get the API key from various sources
+      let EPHEMERAL_KEY = null;
+      
       try {
-        tokenResponse = await fetch(tokenUrl, {
-          method: 'GET',
-          headers: {
-            'Accept': 'application/json'
-          }
-        });
-      } catch (fetchError) {
-        // If the relative URL fails, try a direct URL to the server
-        addDebugInfo(`Fetch failed with error: ${fetchError.message}`);
-        addDebugInfo('Trying direct URL to server as fallback');
-        
-        tokenUrl = `http://localhost:3000/token?topic=${encodeURIComponent(topic)}&doubt=${encodeURIComponent(doubt)}`;
-        addDebugInfo(`Fetching token from fallback URL: ${tokenUrl}`);
-        
-        tokenResponse = await fetch(tokenUrl, {
-          method: 'GET',
-          headers: {
-            'Accept': 'application/json'
-          }
-        });
-      }
-      
-      if (!tokenResponse.ok) {
-        const errorText = await tokenResponse.text();
-        addDebugInfo(`Token fetch failed with status ${tokenResponse.status}: ${errorText}`);
-        throw new Error(`Failed to get token: ${tokenResponse.status} ${tokenResponse.statusText}`);
-      }
-      
-      let data;
-      try {
-        const responseText = await tokenResponse.text();
-        addDebugInfo(`Token response received (length: ${responseText.length})`);
-        
-        // Use the handleTokenResponse function to process the token response
-        data = handleTokenResponse(responseText);
-        
-        if (!data) {
-          throw new Error('Failed to process token response');
-        }
-      } catch (parseError) {
-        addDebugInfo(`Failed to parse token response as JSON: ${parseError.message}`);
-        throw new Error(`Failed to parse token response: ${parseError.message}`);
-      }
-      
-      const EPHEMERAL_KEY = data.client_secret.value;
-      
-      addDebugInfo(`Received ephemeral key from server (length: ${EPHEMERAL_KEY.length})`);
-      
-      // Check if the key looks like a valid OpenAI API key
-      if (!EPHEMERAL_KEY.startsWith('sk-')) {
-        addDebugInfo(`Warning: API key doesn't start with 'sk-', which is unusual for OpenAI API keys`);
-      }
-      
-      // Create a peer connection with STUN servers
-      const pc = new RTCPeerConnection({
-        iceServers: [
-          { urls: 'stun:stun.l.google.com:19302' },
-          { urls: 'stun:stun1.l.google.com:19302' }
-        ]
-      });
-      peerConnectionRef.current = pc;
-      
-      // Log ICE connection state changes
-      peerConnectionRef.current.oniceconnectionstatechange = () => {
-        if (!peerConnectionRef.current) return;
-        addDebugInfo(`ICE connection state changed to: ${peerConnectionRef.current.iceConnectionState}`);
-        if (peerConnectionRef.current.iceConnectionState === 'failed' || peerConnectionRef.current.iceConnectionState === 'disconnected') {
-          setConnectionStatus(`ICE connection ${peerConnectionRef.current.iceConnectionState}`);
-        }
-      };
-      
-      // Log signaling state changes
-      peerConnectionRef.current.onsignalingstatechange = () => {
-        if (!peerConnectionRef.current) return;
-        addDebugInfo(`Signaling state changed to: ${peerConnectionRef.current.signalingState}`);
-      };
-      
-      // Log ICE gathering state changes
-      peerConnectionRef.current.onicegatheringstatechange = () => {
-        if (!peerConnectionRef.current) return;
-        addDebugInfo(`ICE gathering state changed to: ${peerConnectionRef.current.iceGatheringState}`);
-      };
-      
-      // Log ICE candidate errors
-      peerConnectionRef.current.onicecandidateerror = (event) => {
-        addDebugInfo(`ICE candidate error: ${event.errorText} (${event.errorCode})`);
-      };
-      
-      // Set up to play remote audio from the model
-      audioElementRef.current = document.createElement('audio');
-      audioElementRef.current.autoplay = true;
-      
-      peerConnectionRef.current.ontrack = (e) => {
-        addDebugInfo('Received audio track from OpenAI');
-        audioElementRef.current = document.createElement('audio');
-        audioElementRef.current.autoplay = true;
-        audioElementRef.current.srcObject = e.streams[0];
-        
-        // Add event listeners for audio playback
-        audioElementRef.current.onplaying = handleAudioStart;
-        audioElementRef.current.onpause = () => setIsAudioPlaying(false);
-        audioElementRef.current.onended = () => setIsAudioPlaying(false);
-        audioElementRef.current.ontimeupdate = handleAudioTimeUpdate;
-        
-        setIsPlaying(true);
-      };
-      
-      // Add local audio track for microphone input
-      if (microphoneStreamRef.current) {
-        try {
-          const audioTracks = microphoneStreamRef.current.getAudioTracks();
-          if (audioTracks.length > 0) {
-            peerConnectionRef.current.addTrack(audioTracks[0], microphoneStreamRef.current);
-            addDebugInfo('Added microphone track to peer connection');
-          } else {
-            addDebugInfo('No audio tracks found in microphone stream');
-          }
-        } catch (micError) {
-          console.error('Error adding microphone track:', micError);
-          addDebugInfo(`Error adding microphone track: ${micError.message}`);
-          // Continue without microphone
-        }
-      } else {
-        addDebugInfo('No microphone stream available, trying to get one now');
-      try {
-        const ms = await navigator.mediaDevices.getUserMedia({
-          audio: true
-        });
-        microphoneStreamRef.current = ms;
-          peerConnectionRef.current.addTrack(ms.getTracks()[0], ms);
-          setMicrophoneAccess(true);
-        addDebugInfo('Added microphone track to peer connection');
-      } catch (micError) {
-        console.error('Microphone access error:', micError);
-        addDebugInfo(`Microphone error: ${micError.message}`);
-          setMicrophoneAccess(false);
-        // Continue without microphone
-        }
-      }
-      
-      // Set up data channel for sending and receiving events
-      const dc = peerConnectionRef.current.createDataChannel('oai-events');
-      dataChannelRef.current = dc;
-      
-      dc.onopen = () => {
-        addDebugInfo('Data channel opened');
-        setIsConnected(true);
-        setConnectionStatus('Connected to OpenAI');
-        
-        // Prepare a detailed prompt with visualization context
-        let prompt = `You are an AI assistant explaining a ${topic.replace('_', ' ')} database visualization. The user asked: "${doubt}"\n\n`;
-        
-        // Get visualization data from props or window
-        const vizData = visualizationData || window.visualizationData;
-        if (vizData) {
-          prompt += "VISUALIZATION CONTEXT:\n";
+        // First try: Get from localStorage if available
+        const savedKey = localStorage.getItem('openai_api_key');
+        if (savedKey && savedKey.startsWith('sk-')) {
+          EPHEMERAL_KEY = savedKey;
+          addDebugInfo('Using API key from localStorage');
+        } else {
+          // Second try: Try to fetch from server
+          addDebugInfo(`Connecting to endpoint: ${tokenUrl}`);
           
-          // Add nodes information
-          if (vizData.nodes && vizData.nodes.length > 0) {
-            prompt += "\nNodes:\n";
-            vizData.nodes.forEach(node => {
-              prompt += `- Node ID: ${node.id}, Name: ${node.name}, Type: ${node.type || 'unknown'}\n`;
+          const tokenResponse = await fetch(tokenUrl, {
+            method: 'GET',
+            headers: {
+              'Accept': 'application/json'
+            }
+          });
+          
+          // Read the response text
+          const responseText = await tokenResponse.text();
+          addDebugInfo(`Response received (length: ${responseText.length})`);
+          
+          // Check if we got a JSON response
+          const contentType = tokenResponse.headers.get('content-type');
+          if (contentType && contentType.includes('application/json')) {
+            // Parse the JSON response
+            try {
+              const data = JSON.parse(responseText);
               
-              // Add attributes if available
-              if (node.attributes && node.attributes.length > 0) {
-                prompt += "  Attributes:\n";
-                node.attributes.forEach(attr => {
-                  prompt += `  - ${attr.name}${attr.isKey ? ' (Primary Key)' : ''}\n`;
-                });
+              // Validate the response data
+              if (data && data.client_secret && data.client_secret.value) {
+                EPHEMERAL_KEY = data.client_secret.value;
+                addDebugInfo('Successfully retrieved API key from server');
               }
-            });
-          }
-          
-          // Add edges information
-          if (vizData.edges && vizData.edges.length > 0) {
-            prompt += "\nEdges:\n";
-            vizData.edges.forEach(edge => {
-              prompt += `- ${edge.source} → ${edge.target} (Type: ${edge.type}${edge.description ? `, ${edge.description}` : ''})\n`;
-            });
-          }
-          
-          // Add narration if available
-          if (vizData.narration) {
-            prompt += "\nVisualization Description:\n";
-            prompt += vizData.narration + "\n";
-          }
-        }
-        
-        // Add instructions for highlighting
-        prompt += "\nIMPORTANT INSTRUCTIONS FOR HIGHLIGHTING:\n";
-        prompt += "1. When explaining concepts, ALWAYS mention the specific node IDs in your explanation.\n";
-        prompt += "2. Use the exact node IDs as they appear in the visualization (e.g., 'student', 'course', etc.).\n";
-        prompt += "3. When referring to a node, always include its ID in your explanation, like this: 'The student node (student) connects to...'\n";
-        prompt += "4. Make sure to mention each relevant node ID at least once when explaining its role.\n";
-        prompt += "5. The system will automatically highlight nodes when you mention their IDs.\n";
-        prompt += "6. IMPORTANT: Always use the exact node ID format, not variations or abbreviations.\n";
-        prompt += "7. EXAMPLES:\n";
-        prompt += "   - Good: 'The student entity (student) has attributes like student_id.'\n";
-        prompt += "   - Good: 'The relationship between student and course is represented by enrollment.'\n";
-        prompt += "   - Bad: 'The Student entity has attributes like student_id.' (missing node ID)\n";
-        prompt += "   - Bad: 'The students have attributes like student_id.' (incorrect node ID format)\n";
-        prompt += "8. REPEAT node IDs multiple times throughout your explanation to ensure they are highlighted.\n";
-        prompt += "9. For each concept you explain, mention the relevant node ID at least 2-3 times.\n";
-        prompt += "10. When moving from one concept to another, explicitly mention the new node ID to trigger highlighting.\n";
-        prompt += "11. Use phrases like 'Let's look at the [node_id] node' or 'Now focusing on [node_id]' to clearly indicate transitions.\n";
-        prompt += "12. IMPORTANT: The highlighting only works when you mention the exact node ID, so be very precise.\n";
-        
-        // Send the detailed prompt
-        sendTextMessage(prompt);
-      };
-      
-      dc.onmessage = (e) => {
-        try {
-          const data = JSON.parse(e.data);
-          addDebugInfo(`Received message of type: ${data.type}`);
-          
-          // Add to events
-          setEvents(prev => [data, ...prev]);
-          
-          // Extract text content from the message
-          let textContent = null;
-          
-          // Process different event types
-          if (data.type === 'conversation.item.delta') {
-            // This is the new format for text deltas in the latest API
-            if (data.delta?.content?.[0]?.type === 'text_delta') {
-              textContent = data.delta.content[0].text_delta.text;
+            } catch (parseError) {
+              addDebugInfo(`Failed to parse response as JSON: ${parseError.message}`);
             }
-          } else if (data.type === 'response.content_part.added') {
-            // This is another format that might contain text content
-            if (data.content_part?.content_block?.type === 'text') {
-              textContent = data.content_part.content_block.text;
-            }
-          } else if (data.type === 'message') {
-            // Handle direct message type
-            if (data.content && typeof data.content === 'string') {
-              textContent = data.content;
-            } else if (data.text && typeof data.text === 'string') {
-              textContent = data.text;
-            }
-          } else if (data.type === 'text') {
-            // Handle simple text type
-            if (data.text && typeof data.text === 'string') {
-              textContent = data.text;
-            }
-          } else if (data.type === 'response.audio_transcript.delta') {
-            // Handle audio transcript delta with improved timing
-            if (data.delta && typeof data.delta === 'string') {
-              textContent = data.delta;
-              addDebugInfo(`Extracted text from audio transcript: "${textContent.substring(0, 50)}${textContent.length > 50 ? '...' : ''}"`);
-              
-              // Use the new function for better synchronization with speech
-              processAudioTranscriptDelta(textContent);
-            }
-          } else if (data.type === 'conversation.item.complete') {
-            addDebugInfo('Conversation complete');
-            setConnectionStatus('Response complete');
-            setIsComplete(true);
-            
-            // Check for node IDs in the accumulated text when conversation is complete
-            if (text && text.length > 0) {
-              addDebugInfo('Checking for node IDs in accumulated text after conversation complete');
-              processTextForNodeIds(text);
-            }
-          } else if (data.type === 'response.audio.done' || data.type === 'response.done') {
-            addDebugInfo(`${data.type} received, checking for node IDs in accumulated text`);
-            
-            // Check for node IDs in the accumulated text when audio is done
-            if (text && text.length > 0) {
-              addDebugInfo('Checking for node IDs in accumulated text after audio complete');
-              processTextForNodeIds(text);
-            }
-          } else if (data.type === 'error') {
-            // Log detailed error information
-            addDebugInfo(`Error from OpenAI: ${JSON.stringify(data)}`);
-            setError(`OpenAI error: ${data.error?.message || 'Unknown error'}`);
           } else {
-            // For any other message type, try to extract text content
-            textContent = extractTextFromMessage(data);
+            addDebugInfo(`Received non-JSON response: ${contentType}`);
+            addDebugInfo(`Response preview: ${responseText.substring(0, 100)}...`);
           }
+        }
+        
+        // Third try: If we still don't have a key, prompt the user
+        if (!EPHEMERAL_KEY) {
+          addDebugInfo('No API key available, prompting user');
+          const userKey = prompt("Please enter your OpenAI API key (starts with sk-...):");
           
-          // Process text content if found
-          if (textContent) {
-            addDebugInfo(`Extracted text content: "${textContent.substring(0, 50)}${textContent.length > 50 ? '...' : ''}"`);
-            setText(prev => {
-              const newText = prev + textContent;
-              // Log the accumulated text periodically (every 100 characters)
-              if (newText.length % 100 < prev.length % 100) {
-                addDebugInfo(`Accumulated text (${newText.length} chars): "${newText.substring(newText.length - 100)}"`);
-              }
-              return newText;
-            });
-            
-            // Process text for node IDs
-            processTextForNodeIds(textContent);
-          }
-        } catch (error) {
-          console.error('Error parsing message:', error);
-          addDebugInfo(`Error parsing message: ${error.message}`);
-          addDebugInfo(`Raw message data: ${e.data.substring(0, 200)}${e.data.length > 200 ? '...' : ''}`);
-        }
-      };
-      
-      // Helper function to extract text from various message formats
-      const extractTextFromMessage = (message) => {
-        // Try to extract text from various possible locations in the message
-        if (message.content) {
-          if (typeof message.content === 'string') {
-            return message.content;
-          } else if (Array.isArray(message.content)) {
-            // Try to extract text from content array
-            return message.content
-              .filter(item => item.type === 'text' || item.text)
-              .map(item => item.text || '')
-              .join(' ');
+          if (userKey && userKey.startsWith('sk-')) {
+            EPHEMERAL_KEY = userKey;
+            // Save for future use
+            localStorage.setItem('openai_api_key', userKey);
+            addDebugInfo('Using user-provided API key');
+          } else {
+            throw new Error('Invalid API key format provided');
           }
         }
         
-        // Check for text in other common locations
-        if (message.text && typeof message.text === 'string') {
-          return message.text;
-        }
+        // Set the API key
+        setApiKey(EPHEMERAL_KEY);
         
-        // Check for delta content
-        if (message.delta?.content) {
-          if (Array.isArray(message.delta.content)) {
-            return message.delta.content
-              .filter(item => item.type === 'text_delta' || item.text_delta)
-              .map(item => (item.text_delta ? item.text_delta.text : '') || '')
-              .join(' ');
-          }
-        }
-        
-        return null;
-      };
-      
-      dc.onerror = (dcError) => {
-        console.error('Data channel error:', dcError);
-        addDebugInfo(`Data channel error: ${dcError.message || 'Unknown error'}`);
-        setError('Connection error with OpenAI. Please try again.');
-      };
-      
-      dc.onclose = () => {
-        addDebugInfo('Data channel closed');
-        setIsConnected(false);
-        setConnectionStatus('Disconnected');
-      };
-      
-      // Start the session using SDP
-      addDebugInfo('Creating offer');
-      
-      try {
-        // Create and set local description
-        const offer = await peerConnectionRef.current.createOffer();
-        
-        // Check signaling state before setting local description
-        addDebugInfo(`Signaling state before setLocalDescription: ${peerConnectionRef.current.signalingState}`);
-        
-        // Set local description
-        await peerConnectionRef.current.setLocalDescription(offer);
-        
-        // Wait for ICE gathering to complete or timeout after 5 seconds
-        await new Promise((resolve) => {
-          const checkState = () => {
-            if (peerConnectionRef.current.iceGatheringState === 'complete') {
-              addDebugInfo('ICE gathering complete');
-              resolve();
-            } else if (!mountedRef.current || isSessionStopping) {
-              addDebugInfo('Component unmounted or session stopping during ICE gathering');
-              resolve();
-            } else {
-              setTimeout(checkState, 500);
-            }
-          };
-          
-          // Start checking ICE gathering state
-          setTimeout(checkState, 500);
-          
-          // Set a timeout to resolve anyway after 5 seconds
-          setTimeout(() => {
-            addDebugInfo('ICE gathering timed out, continuing with available candidates');
-            resolve();
-          }, 5000);
+        // Create a peer connection with STUN servers
+        const pc = new RTCPeerConnection({
+          iceServers: [
+            { urls: 'stun:stun.l.google.com:19302' },
+            { urls: 'stun:stun1.l.google.com:19302' }
+          ]
         });
+        peerConnectionRef.current = pc;
         
-        // Check if component is still mounted and session is not being stopped
-        if (!mountedRef.current || isSessionStopping) {
-          addDebugInfo('Component unmounted or session stopping after ICE gathering');
-          return;
-        }
-      
-      const openaiBaseUrl = 'https://api.openai.com/v1/realtime';
-      const model = 'gpt-4o-realtime-preview-2024-12-17';
-        
-        // Get the current local description which may have been updated with ICE candidates
-        const currentLocalDescription = peerConnectionRef.current.localDescription;
-      
-      addDebugInfo('Sending SDP offer to OpenAI');
-      const sdpResponse = await fetch(`${openaiBaseUrl}?model=${model}`, {
-        method: 'POST',
-          body: currentLocalDescription.sdp,
-        headers: {
-          'Authorization': `Bearer ${EPHEMERAL_KEY}`,
-          'Content-Type': 'application/sdp'
-        }
-      });
-      
-      if (!sdpResponse.ok) {
-        const errorText = await sdpResponse.text();
-        addDebugInfo(`SDP negotiation failed with status ${sdpResponse.status}: ${errorText}`);
-        throw new Error(`SDP negotiation failed: ${sdpResponse.status} ${sdpResponse.statusText}`);
-      }
-      
-      const sdpAnswer = await sdpResponse.text();
-      addDebugInfo(`Received SDP answer from OpenAI (length: ${sdpAnswer.length})`);
-      
-      if (!sdpAnswer || sdpAnswer.trim() === '') {
-        addDebugInfo('Received empty SDP answer from OpenAI');
-        throw new Error('Received empty SDP answer from OpenAI');
-      }
-      
-        // Check if component is still mounted and session is not being stopped
-        if (!mountedRef.current || isSessionStopping) {
-          addDebugInfo('Component unmounted or session stopping after receiving SDP answer');
-          return;
-        }
-        
-        // Check if the peer connection still exists and is in the right state
-        if (!peerConnectionRef.current) {
-          addDebugInfo('Peer connection no longer exists, cannot set remote description');
-          throw new Error('Peer connection no longer exists');
-        }
-        
-        if (peerConnectionRef.current.signalingState === 'closed') {
-          addDebugInfo('Peer connection is closed, cannot set remote description');
-          throw new Error('Peer connection is closed');
-        }
-        
-        // Log the current signaling state before setting remote description
-        const currentSignalingState = peerConnectionRef.current.signalingState;
-        addDebugInfo(`Current signaling state before setRemoteDescription: ${currentSignalingState}`);
-        
-        // Only proceed if we're in the right state (have-local-offer)
-        if (currentSignalingState !== 'have-local-offer') {
-          addDebugInfo(`Unexpected signaling state: ${currentSignalingState}, expected 'have-local-offer'`);
-          
-          // If we're in stable state, we need to set local description again before setting remote
-          if (currentSignalingState === 'stable') {
-            addDebugInfo('In stable state, setting local description again before remote');
-            await peerConnectionRef.current.setLocalDescription(offer);
-            addDebugInfo(`Signaling state after re-setting local description: ${peerConnectionRef.current.signalingState}`);
-          } else {
-            throw new Error(`Cannot set remote description in signaling state: ${currentSignalingState}`);
+        // Log ICE connection state changes
+        peerConnectionRef.current.oniceconnectionstatechange = () => {
+          if (!peerConnectionRef.current) return;
+          addDebugInfo(`ICE connection state changed to: ${peerConnectionRef.current.iceConnectionState}`);
+          if (peerConnectionRef.current.iceConnectionState === 'failed' || peerConnectionRef.current.iceConnectionState === 'disconnected') {
+            setConnectionStatus(`ICE connection ${peerConnectionRef.current.iceConnectionState}`);
           }
-        }
-        
-        // Create the answer object
-        const answer = {
-          type: 'answer',
-          sdp: sdpAnswer
         };
         
-        // Set remote description
-        try {
-          await peerConnectionRef.current.setRemoteDescription(answer);
-        addDebugInfo('Set remote description, WebRTC connection established');
-          setConnectionStatus('Connected to OpenAI');
-          setIsConnected(true);
-        } catch (innerError) {
-          // If the error is about the signaling state, log more details
-          addDebugInfo(`Detailed error setting remote description: ${innerError.name}: ${innerError.message}`);
+        // Log signaling state changes
+        peerConnectionRef.current.onsignalingstatechange = () => {
+          if (!peerConnectionRef.current) return;
+          addDebugInfo(`Signaling state changed to: ${peerConnectionRef.current.signalingState}`);
+        };
+        
+        // Log ICE gathering state changes
+        peerConnectionRef.current.onicegatheringstatechange = () => {
+          if (!peerConnectionRef.current) return;
+          addDebugInfo(`ICE gathering state changed to: ${peerConnectionRef.current.iceGatheringState}`);
+        };
+        
+        // Log ICE candidate errors
+        peerConnectionRef.current.onicecandidateerror = (event) => {
+          addDebugInfo(`ICE candidate error: ${event.errorText} (${event.errorCode})`);
+        };
+        
+        // Set up to play remote audio from the model
+        audioElementRef.current = document.createElement('audio');
+        audioElementRef.current.autoplay = true;
+        
+        peerConnectionRef.current.ontrack = (e) => {
+          addDebugInfo('Received audio track from OpenAI');
+          audioElementRef.current = document.createElement('audio');
+          audioElementRef.current.autoplay = true;
+          audioElementRef.current.srcObject = e.streams[0];
           
-          if (innerError.message.includes('signalingState')) {
-            const currentState = peerConnectionRef.current ? peerConnectionRef.current.signalingState : 'null';
-            addDebugInfo(`Signaling state at time of error: ${currentState}`);
+          // Add event listeners for audio playback
+          audioElementRef.current.onplaying = handleAudioStart;
+          audioElementRef.current.onpause = () => setIsAudioPlaying(false);
+          audioElementRef.current.onended = () => setIsAudioPlaying(false);
+          audioElementRef.current.ontimeupdate = handleAudioTimeUpdate;
+          
+          setIsPlaying(true);
+        };
+        
+        // Add local audio track for microphone input
+        if (microphoneStreamRef.current) {
+          try {
+            const audioTracks = microphoneStreamRef.current.getAudioTracks();
+            if (audioTracks.length > 0) {
+              peerConnectionRef.current.addTrack(audioTracks[0], microphoneStreamRef.current);
+              addDebugInfo('Added microphone track to peer connection');
+            } else {
+              addDebugInfo('No audio tracks found in microphone stream');
+            }
+          } catch (micError) {
+            console.error('Error adding microphone track:', micError);
+            addDebugInfo(`Error adding microphone track: ${micError.message}`);
+            // Continue without microphone
+          }
+        } else {
+          addDebugInfo('No microphone stream available, trying to get one now');
+        try {
+          const ms = await navigator.mediaDevices.getUserMedia({
+            audio: true
+          });
+          microphoneStreamRef.current = ms;
+            peerConnectionRef.current.addTrack(ms.getTracks()[0], ms);
+            setMicrophoneAccess(true);
+          addDebugInfo('Added microphone track to peer connection');
+        } catch (micError) {
+          console.error('Microphone access error:', micError);
+          addDebugInfo(`Microphone error: ${micError.message}`);
+            setMicrophoneAccess(false);
+          // Continue without microphone
+          }
+        }
+        
+        // Set up data channel for sending and receiving events
+        const dc = peerConnectionRef.current.createDataChannel('oai-events');
+        dataChannelRef.current = dc;
+        
+        dc.onopen = () => {
+          addDebugInfo('Data channel opened');
+          setIsConnected(true);
+          setConnectionStatus('Connected to OpenAI');
+          
+          // Prepare a detailed prompt with visualization context
+          let prompt = `You are an AI assistant explaining a ${topic.replace('_', ' ')} database visualization. The user asked: "${doubt}"\n\n`;
+          
+          // Get visualization data from props or window
+          const vizData = visualizationData || window.visualizationData;
+          if (vizData) {
+            prompt += "VISUALIZATION CONTEXT:\n";
             
-            // If we're in stable state, try to create a new offer and start over
-            if (currentState === 'stable') {
-              addDebugInfo('Attempting recovery: creating new offer from stable state');
-              
-              // Create a new offer
-              const newOffer = await peerConnectionRef.current.createOffer();
-              await peerConnectionRef.current.setLocalDescription(newOffer);
-              
-              // Now try to set the remote description again
-              await peerConnectionRef.current.setRemoteDescription(answer);
-              addDebugInfo('Recovery successful: remote description set after creating new offer');
-              setConnectionStatus('Connected to OpenAI (after recovery)');
-              setIsConnected(true);
-              return; // Exit early if recovery was successful
+            // Add nodes information
+            if (vizData.nodes && vizData.nodes.length > 0) {
+              prompt += "\nNodes:\n";
+              vizData.nodes.forEach(node => {
+                prompt += `- Node ID: ${node.id}, Name: ${node.name}, Type: ${node.type || 'unknown'}\n`;
+                
+                // Add attributes if available
+                if (node.attributes && node.attributes.length > 0) {
+                  prompt += "  Attributes:\n";
+                  node.attributes.forEach(attr => {
+                    prompt += `  - ${attr.name}${attr.isKey ? ' (Primary Key)' : ''}\n`;
+                  });
+                }
+              });
+            }
+            
+            // Add edges information
+            if (vizData.edges && vizData.edges.length > 0) {
+              prompt += "\nEdges:\n";
+              vizData.edges.forEach(edge => {
+                prompt += `- ${edge.source} → ${edge.target} (Type: ${edge.type}${edge.description ? `, ${edge.description}` : ''})\n`;
+              });
+            }
+            
+            // Add narration if available
+            if (vizData.narration) {
+              prompt += "\nVisualization Description:\n";
+              prompt += vizData.narration + "\n";
             }
           }
           
-          // If we couldn't recover, rethrow the error
-          throw innerError;
+          // Add instructions for highlighting
+          prompt += "\nIMPORTANT INSTRUCTIONS FOR HIGHLIGHTING:\n";
+          prompt += "1. When explaining concepts, ALWAYS mention the specific node IDs in your explanation.\n";
+          prompt += "2. Use the exact node IDs as they appear in the visualization (e.g., 'student', 'course', etc.).\n";
+          prompt += "3. When referring to a node, always include its ID in your explanation, like this: 'The student node (student) connects to...'\n";
+          prompt += "4. Make sure to mention each relevant node ID at least once when explaining its role.\n";
+          prompt += "5. The system will automatically highlight nodes when you mention their IDs.\n";
+          prompt += "6. IMPORTANT: Always use the exact node ID format, not variations or abbreviations.\n";
+          prompt += "7. EXAMPLES:\n";
+          prompt += "   - Good: 'The student entity (student) has attributes like student_id.'\n";
+          prompt += "   - Good: 'The relationship between student and course is represented by enrollment.'\n";
+          prompt += "   - Bad: 'The Student entity has attributes like student_id.' (missing node ID)\n";
+          prompt += "   - Bad: 'The students have attributes like student_id.' (incorrect node ID format)\n";
+          prompt += "8. REPEAT node IDs multiple times throughout your explanation to ensure they are highlighted.\n";
+          prompt += "9. For each concept you explain, mention the relevant node ID at least 2-3 times.\n";
+          prompt += "10. When moving from one concept to another, explicitly mention the new node ID to trigger highlighting.\n";
+          prompt += "11. Use phrases like 'Let's look at the [node_id] node' or 'Now focusing on [node_id]' to clearly indicate transitions.\n";
+          prompt += "12. IMPORTANT: The highlighting only works when you mention the exact node ID, so be very precise.\n";
+          
+          // Send the detailed prompt
+          sendTextMessage(prompt);
+        };
+        
+        dc.onmessage = (e) => {
+          try {
+            const data = JSON.parse(e.data);
+            addDebugInfo(`Received message of type: ${data.type}`);
+            
+            // Add to events
+            setEvents(prev => [data, ...prev]);
+            
+            // Extract text content from the message
+            let textContent = null;
+            
+            // Process different event types
+            if (data.type === 'conversation.item.delta') {
+              // This is the new format for text deltas in the latest API
+              if (data.delta?.content?.[0]?.type === 'text_delta') {
+                textContent = data.delta.content[0].text_delta.text;
+              }
+            } else if (data.type === 'response.content_part.added') {
+              // This is another format that might contain text content
+              if (data.content_part?.content_block?.type === 'text') {
+                textContent = data.content_part.content_block.text;
+              }
+            } else if (data.type === 'message') {
+              // Handle direct message type
+              if (data.content && typeof data.content === 'string') {
+                textContent = data.content;
+              } else if (data.text && typeof data.text === 'string') {
+                textContent = data.text;
+              }
+            } else if (data.type === 'text') {
+              // Handle simple text type
+              if (data.text && typeof data.text === 'string') {
+                textContent = data.text;
+              }
+            } else if (data.type === 'response.audio_transcript.delta') {
+              // Handle audio transcript delta with improved timing
+              if (data.delta && typeof data.delta === 'string') {
+                textContent = data.delta;
+                addDebugInfo(`Extracted text from audio transcript: "${textContent.substring(0, 50)}${textContent.length > 50 ? '...' : ''}"`);
+                
+                // Use the new function for better synchronization with speech
+                processAudioTranscriptDelta(textContent);
+              }
+            } else if (data.type === 'conversation.item.complete') {
+              addDebugInfo('Conversation complete');
+              setConnectionStatus('Response complete');
+              setIsComplete(true);
+              
+              // Check for node IDs in the accumulated text when conversation is complete
+              if (text && text.length > 0) {
+                addDebugInfo('Checking for node IDs in accumulated text after conversation complete');
+                processTextForNodeIds(text);
+              }
+            } else if (data.type === 'response.audio.done' || data.type === 'response.done') {
+              addDebugInfo(`${data.type} received, checking for node IDs in accumulated text`);
+              
+              // Check for node IDs in the accumulated text when audio is done
+              if (text && text.length > 0) {
+                addDebugInfo('Checking for node IDs in accumulated text after audio complete');
+                processTextForNodeIds(text);
+              }
+            } else if (data.type === 'error') {
+              // Log detailed error information
+              addDebugInfo(`Error from OpenAI: ${JSON.stringify(data)}`);
+              setError(`OpenAI error: ${data.error?.message || 'Unknown error'}`);
+            } else {
+              // For any other message type, try to extract text content
+              textContent = extractTextFromMessage(data);
+            }
+            
+            // Process text content if found
+            if (textContent) {
+              addDebugInfo(`Extracted text content: "${textContent.substring(0, 50)}${textContent.length > 50 ? '...' : ''}"`);
+              setText(prev => {
+                const newText = prev + textContent;
+                // Log the accumulated text periodically (every 100 characters)
+                if (newText.length % 100 < prev.length % 100) {
+                  addDebugInfo(`Accumulated text (${newText.length} chars): "${newText.substring(newText.length - 100)}"`);
+                }
+                return newText;
+              });
+              
+              // Process text for node IDs
+              processTextForNodeIds(textContent);
+            }
+          } catch (error) {
+            console.error('Error parsing message:', error);
+            addDebugInfo(`Error parsing message: ${error.message}`);
+            addDebugInfo(`Raw message data: ${e.data.substring(0, 200)}${e.data.length > 200 ? '...' : ''}`);
+          }
+        };
+        
+        dc.onerror = (dcError) => {
+          console.error('Data channel error:', dcError);
+          addDebugInfo(`Data channel error: ${dcError.message || 'Unknown error'}`);
+          setError('Connection error with OpenAI. Please try again.');
+        };
+        
+        dc.onclose = () => {
+          addDebugInfo('Data channel closed');
+          setIsConnected(false);
+          setConnectionStatus('Disconnected');
+        };
+        
+        // Start the session using SDP
+        addDebugInfo('Creating offer');
+        
+        try {
+          // Create and set local description
+          const offer = await peerConnectionRef.current.createOffer();
+          
+          // Check signaling state before setting local description
+          addDebugInfo(`Signaling state before setLocalDescription: ${peerConnectionRef.current.signalingState}`);
+          
+          // Set local description
+          await peerConnectionRef.current.setLocalDescription(offer);
+          
+          // Wait for ICE gathering to complete or timeout after 5 seconds
+          await new Promise((resolve) => {
+            const checkState = () => {
+              if (peerConnectionRef.current.iceGatheringState === 'complete') {
+                addDebugInfo('ICE gathering complete');
+                resolve();
+              } else if (!mountedRef.current || isSessionStopping) {
+                addDebugInfo('Component unmounted or session stopping during ICE gathering');
+                resolve();
+              } else {
+                setTimeout(checkState, 500);
+              }
+            };
+            
+            // Start checking ICE gathering state
+            setTimeout(checkState, 500);
+            
+            // Set a timeout to resolve anyway after 5 seconds
+            setTimeout(() => {
+              addDebugInfo('ICE gathering timed out, continuing with available candidates');
+              resolve();
+            }, 5000);
+          });
+          
+          // Check if component is still mounted and session is not being stopped
+          if (!mountedRef.current || isSessionStopping) {
+            addDebugInfo('Component unmounted or session stopping after ICE gathering');
+            return;
+          }
+        
+        const openaiBaseUrl = 'https://api.openai.com/v1/realtime';
+        const model = 'gpt-4o-realtime-preview-2024-12-17';
+          
+          // Get the current local description which may have been updated with ICE candidates
+          const currentLocalDescription = peerConnectionRef.current.localDescription;
+        
+        addDebugInfo('Sending SDP offer to OpenAI');
+        const sdpResponse = await fetch(`${openaiBaseUrl}?model=${model}`, {
+          method: 'POST',
+            body: currentLocalDescription.sdp,
+          headers: {
+            'Authorization': `Bearer ${EPHEMERAL_KEY}`,
+            'Content-Type': 'application/sdp'
+          }
+        });
+        
+        if (!sdpResponse.ok) {
+          const errorText = await sdpResponse.text();
+          addDebugInfo(`SDP negotiation failed with status ${sdpResponse.status}: ${errorText}`);
+          throw new Error(`SDP negotiation failed: ${sdpResponse.status} ${sdpResponse.statusText}`);
         }
-      } catch (sdpError) {
-        addDebugInfo(`Error in SDP negotiation: ${sdpError.message}`);
-        throw new Error(`Failed in SDP negotiation: ${sdpError.message}`);
+        
+        const sdpAnswer = await sdpResponse.text();
+        addDebugInfo(`Received SDP answer from OpenAI (length: ${sdpAnswer.length})`);
+        
+        if (!sdpAnswer || sdpAnswer.trim() === '') {
+          addDebugInfo('Received empty SDP answer from OpenAI');
+          throw new Error('Received empty SDP answer from OpenAI');
+        }
+        
+          // Check if component is still mounted and session is not being stopped
+          if (!mountedRef.current || isSessionStopping) {
+            addDebugInfo('Component unmounted or session stopping after receiving SDP answer');
+            return;
+          }
+          
+          // Check if the peer connection still exists and is in the right state
+          if (!peerConnectionRef.current) {
+            addDebugInfo('Peer connection no longer exists, cannot set remote description');
+            throw new Error('Peer connection no longer exists');
+          }
+          
+          if (peerConnectionRef.current.signalingState === 'closed') {
+            addDebugInfo('Peer connection is closed, cannot set remote description');
+            throw new Error('Peer connection is closed');
+          }
+          
+          // Log the current signaling state before setting remote description
+          const currentSignalingState = peerConnectionRef.current.signalingState;
+          addDebugInfo(`Current signaling state before setRemoteDescription: ${currentSignalingState}`);
+          
+          // Only proceed if we're in the right state (have-local-offer)
+          if (currentSignalingState !== 'have-local-offer') {
+            addDebugInfo(`Unexpected signaling state: ${currentSignalingState}, expected 'have-local-offer'`);
+            
+            // If we're in stable state, we need to set local description again before setting remote
+            if (currentSignalingState === 'stable') {
+              addDebugInfo('In stable state, setting local description again before remote');
+              await peerConnectionRef.current.setLocalDescription(offer);
+              addDebugInfo(`Signaling state after re-setting local description: ${peerConnectionRef.current.signalingState}`);
+            } else {
+              throw new Error(`Cannot set remote description in signaling state: ${currentSignalingState}`);
+            }
+          }
+          
+          // Create the answer object
+          const answer = {
+            type: 'answer',
+            sdp: sdpAnswer
+          };
+          
+          // Set remote description
+          try {
+            await peerConnectionRef.current.setRemoteDescription(answer);
+          addDebugInfo('Set remote description, WebRTC connection established');
+            setConnectionStatus('Connected to OpenAI');
+            setIsConnected(true);
+          } catch (innerError) {
+            // If the error is about the signaling state, log more details
+            addDebugInfo(`Detailed error setting remote description: ${innerError.name}: ${innerError.message}`);
+            
+            if (innerError.message.includes('signalingState')) {
+              const currentState = peerConnectionRef.current ? peerConnectionRef.current.signalingState : 'null';
+              addDebugInfo(`Signaling state at time of error: ${currentState}`);
+              
+              // If we're in stable state, try to create a new offer and start over
+              if (currentState === 'stable') {
+                addDebugInfo('Attempting recovery: creating new offer from stable state');
+                
+                // Create a new offer
+                const newOffer = await peerConnectionRef.current.createOffer();
+                await peerConnectionRef.current.setLocalDescription(newOffer);
+                
+                // Now try to set the remote description again
+                await peerConnectionRef.current.setRemoteDescription(answer);
+                addDebugInfo('Recovery successful: remote description set after creating new offer');
+                setConnectionStatus('Connected to OpenAI (after recovery)');
+                setIsConnected(true);
+                return; // Exit early if recovery was successful
+              }
+            }
+            
+            // If we couldn't recover, rethrow the error
+            throw innerError;
+          }
+        } catch (sdpError) {
+          addDebugInfo(`Error in SDP negotiation: ${sdpError.message}`);
+          throw new Error(`Failed in SDP negotiation: ${sdpError.message}`);
+        }
+        
+      } catch (error) {
+        addDebugInfo(`Error in token fetch: ${error.message}`);
+        throw error;
       }
       
     } catch (error) {
@@ -874,7 +856,7 @@ const RealtimeAudioPlayer = ({ topic, doubt, sessionId, onComplete, visualizatio
   };
   
   // Stop WebRTC session
-  const stopSession = () => {
+  const stopSession = async () => {
     // Set the stopping flag to prevent race conditions
     setIsSessionStopping(true);
     
@@ -977,6 +959,12 @@ const RealtimeAudioPlayer = ({ topic, doubt, sessionId, onComplete, visualizatio
         
         if (mountedRef.current) {
           setIsSessionStopping(false); // Reset the stopping flag
+        }
+        
+        // Also stop any playing narration
+        if (narrationAudioRef.current) {
+          narrationAudioRef.current.pause();
+          narrationAudioRef.current = null;
         }
         
         // Add a small delay before resolving to ensure all cleanup is complete
@@ -1647,6 +1635,434 @@ const RealtimeAudioPlayer = ({ topic, doubt, sessionId, onComplete, visualizatio
     }, 250);
   };
   
+  // Add the missing extractTextFromMessage function
+  const extractTextFromMessage = (message) => {
+    // Try to extract text from various possible locations in the message
+    if (message.content) {
+      if (typeof message.content === 'string') {
+        return message.content;
+      } else if (Array.isArray(message.content)) {
+        // Try to extract text from content array
+        return message.content
+          .filter(item => item.type === 'text' || item.text)
+          .map(item => item.text || '')
+          .join(' ');
+      }
+    }
+    
+    // Check for text in other common locations
+    if (message.text && typeof message.text === 'string') {
+      return message.text;
+    }
+    
+    // Check for delta content
+    if (message.delta?.content) {
+      if (Array.isArray(message.delta.content)) {
+        return message.delta.content
+          .filter(item => item.type === 'text_delta' || item.text_delta)
+          .map(item => (item.text_delta ? item.text_delta.text : '') || '')
+          .join(' ');
+      }
+    }
+    
+    return null;
+  };
+  
+  // Add the missing processTextForNodeIds function
+  const processTextForNodeIds = (text) => {
+    if (!text) return [];
+    
+    // Get visualization data from props or window
+    const vizData = visualizationData || window.visualizationData;
+    if (!vizData || !vizData.nodes) return [];
+    
+    // Create a map of node names to IDs for faster lookup
+    const nodeMap = {};
+    vizData.nodes.forEach(node => {
+      // Add the node name in lowercase for case-insensitive matching
+      if (node.name) {
+        nodeMap[node.name.toLowerCase()] = node.id;
+      }
+      // Also add the node ID as a key
+      nodeMap[node.id] = node.id;
+    });
+    
+    // Look for node names in the text
+    const foundNodeIds = new Set();
+    
+    // Get all node names
+    const nodeNames = Object.keys(nodeMap);
+    
+    // Sort node names by length (descending) to match longer names first
+    nodeNames.sort((a, b) => b.length - a.length);
+    
+    // Convert text to lowercase for case-insensitive matching
+    const lowerText = text.toLowerCase();
+    
+    // Check for each node name in the text
+    nodeNames.forEach(nodeName => {
+      if (lowerText.includes(nodeName)) {
+        foundNodeIds.add(nodeMap[nodeName]);
+      }
+    });
+    
+    // Also look for explicit node IDs in the text
+    const idRegex = /node\s*id[s]?[\s:]*([\w\d,\s]+)/gi;
+    const idMatches = [...text.matchAll(idRegex)];
+    
+    idMatches.forEach(match => {
+      const idList = match[1].split(/[\s,]+/);
+      idList.forEach(id => {
+        if (nodeMap[id]) {
+          foundNodeIds.add(nodeMap[id]);
+        }
+      });
+    });
+    
+    return Array.from(foundNodeIds);
+  };
+  
+  // Update the playNarrationScript function to use the same highlighting system as WebRTC
+
+  const playNarrationScript = async (topic) => {
+    try {
+      addDebugInfo(`Loading narration script for topic: ${topic}`);
+      
+      // For ER visualization, use a hardcoded example script
+      if (topic === 'er') {
+        addDebugInfo('Using hardcoded ER script');
+        
+        // Get node IDs from visualization data if available
+        let nodeIds = [];
+        if (visualizationData && visualizationData.nodes) {
+          nodeIds = visualizationData.nodes.map(node => node.id);
+          console.log('HIGHLIGHT DEBUG: Actual ER visualization node IDs:', nodeIds);
+          addDebugInfo(`Found ${nodeIds.length} node IDs in ER visualization data: ${nodeIds.join(', ')}`);
+        }
+        
+        // Hardcoded example script for ER visualization with exact matching node IDs
+        const erScript = {
+          script: "Let me walk you through the Entity-Relationship visualization. First, we have entities like Student that represent real-world objects. Each entity has attributes that describe its properties. The Course entity represents classes that students can take. The Enrollment relationship shows how students and courses are connected.",
+          timestamps: [
+            // Use the exact node IDs from the visualization
+            {
+              word: "Student",
+              start_time: 3000,
+              end_time: 4500,
+              node_id: "student" // This matches an actual node ID
+            },
+            {
+              word: "Course",
+              start_time: 8000,
+              end_time: 9500,
+              node_id: "course" // This matches an actual node ID
+            },
+            {
+              word: "Enrollment",
+              start_time: 12000,
+              end_time: 13500,
+              node_id: "enrollment" // This matches an actual node ID
+            }
+          ]
+        };
+        
+        // Process the hardcoded script
+        processScriptData(erScript);
+        return;
+      }
+      
+      // For other visualizations, try to load from file
+      const scriptPath = `/static/data/${topic}_script.json`;
+      addDebugInfo(`Fetching script from: ${scriptPath}`);
+      
+      try {
+        // Fetch the narration script
+        const response = await fetch(scriptPath);
+        
+        if (!response.ok) {
+          throw new Error(`Failed to load script: ${response.status} ${response.statusText}`);
+        }
+        
+        // Get the response text first to check for HTML content
+        const responseText = await response.text();
+        
+        // Check if the response starts with HTML tags
+        if (responseText.trim().startsWith('<!DOCTYPE') || responseText.trim().startsWith('<html')) {
+          throw new Error('Received HTML instead of JSON');
+        }
+        
+        // Parse the JSON response
+        let scriptData;
+        try {
+          scriptData = JSON.parse(responseText);
+        } catch (parseError) {
+          throw new Error(`Failed to parse JSON: ${parseError.message}`);
+        }
+        
+        addDebugInfo(`Successfully loaded script JSON with keys: ${Object.keys(scriptData).join(', ')}`);
+        
+        // Process the script data
+        processScriptData(scriptData);
+        
+      } catch (fetchError) {
+        addDebugInfo(`Error fetching script: ${fetchError.message}`);
+        
+        // Use a generic fallback script
+        const fallbackScript = {
+          script: `Welcome to the ${topic} visualization. This interactive diagram shows the key concepts of ${topic} in database systems. You can explore different elements by clicking on them or ask questions using the doubt box below.`
+        };
+        
+        addDebugInfo('Using generic fallback script');
+        processScriptData(fallbackScript);
+      }
+      
+    } catch (error) {
+      console.error('Error in playNarrationScript:', error);
+      addDebugInfo(`Error in playNarrationScript: ${error.message}`);
+      
+      // Final fallback
+      const emergencyScript = {
+        script: `Welcome to the database visualization. This interactive diagram helps you understand database concepts visually.`
+      };
+      
+      processScriptData(emergencyScript);
+    }
+  };
+  
+  // Helper function to process script data and play narration
+  const processScriptData = async (scriptData) => {
+    // Extract the narration text from the JSON structure
+    let narrationText = '';
+    
+    // Process text as before...
+    if (scriptData.narration) {
+      narrationText = scriptData.narration;
+      addDebugInfo('Using narration field from script');
+    } else if (scriptData.script) {
+      narrationText = typeof scriptData.script === 'string' 
+        ? scriptData.script 
+        : scriptData.script.join(' ');
+      addDebugInfo('Using script field from script');
+    } else if (scriptData.sections) {
+      narrationText = scriptData.sections
+        .map(section => {
+          let sectionText = section.title ? `${section.title}. ` : '';
+          if (section.content) {
+            sectionText += typeof section.content === 'string' 
+              ? section.content 
+              : section.content.join(' ');
+          }
+          return sectionText;
+        })
+        .join('\n\n');
+      addDebugInfo('Using sections field from script');
+    } else {
+      // Fallback: try to extract any text content from the JSON
+      narrationText = JSON.stringify(scriptData)
+        .replace(/[{}"\\]/g, '')
+        .replace(/,/g, '. ')
+        .replace(/:/g, ': ');
+      addDebugInfo('Using fallback extraction from script JSON');
+    }
+    
+    if (!narrationText) {
+      throw new Error('Could not extract narration text from script JSON');
+    }
+    
+    // Log the full text length
+    addDebugInfo(`Extracted narration text (${narrationText.length} chars)`);
+    // Only log the first 100 chars in the debug info, but use the full text for TTS
+    addDebugInfo(`First 100 chars: ${narrationText.substring(0, 100)}...`);
+    
+    // Extract timestamps from the script
+    let timestamps = [];
+    
+    if (scriptData.timestamps && Array.isArray(scriptData.timestamps)) {
+      timestamps = scriptData.timestamps;
+      addDebugInfo(`Using ${timestamps.length} timestamps from script`);
+    } else if (scriptData.animation_states && Array.isArray(scriptData.animation_states)) {
+      // Convert animation_states to timestamps
+      timestamps = scriptData.animation_states.map((animation, index) => {
+        let startTime = 0;
+        for (let i = 0; i < index; i++) {
+          startTime += scriptData.animation_states[i].duration || 2000;
+        }
+        
+        return {
+          word: animation.component_id,
+          start_time: startTime,
+          end_time: startTime + (animation.duration || 2000),
+          node_id: animation.component_id
+        };
+      });
+      addDebugInfo(`Converted ${timestamps.length} animation states to timestamps`);
+    }
+    
+    // Use OpenAI TTS API to convert text to speech, passing the timestamps
+    await playTextToSpeech(narrationText, timestamps);
+  };
+  
+  // Update the playTextToSpeech function to use the full text
+
+  const playTextToSpeech = async (text, timestamps = []) => {
+    try {
+      // Get API key (use the same one we're using for WebRTC)
+      const apiKey = localStorage.getItem('openai_api_key');
+      if (!apiKey) {
+        throw new Error('No API key available for TTS');
+      }
+      
+      // Log the full text length but don't truncate it
+      addDebugInfo(`Generating speech from text (${text.length} chars)...`);
+      console.log(`HIGHLIGHT DEBUG: Generating speech from full text (${text.length} chars)`);
+      
+      // Call OpenAI TTS API with the full text
+      const response = await fetch('https://api.openai.com/v1/audio/speech', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          model: 'tts-1',
+          voice: 'alloy',
+          input: text // Use the full text
+        })
+      });
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`TTS API error: ${response.status} - ${errorText}`);
+      }
+      
+      // Get audio blob
+      const audioBlob = await response.blob();
+      
+      // Create audio element and play
+      const audioUrl = URL.createObjectURL(audioBlob);
+      const audio = new Audio(audioUrl);
+      
+      // Set up audio element
+      audio.onplay = () => {
+        addDebugInfo('Narration script started playing');
+        setIsAudioPlaying(true);
+        
+        // Set up highlighting timers when audio starts playing
+        if (timestamps && timestamps.length > 0) {
+          console.log('HIGHLIGHT DEBUG: Setting up highlighting timers for narration');
+          setupHighlightingTimers(timestamps);
+        }
+      };
+      
+      audio.onended = () => {
+        addDebugInfo('Narration script finished playing');
+        setIsAudioPlaying(false);
+        URL.revokeObjectURL(audioUrl); // Clean up
+        
+        // Clear any remaining highlights
+        if (onComplete && typeof onComplete === 'function') {
+          console.log('HIGHLIGHT DEBUG: Clearing highlights at end of narration');
+          // Pass true as the second parameter to indicate narration is complete
+          onComplete([], true);
+        }
+      };
+      
+      audio.onerror = (e) => {
+        addDebugInfo(`Audio playback error: ${e.message}`);
+        setIsAudioPlaying(false);
+        URL.revokeObjectURL(audioUrl); // Clean up
+        
+        // Also notify parent that narration has ended with an error
+        if (onComplete && typeof onComplete === 'function') {
+          onComplete([], true);
+        }
+      };
+      
+      // Store reference to audio element
+      narrationAudioRef.current = audio;
+      
+      // Play the audio
+      await audio.play();
+      
+    } catch (error) {
+      console.error('TTS error:', error);
+      addDebugInfo(`TTS error: ${error.message}`);
+      
+      // Notify parent that narration has ended with an error
+      if (onComplete && typeof onComplete === 'function') {
+        onComplete([], true);
+      }
+    }
+  };
+  
+  // Add a new function to set up highlighting timers
+  const setupHighlightingTimers = (timestamps) => {
+    // Clear any existing timers
+    if (clearHighlightsTimeoutRef.current) {
+      clearTimeout(clearHighlightsTimeoutRef.current);
+    }
+    
+    console.log('HIGHLIGHT DEBUG: Setting up highlighting timers:', timestamps);
+    console.log('HIGHLIGHT DEBUG: onComplete available:', !!onComplete);
+    
+    // Set up timers for each timestamp
+    timestamps.forEach(timestamp => {
+      if (timestamp.node_id) {
+        setTimeout(() => {
+          if (mountedRef.current && narrationAudioRef.current) {
+            console.log(`HIGHLIGHT DEBUG: Highlighting node ${timestamp.node_id} at time ${timestamp.start_time}ms`);
+            
+            // Use the same highlighting system as WebRTC
+            if (onComplete && typeof onComplete === 'function') {
+              console.log(`HIGHLIGHT DEBUG: Calling onComplete with node: ${timestamp.node_id}`);
+              onComplete([timestamp.node_id], false);
+              
+              // Double-check that the callback was called
+              setTimeout(() => {
+                console.log(`HIGHLIGHT DEBUG: Callback called for node: ${timestamp.node_id}`);
+              }, 10);
+            } else {
+              console.error('HIGHLIGHT DEBUG: onComplete is not available or not a function!', onComplete);
+            }
+          }
+        }, timestamp.start_time);
+      }
+    });
+    
+    // Clear highlights after the last timestamp
+    if (timestamps.length > 0) {
+      const lastTimestamp = timestamps.reduce((latest, current) => 
+        (current.start_time > latest.start_time) ? current : latest, 
+        timestamps[0]
+      );
+      
+      const clearTime = lastTimestamp.start_time + 3000;
+      
+      clearHighlightsTimeoutRef.current = setTimeout(() => {
+        if (mountedRef.current && narrationAudioRef.current) {
+          console.log('HIGHLIGHT DEBUG: Clearing all highlights after narration');
+          
+          if (onComplete && typeof onComplete === 'function') {
+            onComplete([], false);
+          }
+        }
+      }, clearTime);
+    }
+  };
+  
+  // Expose the playNarrationScript method to parent components
+  useImperativeHandle(ref, () => ({
+    playNarrationScript: (topic) => playNarrationScript(topic),
+    stopNarration: () => {
+      if (narrationAudioRef.current) {
+        narrationAudioRef.current.pause();
+        narrationAudioRef.current = null;
+        setIsAudioPlaying(false);
+        addDebugInfo('Narration stopped by parent component');
+      }
+    }
+  }));
+  
   return (
     <div className={`realtime-player ${nodesToHighlight.length > 0 ? 'highlighting-active' : ''}`}>
       <div className="connection-status">
@@ -1793,6 +2209,6 @@ const RealtimeAudioPlayer = ({ topic, doubt, sessionId, onComplete, visualizatio
       </div>
     </div>
   );
-};
+});
 
 export default RealtimeAudioPlayer; 

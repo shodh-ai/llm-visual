@@ -80,10 +80,19 @@ const App = () => {
   
   const [realtimeSession, setRealtimeSession] = useState(null);
   
+  // Add a new state to track if narration is playing
+  const [isNarrationPlaying, setIsNarrationPlaying] = useState(false);
+  
+  // Add a reference to the RealTimeAudioPlayer component
+  const audioPlayerRef = useRef(null);
+  
+  // Add a state to track if narration-only mode is active
+  const [isNarrationOnly, setIsNarrationOnly] = useState(false);
+  
   // Initialize Socket.IO connection
   useEffect(() => {
-    // Configure Socket.IO client with proper options
-    const newSocket = io({
+    // Configure Socket.IO client with Ngrok URL
+    const newSocket = io('https://9c75-103-129-109-37.ngrok-free.app', {
       transports: ['websocket', 'polling'],
       reconnectionAttempts: 5,
       reconnectionDelay: 1000,
@@ -117,8 +126,9 @@ const App = () => {
       
       setIsLoading(false);
       
-      // Automatically start a WebRTC session for the topic
-      initiateWebRTCSession(data.topic || selectedTopic);
+      // Set narration-only mode to true when visualization loads
+      // but don't start narration automatically
+      setIsNarrationOnly(true);
     });
 
     newSocket.on('error', (err) => {
@@ -138,6 +148,13 @@ const App = () => {
   }, [isInitialLoad]);
 
   const handleTopicChange = (topic) => {
+    // Stop any playing narration first
+    if (isNarrationPlaying && audioPlayerRef.current) {
+      audioPlayerRef.current.stopNarration();
+      setIsNarrationPlaying(false);
+      setIsNarrationOnly(false);
+    }
+    
     setSelectedTopic(topic);
     setDoubtResponse(null);
     
@@ -314,33 +331,32 @@ const App = () => {
   };
 
   // Handle doubt submission - simplified to always use WebRTC
-  const handleDoubtSubmit = async (doubtText, currentState = {}) => {
-    if (!socket || !doubtText.trim() || !selectedTopic) return;
-    
-    setIsLoading(true);
+  const handleDoubtSubmit = (doubtText) => {
     setDoubt(doubtText);
+    setIsLoading(true);
     
-    console.log('Submitting doubt via WebRTC:', doubtText);
+    // Stop any playing narration
+    if (isNarrationPlaying && audioPlayerRef.current) {
+      audioPlayerRef.current.stopNarration();
+      setIsNarrationPlaying(false);
+    }
     
-    // Initiate a WebRTC session with the doubt
+    // Start WebRTC session with the doubt
     initiateWebRTCSession(selectedTopic, doubtText);
-    
-    // Return a resolved promise since we're not waiting for a response
-    return Promise.resolve({
-      sessionId: realtimeSession?.sessionId || Date.now().toString(),
-      topic: selectedTopic,
-      doubt: doubtText
-    });
   };
 
   const renderVisualization = () => {
-    if (!visualizationData || !selectedTopic) return null;
+    if (!visualizationData) {
+      return <div>No visualization data available</div>;
+    }
     
     const VisualizationComponent = VISUALIZATIONS[selectedTopic];
     
     if (!VisualizationComponent) {
       return <div>No visualization component available for {selectedTopic}</div>;
     }
+    
+    console.log('HIGHLIGHT DEBUG: Rendering visualization with highlighted elements:', highlightedElements);
     
     return (
       <VisualizationComponent
@@ -388,21 +404,77 @@ const App = () => {
     };
   }, [socket, visualizationData]);
 
-  // Add a function to handle the completion of the narration
+  // Update the handleNarrationComplete function to reset button state
+
   const handleNarrationComplete = (highlightedNodes, isComplete = true) => {
-    console.log('Received highlighted nodes:', highlightedNodes, 'isComplete:', isComplete);
+    console.log('HIGHLIGHT DEBUG: Received highlighted nodes in App:', highlightedNodes, 'isComplete:', isComplete);
     
     // Update highlighted elements if provided
     if (highlightedNodes && highlightedNodes.length > 0) {
-      console.log('Setting highlighted nodes:', highlightedNodes);
-      setHighlightedElements([...highlightedNodes]);
+      console.log('HIGHLIGHT DEBUG: Setting highlighted nodes in App:', highlightedNodes);
+      
+      // Check if the node IDs exist in the visualization data
+      if (visualizationData && visualizationData.nodes) {
+        const validNodeIds = visualizationData.nodes.map(node => node.id);
+        console.log('HIGHLIGHT DEBUG: Valid node IDs in visualization:', validNodeIds);
+        
+        const validHighlights = highlightedNodes.filter(id => validNodeIds.includes(id));
+        
+        if (validHighlights.length !== highlightedNodes.length) {
+          console.warn('HIGHLIGHT DEBUG: Some node IDs do not exist in the visualization:', 
+            highlightedNodes.filter(id => !validNodeIds.includes(id)));
+          console.log('HIGHLIGHT DEBUG: Using only valid node IDs:', validHighlights);
+        }
+        
+        // Only set valid node IDs
+        console.log('HIGHLIGHT DEBUG: Setting highlightedElements state with:', validHighlights);
+        setHighlightedElements(validHighlights);
+        
+        // Force a re-render of the visualization
+        setTimeout(() => {
+          console.log('HIGHLIGHT DEBUG: Current highlightedElements after update:', highlightedElements);
+        }, 10);
+      } else {
+        // If we don't have visualization data, just set the highlights as is
+        console.log('HIGHLIGHT DEBUG: No visualization data nodes, setting all highlights:', highlightedNodes);
+        setHighlightedElements([...highlightedNodes]);
+      }
+    } else if (highlightedNodes && highlightedNodes.length === 0) {
+      // Clear highlights
+      console.log('HIGHLIGHT DEBUG: Clearing all highlights');
+      setHighlightedElements([]);
     }
     
-    // Only close the session if isComplete is true and we want to end the session
+    // If narration is complete, reset the narration state
     if (isComplete) {
-      console.log('Narration complete, but keeping WebRTC session active');
-      // We don't reset the session here to keep it active
-      // setRealtimeSession(null);
+      console.log('HIGHLIGHT DEBUG: Narration complete, resetting state');
+      setIsNarrationPlaying(false);
+      
+      // Only close the WebRTC session if it exists
+      if (realtimeSession) {
+        console.log('HIGHLIGHT DEBUG: Closing WebRTC session');
+        setRealtimeSession(null);
+      }
+    }
+  };
+
+  // Update the handlePlayNarration function to properly manage state
+  const handlePlayNarration = () => {
+    if (selectedTopic) {
+      // First ensure we're in narration-only mode
+      setIsNarrationOnly(true);
+      
+      // Use a timeout to ensure the component is rendered
+      setTimeout(() => {
+        if (audioPlayerRef.current) {
+          // Stop any existing narration first
+          audioPlayerRef.current.stopNarration();
+          
+          console.log('Starting narration for topic:', selectedTopic);
+          audioPlayerRef.current.playNarrationScript(selectedTopic);
+          setIsNarrationPlaying(true);
+        }
+      }, 100);
     }
   };
 
@@ -455,6 +527,7 @@ const App = () => {
         {realtimeSession ? (
           <div className="realtime-container">
             <RealtimeAudioPlayer 
+              ref={audioPlayerRef}
               topic={realtimeSession.topic}
               doubt={realtimeSession.doubt}
               sessionId={realtimeSession.sessionId}
@@ -466,8 +539,34 @@ const App = () => {
           <div className="placeholder-message">
             <h3>Interactive Database Learning</h3>
             <p>Select a topic from the dropdown above to start exploring.</p>
-            <p>The visualization will appear with real-time audio explanation.</p>
-            <p>You can ask questions about the topic using the doubt box below.</p>
+            
+            {visualizationData && (
+              <div className="narration-controls">
+                <p>The visualization is now loaded. You can:</p>
+                <button 
+                  className={`play-narration-btn ${isNarrationPlaying ? 'playing' : ''}`}
+                  onClick={handlePlayNarration}
+                  disabled={isNarrationPlaying}
+                >
+                  {isNarrationPlaying ? 'Narration Playing...' : 'Play Narration'}
+                </button>
+                <p>Or ask questions about the topic using the doubt box below.</p>
+              </div>
+            )}
+            
+            {/* Hidden RealtimeAudioPlayer for narration-only mode */}
+            {isNarrationOnly && visualizationData && (
+              <div style={{ display: 'none' }}>
+                <RealtimeAudioPlayer 
+                  ref={audioPlayerRef}
+                  topic={selectedTopic}
+                  doubt=""
+                  sessionId={`narration-${Date.now()}`}
+                  onComplete={handleNarrationComplete}
+                  visualizationData={visualizationData}
+                />
+              </div>
+            )}
           </div>
         )}
       </div>

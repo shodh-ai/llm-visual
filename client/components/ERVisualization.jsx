@@ -220,6 +220,8 @@ const ERVisualization = ({ data, highlightedElements, currentTime }) => {
 
     // Handle highlighting separately
     useEffect(() => {
+        console.log('HIGHLIGHT DEBUG: ERVisualization received highlightedElements:', highlightedElements);
+        
         if (!svgRef.current || !highlightedElements) return;
         
         const svg = svgRef.current;
