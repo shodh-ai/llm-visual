@@ -1,0 +1,70 @@
+{
+    "nodes": [
+      {
+        "id": "vision",
+        "name": "Vision",
+        "type": "strategic_level",
+        "properties": [
+          "The aspirational description of what the organization wants to achieve in the long-term future"
+        ]
+      },
+      {
+        "id": "mission",
+        "name": "Mission",
+        "type": "strategic_level",
+        "properties": [
+          "The organization's core purpose and focus that normally remains unchanged over time"
+        ]
+      },
+      {
+        "id": "business_definition",
+        "name": "Business Definition",
+        "type": "strategic_level",
+        "properties": [
+          "Defines what business the organization is in and who its customers are"
+        ]
+      },
+      {
+        "id": "business_model",
+        "name": "Business Model",
+        "type": "strategic_level",
+        "properties": [
+          "Describes how the organization creates, delivers, and captures value"
+        ]
+      },
+      {
+        "id": "goals_objectives",
+        "name": "Goals and Objectives",
+        "type": "strategic_level",
+        "properties": [
+          "Specific, measurable outcomes the organization aims to achieve"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "source": "vision",
+        "target": "mission",
+        "type": "hierarchy",
+        "description": "Vision guides the mission"
+      },
+      {
+        "source": "mission",
+        "target": "business_definition",
+        "type": "hierarchy",
+        "description": "Mission shapes business definition"
+      },
+      {
+        "source": "business_definition",
+        "target": "business_model",
+        "type": "hierarchy",
+        "description": "Business definition informs business model"
+      },
+      {
+        "source": "business_model",
+        "target": "goals_objectives",
+        "type": "hierarchy",
+        "description": "Business model determines goals and objectives"
+      }
+    ]
+  }

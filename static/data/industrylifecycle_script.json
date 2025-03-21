@@ -1,0 +1,10 @@
+{
+    "script": "This visualization presents the Industry Life Cycle, a model that outlines the stages an industry goes through from its inception to its eventual decline.\n\n1. 'Introduction' marks the beginning of the industry lifecycle, characterized by new products, low sales, high costs, and minimal competition.\n\n2. 'Growth' follows as sales increase, costs decrease, competition rises, and profits grow.\n\n3. 'Maturity' is a stable phase with stable sales, intense price competition, and market saturation.\n\n4. 'Decline' is marked by decreasing sales, market contraction, and potential industry exit.\n\nThe cycle may repeat through industry reinvention, where new innovations or strategies bring back the introduction phase.",
+    "component_mappings": {
+        "industry": "center",
+        "introduction": "stage",
+        "growth": "stage",
+        "maturity": "stage",
+        "decline": "stage"
+    }
+}

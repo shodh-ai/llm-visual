@@ -1,0 +1,10 @@
+{
+    "script": "This visualization illustrates the SWOT Analysis framework, a strategic tool used to identify an organization's internal strengths and weaknesses, as well as external opportunities and threats.\n\n1. 'Strengths' represent internal factors that provide a competitive edge, such as unique resources, strong branding, or experienced staff.\n\n2. 'Weaknesses' are internal limitations that hinder performance, such as outdated technology, skill gaps, or poor reputation.\n\n3. 'Opportunities' are external factors that can be leveraged to benefit the organization, like emerging markets, industry trends, or technological advancements.\n\n4. 'Threats' are external risks that could harm the organization, including economic downturns, competition, or regulatory changes.\n\nBy analyzing these four components, businesses can create informed strategies that capitalize on strengths, address weaknesses, seize opportunities, and mitigate threats.",
+    "component_mappings": {
+        "swot": "swot",
+        "strengths": "strength",
+        "weaknesses": "weakness",
+        "opportunities": "opportunity",
+        "threats": "threat"
+    }
+}

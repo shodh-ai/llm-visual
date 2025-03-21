@@ -26,7 +26,10 @@ const AttributeVisualization = ({ data }) => {
     <div 
       id="visualization-container" 
       ref={containerRef} 
-      style={{ width: '100%', height: '100%' }}
+      style={{ 
+        width: '100%', 
+        height: '100%'
+      }}
     />
   );
 };
@@ -34,15 +37,15 @@ const AttributeVisualization = ({ data }) => {
 const createAttributeVisualization = (data, containerElement) => {
   // Get container dimensions
   const container = d3.select(containerElement);
-  const width = 800;
-  const height = 600;
+  const width = containerElement.clientWidth;
+  const height = containerElement.clientHeight;
   
-  // Create SVG
   const svg = container.append('svg')
-    .attr('width', width)
-    .attr('height', height)
+    .attr('width', '100%')
+    .attr('height', '100%')
     .attr('viewBox', [0, 0, width, height])
-    .style('background-color', '#fff');
+    .style('background-color', '#fff');  
+  
   
   // Create main group
   const g = svg.append('g');

@@ -1,0 +1,90 @@
+{
+    "nodes": [
+      {
+        "id": "industry_rivalry",
+        "name": "Industry rivalry",
+        "type": "central_force",
+        "properties": [
+          "Competition among existing firms",
+          "Market concentration",
+          "Industry growth rate",
+          "Fixed costs",
+          "Product differentiation"
+        ]
+      },
+      {
+        "id": "threat_of_entry",
+        "name": "Threat of entry",
+        "type": "force",
+        "properties": [
+          "Barriers to entry",
+          "Economies of scale",
+          "Capital requirements",
+          "Access to distribution",
+          "Government policy"
+        ]
+      },
+      {
+        "id": "supplier_power",
+        "name": "Bargaining power of suppliers",
+        "type": "force",
+        "properties": [
+          "Supplier concentration",
+          "Switching costs",
+          "Importance of volume to supplier",
+          "Impact of inputs on cost",
+          "Threat of forward integration"
+        ]
+      },
+      {
+        "id": "buyer_power",
+        "name": "Bargaining power of buyers",
+        "type": "force",
+        "properties": [
+          "Buyer concentration",
+          "Purchase volume",
+          "Product differentiation",
+          "Switching costs",
+          "Price sensitivity"
+        ]
+      },
+      {
+        "id": "threat_of_substitutes",
+        "name": "Threat of substitutes",
+        "type": "force",
+        "properties": [
+          "Relative price performance",
+          "Switching costs",
+          "Buyer propensity to substitute",
+          "Perceived level of product differentiation",
+          "Number of substitute products"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "source": "threat_of_entry",
+        "target": "industry_rivalry",
+        "type": "influence",
+        "description": "New entrants increase competition and affect market share"
+      },
+      {
+        "source": "supplier_power",
+        "target": "industry_rivalry",
+        "type": "influence",
+        "description": "Powerful suppliers can squeeze industry profits"
+      },
+      {
+        "source": "buyer_power",
+        "target": "industry_rivalry",
+        "type": "influence",
+        "description": "Powerful buyers can demand lower prices or better quality"
+      },
+      {
+        "source": "threat_of_substitutes",
+        "target": "industry_rivalry",
+        "type": "influence",
+        "description": "Substitutes limit profit potential by placing a ceiling on prices"
+      }
+    ]
+  }

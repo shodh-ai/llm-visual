@@ -1,0 +1,82 @@
+{
+    "nodes": [
+      {
+        "id": "industry",
+        "name": "Industry",
+        "type": "center",
+        "properties": [
+          "Business sector"
+        ]
+      },
+      {
+        "id": "introduction",
+        "name": "Introduction",
+        "type": "stage",
+        "properties": [
+          "New products",
+          "Low sales",
+          "High costs",
+          "Limited competition"
+        ]
+      },
+      {
+        "id": "growth",
+        "name": "Growth",
+        "type": "stage",
+        "properties": [
+          "Increasing sales",
+          "Decreasing costs",
+          "Growing competition",
+          "Rising profits"
+        ]
+      },
+      {
+        "id": "maturity",
+        "name": "Maturity",
+        "type": "stage",
+        "properties": [
+          "Stable sales",
+          "Price competition",
+          "Market saturation",
+          "Consolidation"
+        ]
+      },
+      {
+        "id": "decline",
+        "name": "Decline",
+        "type": "stage",
+        "properties": [
+          "Decreasing sales",
+          "Market contraction",
+          "Industry exit",
+          "Obsolescence"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "source": "introduction",
+        "target": "growth",
+        "type": "progression",
+        "description": "Product adoption increases"
+      },
+      {
+        "source": "growth",
+        "target": "maturity",
+        "type": "progression",
+        "description": "Market saturation begins"
+      },
+      {
+        "source": "maturity",
+        "target": "decline",
+        "type": "progression",
+        "description": "Market contraction"
+      },
+      {
+        "source": "decline",
+        "target": "introduction",
+        "type": "progression",
+        "description": "Industry reinvention"
+      }
+    ]
+  }

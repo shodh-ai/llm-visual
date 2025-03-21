@@ -1,0 +1,40 @@
+{
+    "nodes": [
+      {
+        "id": "swot",
+        "name": "SWOT Analysis",
+        "type": "swot",
+        "properties": ["Strategic Analysis"]
+      },
+      {
+        "id": "strengths",
+        "name": "Strengths",
+        "type": "strength",
+        "properties": ["Internal factors that give an organization a competitive edge."]
+      },
+      {
+        "id": "weaknesses",
+        "name": "Weaknesses",
+        "type": "weakness",
+        "properties": ["Internal factors that hinder an organization's performance."]
+      },
+      {
+        "id": "opportunities",
+        "name": "Opportunities",
+        "type": "opportunity",
+        "properties": ["External factors that can be leveraged for advantage."]
+      },
+      {
+        "id": "threats",
+        "name": "Threats",
+        "type": "threat",
+        "properties": ["External factors that pose risks to the organization."]
+      }
+    ],
+    "edges": [
+      { "source": "swot", "target": "strengths", "type": "connection" },
+      { "source": "swot", "target": "weaknesses", "type": "connection" },
+      { "source": "swot", "target": "opportunities", "type": "connection" },
+      { "source": "swot", "target": "threats", "type": "connection" }
+    ]
+  }
