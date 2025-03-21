@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 
-const ERVisualization = ({ data, onNodeClick }) => {
-    const containerRef = React.useRef(null);
-    React.useEffect(() => {
+const ERVisualization = ({ data, highlightedElements, currentTime }) => {
+    const containerRef = useRef(null);
+    const svgRef = useRef(null);
+    const simulationRef = useRef(null);
+    
+    // Initial render of the visualization
+    useEffect(() => {
         // Validate input data
         if (!containerRef.current || !data || !data.nodes || !Array.isArray(data.nodes) || 
             data.nodes.length === 0 || !data.edges || !Array.isArray(data.edges)) {
@@ -29,6 +33,8 @@ const ERVisualization = ({ data, onNodeClick }) => {
             .attr('width', width)
             .attr('height', height)
             .style('background-color', '#1a202c');
+            
+        svgRef.current = svg;
 
         // Add zoom behavior
         const zoom = d3.zoom()
@@ -60,12 +66,14 @@ const ERVisualization = ({ data, onNodeClick }) => {
                 .strength(1))
             .force('x', d3.forceX(0).strength(0.1))
             .force('y', d3.forceY(0).strength(0.1));
+            
+        simulationRef.current = simulation;
 
         // Create relationship lines
         const relationship = g.selectAll('.relationship-line')
             .data(data.edges)
             .join('g')
-            .attr('class', 'relationship-line');
+            .attr('class', d => `relationship-line relationship-${d.source}-${d.target}`);
 
         // Add path for each relationship
         relationship.append('path')
@@ -74,28 +82,11 @@ const ERVisualization = ({ data, onNodeClick }) => {
             .style('stroke', '#4299e1')
             .style('stroke-width', '2px');
 
-        // Add cardinality labels
-        relationship.append('text')
-            .attr('class', 'cardinality')
-            .style('fill', '#4299e1')
-            .style('font-size', '14px')
-            .style('font-weight', 'bold')
-            .style('font-family', 'system-ui')
-            .text(d => {
-                switch(d.cardinality) {
-                    case 'one': return '1';
-                    case 'one_or_many': return 'N';
-                    case 'zero_or_many': return '0..N';
-                    case 'one_or_zero': return '0..1';
-                    default: return '';
-                }
-            });
-
         // Create nodes (entities and relationships)
         const node = g.selectAll('.node')
             .data(nodes)
             .join('g')
-            .attr('class', 'node')
+            .attr('class', d => `node node-${d.id}`)
             .call(d3.drag()
                 .on('start', (event, d) => {
                     if (!event.active) simulation.alphaTarget(0.3).restart();
@@ -127,7 +118,7 @@ const ERVisualization = ({ data, onNodeClick }) => {
                     .style('fill', '#2c5282')
                     .style('stroke', '#4299e1')
                     .style('stroke-width', '2px');
-            } else {
+            } else if (d.type === 'relationship') {
                 // Diamond for relationships
                 const points = [
                     [0, -relationshipSize/2],
@@ -138,6 +129,13 @@ const ERVisualization = ({ data, onNodeClick }) => {
                 
                 nodeGroup.append('polygon')
                     .attr('points', points)
+                    .style('fill', '#2a4365')
+                    .style('stroke', '#4299e1')
+                    .style('stroke-width', '2px');
+            } else {
+                // Circle for other types
+                nodeGroup.append('circle')
+                    .attr('r', 50)
                     .style('fill', '#2a4365')
                     .style('stroke', '#4299e1')
                     .style('stroke-width', '2px');
@@ -178,18 +176,6 @@ const ERVisualization = ({ data, onNodeClick }) => {
                         .text(attr.name);
                 });
             }
-
-            // Add attributes for relationships (if any)
-            if (d.type === 'relationship' && d.attributes) {
-                d.attributes.forEach((attr, i) => {
-                    nodeGroup.append('text')
-                        .attr('y', relationshipSize/4 + (i + 1) * 20)
-                        .style('fill', '#a0aec0')
-                        .style('font-size', '12px')
-                        .style('text-anchor', 'middle')
-                        .text(attr.name);
-                });
-            }
         });
 
         // Update force simulation on tick
@@ -197,7 +183,6 @@ const ERVisualization = ({ data, onNodeClick }) => {
             // Update relationship lines
             relationship.each(function(d) {
                 const path = d3.select(this).select('.relationship-path');
-                const label = d3.select(this).select('.cardinality');
                 
                 if (!d.source || !d.target) return;
                 
@@ -213,32 +198,87 @@ const ERVisualization = ({ data, onNodeClick }) => {
                 const pathData = `M ${sourceX},${sourceY} L ${targetX},${targetY}`;
                 
                 path.attr('d', pathData);
-                
-                // Position cardinality label
-                const labelDistance = 30;
-                const labelX = sourceX + labelDistance * Math.cos(angle);
-                const labelY = sourceY + labelDistance * Math.sin(angle);
-                
-                label.attr('x', labelX)
-                    .attr('y', labelY)
-                    .style('text-anchor', 'middle')
-                    .style('dominant-baseline', 'middle');
             });
 
             // Update node positions
             node.attr('transform', d => `translate(${d.x || 0},${d.y || 0})`);
         });
 
+        // Initial positioning - run simulation for a bit then stop
+        simulation.alpha(1).restart();
+        setTimeout(() => {
+            simulation.stop();
+        }, 2000);
+
         // Cleanup function
         return () => {
-            simulation.stop();
+            if (simulationRef.current) {
+                simulationRef.current.stop();
+            }
         };
-    }, [data, onNodeClick]); // Re-run effect when data or onNodeClick changes
+    }, [data]);
 
-    return React.createElement("div", { 
-        ref: containerRef, 
-        style: { width: "100%", height: "100%" } 
-    });
+    // Handle highlighting separately
+    useEffect(() => {
+        console.log('HIGHLIGHT DEBUG: ERVisualization received highlightedElements:', highlightedElements);
+        
+        if (!svgRef.current || !highlightedElements) return;
+        
+        const svg = svgRef.current;
+        console.log('ERVisualization: Applying highlights:', highlightedElements);
+        
+        // Reset all highlights first
+        svg.selectAll('.node')
+            .classed('highlighted', false)
+            .selectAll('rect, polygon, circle')
+            .style('stroke', '#4299e1')
+            .style('stroke-width', '2px');
+        
+        // Apply highlights
+        if (highlightedElements && highlightedElements.length > 0) {
+            highlightedElements.forEach(id => {
+                console.log('ERVisualization: Highlighting node with ID:', id);
+                const nodeElements = svg.selectAll(`.node-${id}`);
+                
+                nodeElements
+                    .classed('highlighted', true)
+                    .selectAll('rect, polygon, circle')
+                    .style('stroke', '#f56565')
+                    .style('stroke-width', '4px');
+                
+                console.log(`ERVisualization: Found ${nodeElements.size()} elements for ID: ${id}`);
+            });
+        } else {
+            console.log('ERVisualization: No highlights to apply');
+        }
+    }, [highlightedElements]);
+
+    // Handle window resize
+    useEffect(() => {
+        const handleResize = () => {
+            if (containerRef.current && svgRef.current) {
+                const width = containerRef.current.clientWidth;
+                const height = containerRef.current.clientHeight;
+                
+                svgRef.current
+                    .attr('width', width)
+                    .attr('height', height);
+            }
+        };
+        
+        window.addEventListener('resize', handleResize);
+        
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
+
+    return (
+        <div 
+            ref={containerRef} 
+            style={{ width: "100%", height: "100%", minHeight: "500px" }} 
+        />
+    );
 };
 
 // Assign to global variable so it's accessible

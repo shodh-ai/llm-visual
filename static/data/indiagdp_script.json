@@ -1,0 +1,126 @@
+{
+    "script": "Let me walk you through India's GDP growth from 2000 to 2023. India started the millennium with modest growth around 4%. Throughout the 2000s, we see a strong period of growth averaging around 8%, marking India as one of the fastest-growing major economies. In 2008, we can observe the impact of the global financial crisis, with a dip in growth. The economy recovered quickly but faced another slowdown in the early 2010s. Growth picked up again mid-decade before gradually slowing down toward 2019. Then in 2020, the COVID-19 pandemic caused a severe contraction of -5.8%. Recovery was sharp in 2021 with nearly 10% growth, followed by a stabilization around 7-8% in recent years, demonstrating India's economic resilience.",
+    "timestamps": [
+        {
+            "word": "Let",
+            "start_time": 0,
+            "end_time": 200
+        },
+        {
+            "word": "millennium",
+            "start_time": 1000,
+            "end_time": 1500,
+            "node_id": "gdp-point-2000"
+        },
+        {
+            "word": "2000s",
+            "start_time": 2000,
+            "end_time": 3000,
+            "node_id": ["gdp-point-2003", "gdp-point-2004", "gdp-point-2005", "gdp-point-2006"]
+        },
+        {
+            "word": "2008",
+            "start_time": 4000,
+            "end_time": 4500,
+            "node_id": "gdp-point-2007"
+        },
+        {
+            "word": "recovered",
+            "start_time": 5000,
+            "end_time": 5500,
+            "node_id": ["gdp-point-2009", "gdp-point-2010"]
+        },
+        {
+            "word": "2010s",
+            "start_time": 6000,
+            "end_time": 6500,
+            "node_id": ["gdp-point-2011", "gdp-point-2012"]
+        },
+        {
+            "word": "mid-decade",
+            "start_time": 7000,
+            "end_time": 7500,
+            "node_id": ["gdp-point-2014", "gdp-point-2015"]
+        },
+        {
+            "word": "2019",
+            "start_time": 8000,
+            "end_time": 8500,
+            "node_id": "gdp-point-2019"
+        },
+        {
+            "word": "2020",
+            "start_time": 9000,
+            "end_time": 9500,
+            "node_id": "gdp-point-2020"
+        },
+        {
+            "word": "2021",
+            "start_time": 10000,
+            "end_time": 10500,
+            "node_id": "gdp-point-2021"
+        },
+        {
+            "word": "recent",
+            "start_time": 11000,
+            "end_time": 11500,
+            "node_id": ["gdp-point-2022", "gdp-point-2023"]
+        }
+    ],
+    "animation_states": [
+        {
+            "component_id": "gdp-point-2000",
+            "state": {
+                "highlighted": true,
+                "radius": 8,
+                "fill": "#ff5722"
+            },
+            "duration": 1000
+        },
+        {
+            "component_id": "line-path",
+            "state": {
+                "highlighted": true,
+                "strokeWidth": 4,
+                "stroke": "#2a6caa"
+            },
+            "duration": 1000
+        },
+        {
+            "component_id": "gdp-point-2007",
+            "state": {
+                "highlighted": true,
+                "radius": 8,
+                "fill": "#e91e63"
+            },
+            "duration": 1000
+        },
+        {
+            "component_id": "gdp-point-2020",
+            "state": {
+                "highlighted": true,
+                "radius": 8,
+                "fill": "#e91e63"
+            },
+            "duration": 1000
+        },
+        {
+            "component_id": "gdp-point-2021",
+            "state": {
+                "highlighted": true,
+                "radius": 8,
+                "fill": "#4caf50"
+            },
+            "duration": 1000
+        },
+        {
+            "component_id": "gdp-point-2023",
+            "state": {
+                "highlighted": true,
+                "radius": 8,
+                "fill": "#4caf50"
+            },
+            "duration": 1000
+        }
+    ]
+}

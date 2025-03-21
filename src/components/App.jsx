@@ -23,6 +23,7 @@ import IndustryLifeCycleVisualization from './IndustrylifecycleVisualization';
 import MarketStructuresVisualization from './MarketstructuresVisualization';
 import StrategicIntentVisualization from './StrategicintentVisualization';
 import VisualizationController from './VisualizationController';
+import IndiaGDPVisualization from './IndiagdpVisualization';
 
 // Define the VISUALIZATIONS object
 const VISUALIZATIONS = {
@@ -47,7 +48,8 @@ const VISUALIZATIONS = {
     swot: SWOTVisualization,
     industrylifecycle: IndustryLifeCycleVisualization,
     marketstructures: MarketStructuresVisualization,
-    strategicintent: StrategicIntentVisualization
+    strategicintent: StrategicIntentVisualization,
+    indiagdp: IndiaGDPVisualization
 };
 
 const App = () => {
@@ -360,7 +362,7 @@ const App = () => {
                     <option value="industrylifecycle">Industry life cycle Visualization</option>
                     <option value="marketstructures">Market Structures Visualization</option>
                     <option value="strategicintent">Strategic Intent Visualization</option>
-
+                    <option value="indiagdp">Indian GDP Growth Visualization</option>
                 </select>
             </div>
             <div className="content-container">
