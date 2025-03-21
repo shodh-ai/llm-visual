@@ -24,6 +24,7 @@ import QueryProcessingVisualization from './QueryprocessingVisualization';
 import MobiledbVisualization from './MobiledbVisualization';
 import GISVisualization from './GisVisualization';
 import BusinessPolicyVisualization from './BusinessPolicyVisualization';
+import GdpVisualization from './GdpVisualization';
 
 // Define the VISUALIZATIONS object
 const VISUALIZATIONS = {
@@ -43,7 +44,8 @@ const VISUALIZATIONS = {
   queryprocessing: QueryProcessingVisualization,
   mobiledb: MobiledbVisualization,
   gis: GISVisualization,
-  businesspolicy: BusinessPolicyVisualization
+  businesspolicy: BusinessPolicyVisualization,
+  gdp: GdpVisualization
 };
 
 const TOPICS = [
@@ -63,7 +65,8 @@ const TOPICS = [
   { id: 'queryprocessing', name: 'Query Processing' },
   { id: 'mobiledb', name: 'Mobile Database' },
   { id: 'gis', name: 'Geographic Information System' },
-  { id: 'businesspolicy', name: 'Business Policy' }
+  { id: 'businesspolicy', name: 'Business Policy' },
+  { id: 'gdp', name: 'GDP Growth Visualization' }
 ];
 
 const App = () => {
@@ -406,56 +409,50 @@ const App = () => {
 
   // Update the handleNarrationComplete function to reset button state
 
-  const handleNarrationComplete = (highlightedNodes, isComplete = true) => {
+  const handleNarrationComplete = (highlightedNodes, isComplete) => {
     console.log('HIGHLIGHT DEBUG: Received highlighted nodes in App:', highlightedNodes, 'isComplete:', isComplete);
     
-    // Update highlighted elements if provided
     if (highlightedNodes && highlightedNodes.length > 0) {
       console.log('HIGHLIGHT DEBUG: Setting highlighted nodes in App:', highlightedNodes);
       
-      // Check if the node IDs exist in the visualization data
+      // Get valid node IDs from the visualization data
+      let validNodeIds = [];
       if (visualizationData && visualizationData.nodes) {
-        const validNodeIds = visualizationData.nodes.map(node => node.id);
-        console.log('HIGHLIGHT DEBUG: Valid node IDs in visualization:', validNodeIds);
-        
-        const validHighlights = highlightedNodes.filter(id => validNodeIds.includes(id));
-        
-        if (validHighlights.length !== highlightedNodes.length) {
-          console.warn('HIGHLIGHT DEBUG: Some node IDs do not exist in the visualization:', 
-            highlightedNodes.filter(id => !validNodeIds.includes(id)));
-          console.log('HIGHLIGHT DEBUG: Using only valid node IDs:', validHighlights);
+        validNodeIds = visualizationData.nodes.map(node => node.id);
+      }
+      console.log('HIGHLIGHT DEBUG: Valid node IDs in visualization:', validNodeIds);
+      
+      // Special handling for GDP visualization
+      if (selectedTopic === 'gdp') {
+        // For GDP visualization, we don't need to validate the node IDs
+        // because they're hardcoded in the visualization
+        setHighlightedElements(highlightedNodes);
+        console.log('HIGHLIGHT DEBUG: Setting GDP highlightedElements with:', highlightedNodes);
+      } else {
+        // For other visualizations, filter out invalid node IDs
+        const invalidNodeIds = highlightedNodes.filter(id => !validNodeIds.includes(id));
+        if (invalidNodeIds.length > 0) {
+          console.log('HIGHLIGHT DEBUG: Some node IDs do not exist in the visualization:', invalidNodeIds);
         }
         
-        // Only set valid node IDs
-        console.log('HIGHLIGHT DEBUG: Setting highlightedElements state with:', validHighlights);
-        setHighlightedElements(validHighlights);
+        const validHighlightedNodes = highlightedNodes.filter(id => validNodeIds.includes(id));
+        console.log('HIGHLIGHT DEBUG: Using only valid node IDs:', validHighlightedNodes);
         
-        // Force a re-render of the visualization
-        setTimeout(() => {
-          console.log('HIGHLIGHT DEBUG: Current highlightedElements after update:', highlightedElements);
-        }, 10);
-      } else {
-        // If we don't have visualization data, just set the highlights as is
-        console.log('HIGHLIGHT DEBUG: No visualization data nodes, setting all highlights:', highlightedNodes);
-        setHighlightedElements([...highlightedNodes]);
+        setHighlightedElements(validHighlightedNodes);
       }
-    } else if (highlightedNodes && highlightedNodes.length === 0) {
-      // Clear highlights
+      
+      console.log('HIGHLIGHT DEBUG: Setting highlightedElements state with:', highlightedNodes);
+    } else if (isComplete) {
+      console.log('HIGHLIGHT DEBUG: Narration complete, resetting state');
+      setIsNarrationPlaying(false);
+      setIsNarrationOnly(false);
+      setHighlightedElements([]);
+    } else {
       console.log('HIGHLIGHT DEBUG: Clearing all highlights');
       setHighlightedElements([]);
     }
     
-    // If narration is complete, reset the narration state
-    if (isComplete) {
-      console.log('HIGHLIGHT DEBUG: Narration complete, resetting state');
-      setIsNarrationPlaying(false);
-      
-      // Only close the WebRTC session if it exists
-      if (realtimeSession) {
-        console.log('HIGHLIGHT DEBUG: Closing WebRTC session');
-        setRealtimeSession(null);
-      }
-    }
+    console.log('HIGHLIGHT DEBUG: Current highlightedElements after update:', highlightedElements);
   };
 
   // Update the handlePlayNarration function to properly manage state
@@ -475,6 +472,58 @@ const App = () => {
           setIsNarrationPlaying(true);
         }
       }, 100);
+    }
+  };
+
+  const handleFetchVisualizationData = async (topic) => {
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+      // Special case for GDP visualization
+      if (topic === 'gdp') {
+        // Use a hardcoded placeholder for GDP data
+        const gdpData = {
+          topic: "gdp",
+          nodes: [
+            {"id": "2000", "name": "2000", "type": "year", "properties": ["0.47", "4.0"]},
+            {"id": "2005", "name": "2005", "type": "year", "properties": ["0.82", "7.9"]},
+            {"id": "2010", "name": "2010", "type": "year", "properties": ["1.66", "8.5"]},
+            {"id": "2015", "name": "2015", "type": "year", "properties": ["2.10", "8.0"]},
+            {"id": "2020", "name": "2020", "type": "year", "properties": ["2.66", "-6.6"]},
+            {"id": "2021", "name": "2021", "type": "year", "properties": ["3.18", "8.7"]},
+            {"id": "2022", "name": "2022", "type": "year", "properties": ["3.39", "7.2"]},
+            {"id": "2023", "name": "2023", "type": "year", "properties": ["3.74", "6.3"]},
+            {"id": "2024", "name": "2024", "type": "year", "properties": ["4.05", "6.5"]},
+            {"id": "2025", "name": "2025", "type": "year", "properties": ["4.44", "6.5"]}
+          ],
+          edges: []
+        };
+        
+        setVisualizationData(gdpData);
+        setIsLoading(false);
+        return;
+      }
+      
+      // For other visualizations, continue with the existing code
+      const response = await fetch(`/static/data/${topic}_visualization.json`);
+      
+      if (!response.ok) {
+        throw new Error(`Failed to fetch visualization data: ${response.status} ${response.statusText}`);
+      }
+      
+      const data = await response.json();
+      setVisualizationData(data);
+    } catch (error) {
+      console.error('Error fetching visualization data:', error);
+      setError(`Failed to load visualization: ${error.message}`);
+      
+      // Provide fallback data for common visualizations
+      if (topic === 'er') {
+        // Existing ER fallback code...
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 

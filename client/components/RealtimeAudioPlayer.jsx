@@ -1771,6 +1771,55 @@ const RealtimeAudioPlayer = forwardRef(({ topic, doubt, sessionId, onComplete, v
         return;
       }
       
+      // For GDP visualization, use a hardcoded example script
+      else if (topic === 'gdp') {
+        addDebugInfo('Using hardcoded GDP script');
+        
+        // Get node IDs from visualization data if available
+        let nodeIds = [];
+        if (visualizationData && visualizationData.nodes) {
+          nodeIds = visualizationData.nodes.map(node => node.id);
+          console.log('HIGHLIGHT DEBUG: Actual GDP visualization node IDs:', nodeIds);
+          addDebugInfo(`Found ${nodeIds.length} node IDs in GDP visualization data: ${nodeIds.join(', ')}`);
+        }
+        
+        // Hardcoded example script for GDP visualization with exact matching node IDs
+        const gdpScript = {
+          script: "Let me walk you through India's GDP growth visualization. This chart shows India's economic growth from 2000 to 2025, with projections for future years. The blue bars represent years with lower growth rates, while the red bars indicate years with higher growth rates above 5%. Notice the significant drop in 2020 due to the global pandemic, followed by a strong recovery in subsequent years. The trend line shows the overall growth trajectory over this period.",
+          timestamps: [
+            // Use actual node IDs from the visualization
+            {
+              word: "2000",
+              start_time: 3000,
+              end_time: 4500,
+              node_id: "2000" // Assuming year IDs match the year numbers
+            },
+            {
+              word: "2020",
+              start_time: 8000,
+              end_time: 9500,
+              node_id: "2020" // Highlight the pandemic year
+            },
+            {
+              word: "recovery",
+              start_time: 12000,
+              end_time: 13500,
+              node_id: "2021" // Highlight the recovery year
+            },
+            {
+              word: "trend line",
+              start_time: 16000,
+              end_time: 17500,
+              node_id: "trend-line" // Highlight the trend line if it has an ID
+            }
+          ]
+        };
+        
+        // Process the hardcoded script
+        processScriptData(gdpScript);
+        return;
+      }
+      
       // For other visualizations, try to load from file
       const scriptPath = `/static/data/${topic}_script.json`;
       addDebugInfo(`Fetching script from: ${scriptPath}`);
