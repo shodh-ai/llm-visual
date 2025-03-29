@@ -1,0 +1,61 @@
+{
+    "script": "Let's explore the shared disk architecture, which allows multiple processors to access a common disk storage system efficiently.\n\n1. Each processor in this system has its own private memory. These are represented as 'Private Memory' nodes connected to their respective CPUs.\n\n2. The CPUs, which perform computation tasks, are linked to an 'Interconnection Network'. This network enables communication between processors and shared storage.\n\n3. The interconnection network plays a crucial role in handling data transfer between CPUs and the shared storage, ensuring seamless processing.\n\n4. The shared storage consists of multiple 'DISK' units, which are accessible by all CPUs through the interconnection network. This shared access allows better fault tolerance and load balancing.\n\n5. This architecture ensures high availability and scalability, as additional processors and disks can be integrated efficiently.\n\nThrough this visualization, we see how the shared disk architecture supports parallel processing while maintaining a common data repository.",
+    "component_mappings": {
+        "memory1": "private memory",
+        "memory2": "private memory",
+        "memory3": "private memory",
+        "memory4": "private memory",
+        "cpu1": "CPU",
+        "cpu2": "CPU",
+        "cpu3": "CPU",
+        "cpu4": "CPU",
+        "network": "interconnection network",
+        "disk1": "shared disk",
+        "disk2": "shared disk",
+        "disk3": "shared disk"
+    },
+    "word_timings": [
+        {
+            "word": "shared disk architecture",
+            "start_time": 0,
+            "end_time": 3000,
+            "node_id": null
+        },
+        {
+            "word": "private memory",
+            "start_time": 3000,
+            "end_time": 6000,
+            "node_id": ["memory1", "memory2", "memory3", "memory4"]
+        },
+        {
+            "word": "CPUs",
+            "start_time": 6000,
+            "end_time": 9000,
+            "node_id": ["cpu1", "cpu2", "cpu3", "cpu4"]
+        },
+        {
+            "word": "Interconnection Network",
+            "start_time": 9000,
+            "end_time": 12000,
+            "node_id": "network"
+        },
+        {
+            "word": "shared storage",
+            "start_time": 12000,
+            "end_time": 15000,
+            "node_id": ["disk1", "disk2", "disk3"]
+        },
+        {
+            "word": "data transfer",
+            "start_time": 15000,
+            "end_time": 18000,
+            "node_id": ["network", "disk1", "disk2", "disk3"]
+        },
+        {
+            "word": "parallel processing",
+            "start_time": 18000,
+            "end_time": 21000,
+            "node_id": ["cpu1", "cpu2", "cpu3", "cpu4", "network"]
+        }
+    ]
+}

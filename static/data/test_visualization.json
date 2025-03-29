@@ -1,0 +1,23 @@
+{
+    "nodes": [
+        {
+            "id": "1",
+            "name": "Node 1",
+            "type": "test"
+        },
+        {
+            "id": "2",
+            "name": "Node 2",
+            "type": "test"
+        }
+    ],
+    "edges": [
+        {
+            "source": "1",
+            "target": "2",
+            "type": "test",
+            "description": "test edge"
+        }
+    ],
+    "narration": "This is a test visualization showing 2 nodes connected by an edge."
+}

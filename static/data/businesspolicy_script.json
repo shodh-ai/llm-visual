@@ -1,0 +1,74 @@
+{
+  "script": "Business policies are essential guidelines that direct an organization's operations and decision-making processes. As shown in this visualization, business policies can be categorized into three main types.\n\nCorporate Policies are high-level directives that establish the overall direction and values of the organization. These policies are typically set by top management and the board of directors, and they influence the entire organization.\n\nFunctional Policies are department-specific guidelines that govern how individual business units operate. These include policies for departments like Human Resources, Finance, Marketing, and IT, ensuring each area follows consistent practices aligned with corporate objectives.\n\nOperational Policies are day-to-day procedural guidelines that direct routine activities. These detailed policies help employees understand how to perform specific tasks and make decisions in their daily work.",
+  "narration_timestamps": [
+    {
+      "word": "Business Policies Overview",
+      "start_time": 0,
+      "end_time": 5000,
+      "node_id": "business_policies"
+    },
+    {
+      "word": "Corporate Policies",
+      "start_time": 5000,
+      "end_time": 10000,
+      "node_id": "corporate_policies"
+    },
+    {
+      "word": "Functional Policies",
+      "start_time": 10000,
+      "end_time": 15000,
+      "node_id": "functional_policies"
+    },
+    {
+      "word": "Operational Policies",
+      "start_time": 15000,
+      "end_time": 20000,
+      "node_id": "operational_policies"
+    }
+  ],
+  "animation_states": [
+    {
+      "component_id": "business_policies",
+      "state": {
+        "highlighted": true,
+        "scale": 1.2,
+        "strokeColor": "#b74c4c"
+      },
+      "duration": 5000
+    },
+    {
+      "component_id": "corporate_policies",
+      "state": {
+        "highlighted": true,
+        "scale": 1.1,
+        "strokeColor": "#4c7bb7"
+      },
+      "duration": 5000
+    },
+    {
+      "component_id": "functional_policies",
+      "state": {
+        "highlighted": true,
+        "scale": 1.1,
+        "strokeColor": "#4c7bb7"
+      },
+      "duration": 5000
+    },
+    {
+      "component_id": "operational_policies",
+      "state": {
+        "highlighted": true,
+        "scale": 1.1,
+        "strokeColor": "#4c7bb7"
+      },
+      "duration": 5000
+    }
+  ],
+  "component_mappings": {
+    "business": "business_policies",
+    "policies": "business_policies",
+    "corporate": "corporate_policies",
+    "functional": "functional_policies",
+    "operational": "operational_policies"
+  }
+}

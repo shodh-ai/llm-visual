@@ -1,0 +1,61 @@
+{
+    "nodes": [
+      {
+        "id": "users_scan",
+        "name": "Table Scan: Users",
+        "type": "operator",
+        "properties": [
+          { "name": "Rows", "type": "10000" },
+          { "name": "Cost", "type": "50" }
+        ]
+      },
+      {
+        "id": "orders_scan",
+        "name": "Table Scan: Orders",
+        "type": "operator",
+        "properties": [
+          { "name": "Rows", "type": "50000" },
+          { "name": "Cost", "type": "100" }
+        ]
+      },
+      {
+        "id": "join_users_orders",
+        "name": "Join: Users-Orders",
+        "type": "operator",
+        "properties": [
+          { "name": "Join Type", "type": "Hash Join" },
+          { "name": "Cost", "type": "150" }
+        ]
+      },
+      {
+        "id": "filter_high_amount",
+        "name": "Filter: High Amount",
+        "type": "operator",
+        "properties": [
+          { "name": "Condition", "type": "amount > 1000" },
+          { "name": "Cost", "type": "30" }
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "source": "users_scan",
+        "target": "join_users_orders",
+        "type": "flow",
+        "description": "Scan → Join"
+      },
+      {
+        "source": "orders_scan",
+        "target": "join_users_orders",
+        "type": "flow",
+        "description": "Scan → Join"
+      },
+      {
+        "source": "join_users_orders",
+        "target": "filter_high_amount",
+        "type": "flow",
+        "description": "Join → Filter"
+      }
+    ]
+  }
+  

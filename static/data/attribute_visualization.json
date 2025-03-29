@@ -1,0 +1,97 @@
+{
+    "nodes": [
+        {
+            "id": "student_entity",
+            "name": "Student",
+            "type": "entity",
+            "category": "entity"
+        },
+        {
+            "id": "student_id",
+            "name": "Student ID",
+            "type": "attribute",
+            "category": "prime"
+        },
+        {
+            "id": "name_composite",
+            "name": "Name",
+            "type": "attribute",
+            "category": "composite"
+        },
+        {
+            "id": "first_name",
+            "name": "First Name",
+            "type": "attribute",
+            "category": "simple"
+        },
+        {
+            "id": "last_name",
+            "name": "Last Name",
+            "type": "attribute",
+            "category": "simple"
+        },
+        {
+            "id": "address",
+            "name": "Address",
+            "type": "attribute",
+            "category": "simple"
+        },
+        {
+            "id": "age",
+            "name": "Age",
+            "type": "attribute",
+            "category": "derived"
+        },
+        {
+            "id": "courses",
+            "name": "Courses",
+            "type": "attribute",
+            "category": "multivalued"
+        }
+    ],
+    "edges": [
+        {
+            "source": "student_entity",
+            "target": "student_id",
+            "type": "connection"
+        },
+        {
+            "source": "student_entity",
+            "target": "name_composite",
+            "type": "connection"
+        },
+        {
+            "source": "name_composite",
+            "target": "first_name",
+            "type": "connection"
+        },
+        {
+            "source": "name_composite",
+            "target": "last_name",
+            "type": "connection"
+        },
+        {
+            "source": "student_entity",
+            "target": "address",
+            "type": "connection"
+        },
+        {
+            "source": "student_entity",
+            "target": "age",
+            "type": "connection"
+        },
+        {
+            "source": "student_entity",
+            "target": "courses",
+            "type": "connection"
+        }
+    ],
+    "layout": {
+        "width": 800,
+        "height": 600,
+        "node_spacing": 120,
+        "edge_strength": -800,
+        "link_distance": 120,
+        "collision_radius": 60
+    }
+}

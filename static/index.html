@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Visualization</title>
+    <!-- Load D3.js -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <!-- Load React -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <!-- Load Socket.IO client -->
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .debug-buttons {
+            display: flex;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        
+        .debug-button {
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .debug-button:hover {
+            background-color: #45a049;
+        }
+        
+        .debug-button.secondary {
+            background-color: #2196F3;
+        }
+        
+        .debug-button.secondary:hover {
+            background-color: #0b7dda;
+        }
+        
+        .debug-button.warning {
+            background-color: #ff9800;
+        }
+        
+        .debug-button.warning:hover {
+            background-color: #e68a00;
+        }
+    </style>
+</head>
+<body>
+    <!-- Root element for React to render into -->
+    <div id="root"></div>
+    
+    <!-- Debug buttons -->
+    <div class="debug-buttons">
+        <button id="debug-js" class="debug-button">Debug JS Visualizations</button>
+        <button id="debug-jsx" class="debug-button secondary">Debug JSX Components</button>
+        <button id="debug-load-jsx" class="debug-button warning">Load JSX Component</button>
+        <button id="load-document" class="debug-button" style="background-color: #9c27b0;">Load Document Viz</button>
+    </div>
+    
+    <!-- Load our server configuration -->
+    <script src="/static/js/config.js"></script>
+    
+    <!-- Load our RealtimeClient -->
+    <script src="/static/js/realtime_client.js"></script>
+    
+    <!-- Load JSX visualization components directly -->
+    <script type="text/babel" src="/static/components/DocumentVisualization.jsx"></script>
+    
+    <!-- Load JSX loader for visualization components -->
+    <script src="/static/js/jsx_loader.js"></script>
+    
+    <!-- Load visualization components (consolidated approach) -->
+    <script src="/static/js/visualization_loader.js"></script>
+    
+    <!-- Load React components -->
+    <script type="text/babel" src="/static/js/index.jsx"></script>
+    
+    <!-- Debug script to check if RealtimeClient is available -->
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            console.log('DOM fully loaded');
+            console.log('D3.js available:', typeof d3 !== 'undefined');
+            console.log('React available:', typeof React !== 'undefined');
+            console.log('ReactDOM available:', typeof ReactDOM !== 'undefined');
+            console.log('Babel available:', typeof Babel !== 'undefined');
+            console.log('RealtimeClient available:', typeof window.RealtimeClient !== 'undefined');
+            console.log('JSXLoader available:', typeof window.jsxLoader !== 'undefined');
+            console.log('VisualizationLoader available:', typeof window.visualizationLoader !== 'undefined');
+            console.log('ServerConfig available:', typeof window.serverConfig !== 'undefined');
+            console.log('DocumentVisualization available:', typeof window.DocumentVisualization !== 'undefined');
+            
+            if (typeof window.RealtimeClient === 'undefined') {
+                console.error('RealtimeClient is not available. Check the console for errors.');
+                document.getElementById('root').innerHTML = '<div style="color: red; padding: 20px;">Error: RealtimeClient not available. Check the browser console for details.</div>';
+            }
+            
+            // Add event listeners for debug buttons
+            document.getElementById('debug-js').addEventListener('click', () => {
+                console.log('Debugging JS Visualizations');
+                console.log('D3 available:', typeof d3 !== 'undefined');
+                if (window.visualizationLoader) {
+                    console.log('Visualization Loader:', window.visualizationLoader);
+                    console.log('Available topics:', window.TOPICS);
+                    
+                    // Try to load data for a sample topic
+                    if (window.TOPICS && window.TOPICS.length > 0) {
+                        const sampleTopic = window.TOPICS[0].id;
+                        console.log(`Loading data for sample topic: ${sampleTopic}`);
+                        window.visualizationLoader.loadData(sampleTopic)
+                            .then(data => {
+                                console.log('Sample data loaded:', data);
+                            })
+                            .catch(error => {
+                                console.error('Error loading sample data:', error);
+                            });
+                    }
+                } else {
+                    console.error('Visualization Loader not available');
+                }
+            });
+            
+            document.getElementById('debug-jsx').addEventListener('click', () => {
+                console.log('Debugging JSX Components');
+                if (window.jsxLoader) {
+                    console.log('JSX Loader:', window.jsxLoader);
+                    console.log('Loaded components:', window.jsxLoader.getLoadedComponents());
+                    
+                    // Check component paths
+                    fetch('/static/components/')
+                        .then(response => {
+                            console.log('Components directory response:', response);
+                            if (response.ok) {
+                                return response.text();
+                            } else {
+                                throw new Error(`Failed to access components directory: ${response.status} ${response.statusText}`);
+                            }
+                        })
+                        .then(html => {
+                            console.log('Components directory content:', html);
+                        })
+                        .catch(error => {
+                            console.error('Error accessing components directory:', error);
+                        });
+                } else {
+                    console.error('JSX Loader not available');
+                }
+            });
+            
+            document.getElementById('debug-load-jsx').addEventListener('click', () => {
+                console.log('Loading JSX Component');
+                if (window.jsxLoader) {
+                    // Try to load a component for a sample topic
+                    const sampleTopic = 'document';
+                    console.log(`Attempting to load component for: ${sampleTopic}`);
+                    window.jsxLoader.loadComponent(sampleTopic)
+                        .then(component => {
+                            console.log(`Successfully loaded component for ${sampleTopic}:`, component);
+                            // Create a test div to render the component
+                            const testDiv = document.createElement('div');
+                            testDiv.id = 'test-component';
+                            testDiv.style.padding = '20px';
+                            testDiv.style.margin = '20px';
+                            testDiv.style.border = '1px solid #ccc';
+                            document.body.appendChild(testDiv);
+                            
+                            // Create sample data
+                            const sampleData = {
+                                entities: [
+                                    { id: 'entity1', name: 'Document', type: 'table' },
+                                    { id: 'entity2', name: 'Page', type: 'table' }
+                                ],
+                                relationships: [
+                                    { source: 'entity1', target: 'entity2', type: 'one-to-many' }
+                                ]
+                            };
+                            
+                            // Render the component
+                            ReactDOM.render(
+                                React.createElement(component, { data: sampleData }),
+                                document.getElementById('test-component')
+                            );
+                        })
+                        .catch(error => {
+                            console.error(`Error loading component for ${sampleTopic}:`, error);
+                        });
+                } else {
+                    console.error('JSX Loader not available');
+                }
+            });
+            
+            // Add event listener for the Load Document Viz button
+            document.getElementById('load-document').addEventListener('click', () => {
+                console.log('Loading Document Visualization directly');
+                
+                // Check if DocumentVisualization is available
+                if (typeof window.DocumentVisualization === 'function') {
+                    console.log('DocumentVisualization component is available');
+                    
+                    // Create a test div to render the component
+                    let testDiv = document.getElementById('direct-test-component');
+                    if (!testDiv) {
+                        testDiv = document.createElement('div');
+                        testDiv.id = 'direct-test-component';
+                        testDiv.style.padding = '20px';
+                        testDiv.style.margin = '20px';
+                        testDiv.style.border = '1px solid #9c27b0';
+                        document.body.appendChild(testDiv);
+                    }
+                    
+                    // Create sample data
+                    const sampleData = {
+                        entities: [
+                            { id: 'doc1', name: 'Document Collection', type: 'collection' },
+                            { id: 'page1', name: 'Pages Collection', type: 'collection' },
+                            { id: 'user1', name: 'Users Collection', type: 'collection' }
+                        ],
+                        relationships: [
+                            { source: 'doc1', target: 'page1', type: 'embeds' },
+                            { source: 'doc1', target: 'user1', type: 'references' }
+                        ]
+                    };
+                    
+                    // Render the component
+                    ReactDOM.render(
+                        React.createElement(window.DocumentVisualization, { data: sampleData }),
+                        testDiv
+                    );
+                    
+                    console.log('Document visualization rendered directly');
+                } else {
+                    console.error('DocumentVisualization component is not available');
+                    alert('DocumentVisualization component is not available. Check the console for details.');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

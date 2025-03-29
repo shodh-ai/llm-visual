@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Visualization</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <!-- Load React -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <!-- Load Socket.IO client -->
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8fafc;
+        }
+        #root {
+            width: 100%;
+            height: 100vh;
+        }
+        #visualization-container {
+            width: 90vw;
+            height: 80vh;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            margin: 20px auto;
+            background-color: white;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+        .controls {
+            text-align: center;
+            margin: 20px;
+        }
+        select {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            background-color: white;
+            color: #1e293b;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        select:hover {
+            border-color: #94a3b8;
+        }
+        select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    
+    <!-- Load our server configuration -->
+    <script src="/static/js/config.js"></script>
+    
+    <!-- Load our RealtimeClient -->
+    <script src="/static/js/realtime_client.js"></script>
+    
+    <!-- Load JSX loader for visualization components -->
+    <script src="/static/js/jsx_loader.js"></script>
+    
+    <!-- Load visualization components (consolidated approach) -->
+    <script src="/static/js/visualization_loader.js"></script>
+    
+    <!-- Load React components -->
+    <script type="text/babel" src="/static/js/index.jsx"></script>
+</body>
+</html>

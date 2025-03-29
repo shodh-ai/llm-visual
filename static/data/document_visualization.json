@@ -1,0 +1,13 @@
+{
+    "nodes": [
+      { "id": "users", "name": "Users Collection", "type": "collection" },
+      { "id": "orders", "name": "Orders Collection", "type": "collection" },
+      { "id": "products", "name": "Products Collection", "type": "collection" }
+    ],
+    "edges": [
+      { "source": "orders", "target": "users", "type": "reference", "description": "userId -> _id" },
+      { "source": "orders", "target": "products", "type": "reference", "description": "items.productId -> _id" },
+      { "source": "products", "target": "users", "type": "reference", "description": "reviews.userId -> _id" }
+    ]
+  }
+  

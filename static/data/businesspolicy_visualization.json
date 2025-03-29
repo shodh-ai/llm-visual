@@ -1,0 +1,277 @@
+{
+    "nodes": [
+      {
+        "id": "business_policies",
+        "name": "Type of Business Policies",
+        "type": "central",
+        "properties": ["Main category"]
+      },
+      {
+        "id": "corporate_policies",
+        "name": "Corporate Policies",
+        "type": "policy",
+        "properties": ["High-level policies"]
+      },
+      {
+        "id": "functional_policies",
+        "name": "Functional Policies",
+        "type": "policy",
+        "properties": ["Department-specific policies"]
+      },
+      {
+        "id": "operational_policies",
+        "name": "Operational Policies",
+        "type": "policy",
+        "properties": ["Day-to-day policies"]
+      },
+      {
+        "id": "governance",
+        "name": "GOVERNANCE",
+        "type": "governance",
+        "isMainCategory": true,
+        "description": "Defines the organizational structure, authority, and accountability mechanisms within the company."
+      },
+      {
+        "id": "board_oversight",
+        "name": "Board Oversight",
+        "type": "policy",
+        "subtype": "governance",
+        "description": "Establishes the board's role in overseeing management and corporate strategy."
+      },
+      {
+        "id": "risk_management",
+        "name": "Risk Management",
+        "type": "policy",
+        "subtype": "governance",
+        "description": "Framework for identifying, assessing, and mitigating business risks."
+      },
+      {
+        "id": "compliance",
+        "name": "Compliance",
+        "type": "policy",
+        "subtype": "governance",
+        "description": "Ensures adherence to laws, regulations, and internal policies."
+      },
+      {
+        "id": "ethics",
+        "name": "ETHICS & INTEGRITY",
+        "type": "ethics",
+        "isMainCategory": true,
+        "description": "Sets the standards for business ethics, including guidelines for conflict of interest, bribery, and ethical conduct."
+      },
+      {
+        "id": "code_of_conduct",
+        "name": "Code of Conduct",
+        "type": "policy",
+        "subtype": "ethics",
+        "description": "Outlines expected behaviors and ethical standards for all employees."
+      },
+      {
+        "id": "anti_corruption",
+        "name": "Anti-Corruption",
+        "type": "policy",
+        "subtype": "ethics",
+        "description": "Prohibits bribery and corrupt practices in all business operations."
+      },
+      {
+        "id": "whistleblower",
+        "name": "Whistleblower",
+        "type": "policy",
+        "subtype": "ethics",
+        "description": "Protects individuals who report misconduct or illegal activities."
+      },
+      {
+        "id": "social",
+        "name": "SOCIAL RESPONSIBILITY",
+        "type": "social",
+        "isMainCategory": true,
+        "description": "Outlines the company's commitment to corporate social responsibility (CSR) and sustainability."
+      },
+      {
+        "id": "environmental",
+        "name": "Environmental",
+        "type": "policy",
+        "subtype": "social",
+        "description": "Addresses the company's impact on the environment and conservation efforts."
+      },
+      {
+        "id": "community",
+        "name": "Community Engagement",
+        "type": "policy",
+        "subtype": "social",
+        "description": "Guides the company's involvement with local communities and charitable activities."
+      },
+      {
+        "id": "sustainability",
+        "name": "Sustainability",
+        "type": "policy",
+        "subtype": "social",
+        "description": "Focuses on long-term environmental, social, and economic sustainability."
+      },
+      {
+        "id": "stakeholder",
+        "name": "STAKEHOLDER POLICIES",
+        "type": "stakeholder",
+        "isMainCategory": true,
+        "description": "Guides how the company interacts with various stakeholders."
+      },
+      {
+        "id": "employee",
+        "name": "Employee Relations",
+        "type": "policy",
+        "subtype": "stakeholder",
+        "description": "Covers fair treatment, diversity, inclusion, and workplace safety."
+      },
+      {
+        "id": "customer",
+        "name": "Customer Relations",
+        "type": "policy",
+        "subtype": "stakeholder",
+        "description": "Establishes standards for customer service, privacy, and product quality."
+      },
+      {
+        "id": "investor",
+        "name": "Investor Relations",
+        "type": "policy",
+        "subtype": "stakeholder",
+        "description": "Ensures transparent and accurate communication with shareholders."
+      }
+    ],
+    "edges": [
+      {
+        "source": "business_policies",
+        "target": "corporate_policies",
+        "type": "connection"
+      },
+      {
+        "source": "business_policies",
+        "target": "functional_policies",
+        "type": "connection"
+      },
+      {
+        "source": "business_policies",
+        "target": "operational_policies",
+        "type": "connection"
+      },
+      {
+        "source": "governance",
+        "target": "board_oversight",
+        "type": "direct",
+        "description": "Board oversight is a key component of corporate governance."
+      },
+      {
+        "source": "governance",
+        "target": "risk_management",
+        "type": "direct",
+        "description": "Risk management is essential to effective governance."
+      },
+      {
+        "source": "governance",
+        "target": "compliance",
+        "type": "direct",
+        "description": "Compliance frameworks are established through governance policies."
+      },
+      {
+        "source": "ethics",
+        "target": "code_of_conduct",
+        "type": "direct",
+        "description": "The code of conduct is the foundation of ethics policies."
+      },
+      {
+        "source": "ethics",
+        "target": "anti_corruption",
+        "type": "direct",
+        "description": "Anti-corruption measures are a critical aspect of ethical business practices."
+      },
+      {
+        "source": "ethics",
+        "target": "whistleblower",
+        "type": "direct",
+        "description": "Whistleblower protection supports ethical reporting of misconduct."
+      },
+      {
+        "source": "social",
+        "target": "environmental",
+        "type": "direct",
+        "description": "Environmental policies are a key component of social responsibility."
+      },
+      {
+        "source": "social",
+        "target": "community",
+        "type": "direct",
+        "description": "Community engagement is central to social responsibility initiatives."
+      },
+      {
+        "source": "social",
+        "target": "sustainability",
+        "type": "direct",
+        "description": "Sustainability is a core focus of social responsibility policies."
+      },
+      {
+        "source": "stakeholder",
+        "target": "employee",
+        "type": "direct",
+        "description": "Employee relations policies guide interactions with internal stakeholders."
+      },
+      {
+        "source": "stakeholder",
+        "target": "customer",
+        "type": "direct",
+        "description": "Customer relations policies establish standards for external stakeholder engagement."
+      },
+      {
+        "source": "stakeholder",
+        "target": "investor",
+        "type": "direct",
+        "description": "Investor relations policies ensure proper communication with shareholders."
+      },
+      {
+        "source": "governance",
+        "target": "ethics",
+        "type": "influence",
+        "description": "Governance frameworks influence ethical standards and practices."
+      },
+      {
+        "source": "ethics",
+        "target": "social",
+        "type": "influence",
+        "description": "Ethical principles guide social responsibility initiatives."
+      },
+      {
+        "source": "social",
+        "target": "stakeholder",
+        "type": "influence",
+        "description": "Social responsibility impacts stakeholder relationships."
+      },
+      {
+        "source": "governance",
+        "target": "stakeholder",
+        "type": "influence",
+        "description": "Governance structures affect stakeholder engagement approaches."
+      },
+      {
+        "source": "compliance",
+        "target": "anti_corruption",
+        "type": "influence",
+        "description": "Compliance frameworks support anti-corruption efforts."
+      },
+      {
+        "source": "whistleblower",
+        "target": "compliance",
+        "type": "influence",
+        "description": "Whistleblower policies strengthen compliance mechanisms."
+      },
+      {
+        "source": "environmental",
+        "target": "sustainability",
+        "type": "influence",
+        "description": "Environmental policies contribute to overall sustainability goals."
+      },
+      {
+        "source": "customer",
+        "target": "community",
+        "type": "influence",
+        "description": "Customer relations often overlap with community engagement initiatives."
+      }
+    ]
+  }

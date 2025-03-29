@@ -1,0 +1,91 @@
+{
+    "nodes": [
+        {
+            "id": "student",
+            "name": "Student",
+            "type": "entity"
+        },
+        {
+            "id": "course",
+            "name": "Course",
+            "type": "entity"
+        },
+        {
+            "id": "study",
+            "name": "Study",
+            "type": "relationship"
+        },
+
+        {"id": "customer", "name": "Customer", "type": "entity"},
+        {"id": "loan", "name": "Loan", "type": "weak-entity"},
+        {"id": "borrows", "name": "Borrows", "type": "relationship"},
+        {"id": "c_id", "name": "C_id", "type": "attribute", "parent": "customer"},
+        {"id": "c_name", "name": "C_name", "type": "attribute", "parent": "customer"},
+        {"id": "l_name", "name": "L-name", "type": "attribute", "parent": "loan"},
+        {"id": "l_date", "name": "L-date", "type": "attribute", "parent": "loan"},
+
+        {
+            "id": "employee",
+            "name": "Employee",
+            "type": "entity"
+        },
+        {
+            "id": "project",
+            "name": "Project",
+            "type": "entity"
+        },
+        {
+            "id": "works_on",
+            "name": "Works_On",
+            "type": "associative"
+        },
+        {
+            "id": "skills",
+            "name": "Skills",
+            "type": "multivalued"
+        }
+    ],
+    "edges": [
+        {
+            "source": "student",
+            "target": "study",
+            "type": "relationship",
+            "description": "A student studies a course"
+        },
+        {
+            "source": "study",
+            "target": "course",
+            "type": "relationship",
+            "description": "A course is studied by students"
+        },
+
+        {"source": "customer", "target": "borrows", "type": "relationship", "description": "A customer borrows a loan"},
+        {"source": "borrows", "target": "loan", "type": "relationship", "description": "A loan is borrowed by a customer"},
+        {"source": "customer", "target": "c_id", "type": "attribute"},
+        {"source": "customer", "target": "c_name", "type": "attribute"},
+        {"source": "loan", "target": "l_name", "type": "attribute"},
+        {"source": "loan", "target": "l_date", "type": "attribute"},
+
+        {
+            "source": "employee",
+            "target": "works_on",
+            "type": "relationship"
+        },
+        {
+            "source": "works_on",
+            "target": "project",
+            "type": "relationship"
+        },
+        {
+            "source": "employee",
+            "target": "skills",
+            "type": "attribute"
+        }
+    ],
+    "layout": {
+        "width": 800,
+        "height": 600,
+        "node_spacing": 200,
+        "edge_strength": -1000
+    }
+}

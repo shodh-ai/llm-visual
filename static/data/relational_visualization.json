@@ -1,0 +1,43 @@
+{
+    "nodes": [
+      {
+        "id": "users",
+        "name": "Users",
+        "type": "table",
+        "properties": [
+          { "name": "id", "type": "INTEGER", "primary": true },
+          { "name": "username", "type": "VARCHAR" },
+          { "name": "email", "type": "VARCHAR" }
+        ]
+      },
+      {
+        "id": "orders",
+        "name": "Orders",
+        "type": "table",
+        "properties": [
+          { "name": "order_id", "type": "INTEGER", "primary": true },
+          { "name": "user_id", "type": "INTEGER", "foreign": true },
+          { "name": "amount", "type": "DECIMAL" }
+        ]
+      },
+      {
+        "id": "products",
+        "name": "Products",
+        "type": "table",
+        "properties": [
+          { "name": "product_id", "type": "INTEGER", "primary": true },
+          { "name": "name", "type": "VARCHAR" },
+          { "name": "price", "type": "DECIMAL" }
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "source": "orders",
+        "target": "users",
+        "type": "relationship",
+        "description": "Orders.user_id → Users.id"
+      }
+    ]
+  }
+  

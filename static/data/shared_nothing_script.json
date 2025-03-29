@@ -1,0 +1,59 @@
+{
+    "script": "Let's explore the shared nothing architecture, a distributed computing model where each node operates independently.\n\n1. Each processing unit consists of a 'CPU' and its corresponding 'Private Memory'. Unlike shared architectures, there is no direct memory sharing between nodes.\n\n2. Each CPU is directly linked to its own dedicated 'DISK' storage, ensuring data locality and reducing contention.\n\n3. The CPUs communicate through an 'Interconnection Network', which facilitates message passing between nodes rather than shared data access.\n\n4. This architecture is highly scalable as new nodes (each with its own CPU, memory, and disk) can be added seamlessly without major modifications.\n\n5. The shared nothing approach is widely used in large-scale distributed databases and web-scale applications due to its fault tolerance and parallel processing capabilities.\n\nThrough this visualization, we can understand how independent nodes operate and communicate efficiently in a shared nothing system.",
+    "component_mappings": {
+        "memory1": "private memory",
+        "memory2": "private memory",
+        "memory3": "private memory",
+        "cpu1": "CPU",
+        "cpu2": "CPU",
+        "cpu3": "CPU",
+        "network": "interconnection network",
+        "disk1": "private disk",
+        "disk2": "private disk",
+        "disk3": "private disk"
+    },
+    "word_timings": [
+        {
+            "word": "shared nothing architecture",
+            "start_time": 0,
+            "end_time": 3000,
+            "node_id": null
+        },
+        {
+            "word": "processing unit",
+            "start_time": 3000,
+            "end_time": 6000,
+            "node_id": ["cpu1", "memory1"]
+        },
+        {
+            "word": "CPU and Private Memory",
+            "start_time": 6000,
+            "end_time": 9000,
+            "node_id": ["cpu2", "memory2", "cpu3", "memory3"]
+        },
+        {
+            "word": "dedicated DISK storage",
+            "start_time": 9000,
+            "end_time": 12000,
+            "node_id": ["disk1", "disk2", "disk3"]
+        },
+        {
+            "word": "Interconnection Network",
+            "start_time": 12000,
+            "end_time": 15000,
+            "node_id": "network"
+        },
+        {
+            "word": "message passing",
+            "start_time": 15000,
+            "end_time": 18000,
+            "node_id": ["network", "cpu1", "cpu2", "cpu3"]
+        },
+        {
+            "word": "independent nodes",
+            "start_time": 18000,
+            "end_time": 21000,
+            "node_id": ["cpu1", "memory1", "disk1", "cpu2", "memory2", "disk2", "cpu3", "memory3", "disk3"]
+        }
+    ]
+}

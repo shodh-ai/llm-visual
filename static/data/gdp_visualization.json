@@ -1,0 +1,17 @@
+{
+  "topic": "gdp",
+  "nodes": [
+    {"id": "2000", "name": "2000", "type": "year", "properties": ["0.47", "4.0"]},
+    {"id": "2005", "name": "2005", "type": "year", "properties": ["0.82", "7.9"]},
+    {"id": "2010", "name": "2010", "type": "year", "properties": ["1.66", "8.5"]},
+    {"id": "2015", "name": "2015", "type": "year", "properties": ["2.10", "8.0"]},
+    {"id": "2020", "name": "2020", "type": "year", "properties": ["2.66", "-6.6"]},
+    {"id": "2021", "name": "2021", "type": "year", "properties": ["3.18", "8.7"]},
+    {"id": "2022", "name": "2022", "type": "year", "properties": ["3.39", "7.2"]},
+    {"id": "2023", "name": "2023", "type": "year", "properties": ["3.74", "6.3"]},
+    {"id": "2024", "name": "2024", "type": "year", "properties": ["4.05", "6.5"]},
+    {"id": "2025", "name": "2025", "type": "year", "properties": ["4.44", "6.5"]}
+  ],
+  "edges": [],
+  "narration": "This visualization shows India's GDP growth from 2000 to 2025, with projections for future years."
+}

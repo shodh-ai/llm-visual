@@ -1,0 +1,159 @@
+{
+    "nodes": [
+        {
+            "id": "1960s",
+            "name": "1960s Era",
+            "type": "era",
+            "properties": [
+                "Hierarchical Model (IMS)",
+                "Network Model (CODASYL)",
+                "Tree-structured databases",
+                "Complex relationships"
+            ]
+        },
+        {
+            "id": "hierarchical",
+            "name": "Hierarchical Model",
+            "type": "model",
+            "properties": [
+                "Tree structure",
+                "Parent-child relationships",
+                "One-to-many relationships",
+                "IBM IMS"
+            ]
+        },
+        {
+            "id": "network",
+            "name": "Network Model",
+            "type": "model",
+            "properties": [
+                "Graph structure",
+                "Many-to-many relationships",
+                "CODASYL standard",
+                "Complex navigation"
+            ]
+        },
+        {
+            "id": "1970s",
+            "name": "1970s Era",
+            "type": "era",
+            "properties": [
+                "Relational Model (E.F. Codd)",
+                "SQL Development",
+                "Mathematical foundation",
+                "Data independence"
+            ]
+        },
+        {
+            "id": "relational",
+            "name": "Relational Model",
+            "type": "model",
+            "properties": [
+                "Tables and relations",
+                "SQL language",
+                "ACID properties",
+                "Structured data"
+            ]
+        },
+        {
+            "id": "1980s",
+            "name": "1980s Era",
+            "type": "era",
+            "properties": [
+                "Object-Oriented Databases",
+                "Object-Relational Model",
+                "Multimedia support",
+                "Complex data types"
+            ]
+        },
+        {
+            "id": "object",
+            "name": "Object-Oriented Model",
+            "type": "model",
+            "properties": [
+                "Inheritance",
+                "Encapsulation",
+                "Complex objects",
+                "Multimedia data"
+            ]
+        },
+        {
+            "id": "2000s",
+            "name": "2000s and Beyond",
+            "type": "era",
+            "properties": [
+                "NoSQL Movement",
+                "Big Data Era",
+                "Hybrid Models",
+                "Unstructured data"
+            ]
+        },
+        {
+            "id": "nosql",
+            "name": "NoSQL Models",
+            "type": "model",
+            "properties": [
+                "Document stores",
+                "Graph databases",
+                "Key-value stores",
+                "Column-family stores"
+            ]
+        }
+    ],
+    "edges": [
+        {
+            "source": "1960s",
+            "target": "hierarchical",
+            "type": "introduced",
+            "description": "Introduced"
+        },
+        {
+            "source": "1960s",
+            "target": "network",
+            "type": "introduced",
+            "description": "Introduced"
+        },
+        {
+            "source": "1970s",
+            "target": "relational",
+            "type": "introduced",
+            "description": "Introduced"
+        },
+        {
+            "source": "hierarchical",
+            "target": "relational",
+            "type": "evolved",
+            "description": "Evolved to"
+        },
+        {
+            "source": "network",
+            "target": "relational",
+            "type": "evolved",
+            "description": "Evolved to"
+        },
+        {
+            "source": "1980s",
+            "target": "object",
+            "type": "introduced",
+            "description": "Introduced"
+        },
+        {
+            "source": "relational",
+            "target": "object",
+            "type": "influenced",
+            "description": "Influenced"
+        },
+        {
+            "source": "2000s",
+            "target": "nosql",
+            "type": "introduced",
+            "description": "Introduced"
+        },
+        {
+            "source": "object",
+            "target": "nosql",
+            "type": "influenced",
+            "description": "Influenced"
+        }
+    ]
+}

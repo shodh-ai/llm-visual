@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ngrok Connection Test</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        
+        .status-container {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 4px;
+        }
+        
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .status-error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .log-container {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            height: 300px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        
+        .log-entry {
+            margin-bottom: 5px;
+            padding: 5px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .log-info {
+            color: #0c5460;
+        }
+        
+        .log-error {
+            color: #721c24;
+        }
+        
+        .log-success {
+            color: #155724;
+        }
+        
+        button {
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        button:hover {
+            background-color: #0069d9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Ngrok Connection Test</h1>
+        
+        <div id="status" class="status-container status-pending">
+            Checking connection to server...
+        </div>
+        
+        <div>
+            <button id="test-connection">Test Connection</button>
+            <button id="test-socket">Test Socket.IO</button>
+            <button id="test-audio">Test Audio</button>
+        </div>
+        
+        <div id="log" class="log-container"></div>
+    </div>
+    
+    <!-- Load Socket.IO client -->
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    
+    <!-- Load our server configuration -->
+    <script src="/static/js/config.js"></script>
+    
+    <script>
+        // DOM elements
+        const statusElement = document.getElementById('status');
+        const logElement = document.getElementById('log');
+        const testConnectionButton = document.getElementById('test-connection');
+        const testSocketButton = document.getElementById('test-socket');
+        const testAudioButton = document.getElementById('test-audio');
+        
+        // Log function
+        function log(message, type = 'info') {
+            const logEntry = document.createElement('div');
+            logEntry.className = `log-entry log-${type}`;
+            logEntry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logElement.appendChild(logEntry);
+            logElement.scrollTop = logElement.scrollHeight;
+        }
+        
+        // Update status
+        function updateStatus(message, type) {
+            statusElement.textContent = message;
+            statusElement.className = `status-container status-${type}`;
+        }
+        
+        // Get server URL
+        const serverUrl = window.serverConfig ? window.serverConfig.getServerUrl() : window.location.origin;
+        log(`Server URL: ${serverUrl}`);
+        
+        // Test connection
+        testConnectionButton.addEventListener('click', async () => {
+            log('Testing connection to server...');
+            updateStatus('Testing connection...', 'pending');
+            
+            try {
+                const response = await fetch(`${serverUrl}/api/health`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                log(`Server response: ${JSON.stringify(data)}`, 'success');
+                updateStatus('Connection successful!', 'success');
+            } catch (error) {
+                log(`Connection error: ${error.message}`, 'error');
+                updateStatus(`Connection failed: ${error.message}`, 'error');
+            }
+        });
+        
+        // Test Socket.IO
+        testSocketButton.addEventListener('click', () => {
+            log('Testing Socket.IO connection...');
+            updateStatus('Testing Socket.IO...', 'pending');
+            
+            try {
+                // Create Socket.IO connection
+                const socket = io(serverUrl, {
+                    transports: ['websocket', 'polling'],
+                    reconnectionAttempts: 5,
+                    reconnectionDelay: 1000
+                });
+                
+                // Set up event handlers
+                socket.on('connect', () => {
+                    log(`Connected to Socket.IO server with ID: ${socket.id}`, 'success');
+                    updateStatus('Socket.IO connection successful!', 'success');
+                });
+                
+                socket.on('connect_error', (error) => {
+                    log(`Socket.IO connection error: ${error.message}`, 'error');
+                    updateStatus(`Socket.IO connection failed: ${error.message}`, 'error');
+                });
+                
+                socket.on('disconnect', (reason) => {
+                    log(`Disconnected from Socket.IO server: ${reason}`, 'info');
+                });
+                
+                // Disconnect after 5 seconds
+                setTimeout(() => {
+                    log('Disconnecting from Socket.IO server...', 'info');
+                    socket.disconnect();
+                }, 5000);
+            } catch (error) {
+                log(`Socket.IO error: ${error.message}`, 'error');
+                updateStatus(`Socket.IO error: ${error.message}`, 'error');
+            }
+        });
+        
+        // Test Audio
+        testAudioButton.addEventListener('click', async () => {
+            log('Testing audio playback...');
+            updateStatus('Testing audio...', 'pending');
+            
+            try {
+                // Create a simple audio element
+                const audio = new Audio();
+                
+                // Set up event handlers
+                audio.addEventListener('canplaythrough', () => {
+                    log('Audio loaded and can play through', 'success');
+                    updateStatus('Audio loaded successfully!', 'success');
+                    audio.play().catch(error => {
+                        log(`Auto-play failed: ${error.message}. Click to play manually.`, 'error');
+                    });
+                });
+                
+                audio.addEventListener('error', (e) => {
+                    log(`Audio error: ${audio.error?.message || 'Unknown error'}`, 'error');
+                    updateStatus(`Audio error: ${audio.error?.message || 'Unknown error'}`, 'error');
+                });
+                
+                // Try to load a test audio file
+                audio.src = `${serverUrl}/static/audio/test.mp3`;
+                audio.load();
+                
+                // Add the audio element to the page
+                audio.controls = true;
+                audio.style.width = '100%';
+                audio.style.marginTop = '10px';
+                
+                const audioContainer = document.createElement('div');
+                audioContainer.style.marginTop = '20px';
+                audioContainer.appendChild(audio);
+                
+                document.querySelector('.container').appendChild(audioContainer);
+            } catch (error) {
+                log(`Audio test error: ${error.message}`, 'error');
+                updateStatus(`Audio test error: ${error.message}`, 'error');
+            }
+        });
+        
+        // Initial connection test
+        window.addEventListener('DOMContentLoaded', async () => {
+            log('Page loaded, checking server configuration...');
+            
+            if (window.serverConfig) {
+                log(`Server configuration loaded. Using ${window.serverConfig.USE_NGROK ? 'ngrok URL' : 'local server'}`);
+                log(`Server URL: ${serverUrl}`);
+            } else {
+                log('Server configuration not found, using default URL', 'error');
+            }
+            
+            // Automatically test the connection
+            testConnectionButton.click();
+        });
+    </script>
+</body>
+</html> 

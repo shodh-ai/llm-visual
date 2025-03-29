@@ -1,0 +1,81 @@
+{
+    "topic":"heirarchical",
+    "nodes": [
+        {
+            "id": "root",
+            "name": "University",
+            "type": "root",
+            "properties": [
+                "institution_id",
+                "name",
+                "location"
+            ]
+        },
+        {
+            "id": "college",
+            "name": "College",
+            "type": "branch",
+            "properties": [
+                "college_id",
+                "name",
+                "dean"
+            ]
+        },
+        {
+            "id": "department",
+            "name": "Department",
+            "type": "branch",
+            "properties": [
+                "dept_id",
+                "name",
+                "head"
+            ]
+        },
+        {
+            "id": "course",
+            "name": "Course",
+            "type": "leaf",
+            "properties": [
+                "course_id",
+                "title",
+                "credits"
+            ]
+        },
+        {
+            "id": "faculty",
+            "name": "Faculty",
+            "type": "leaf",
+            "properties": [
+                "faculty_id",
+                "name",
+                "rank"
+            ]
+        }
+    ],
+    "edges": [
+        {
+            "source": "root",
+            "target": "college",
+            "type": "parent_child",
+            "description": "University contains multiple colleges"
+        },
+        {
+            "source": "college",
+            "target": "department",
+            "type": "parent_child",
+            "description": "College contains multiple departments"
+        },
+        {
+            "source": "department",
+            "target": "course",
+            "type": "parent_child",
+            "description": "Department offers multiple courses"
+        },
+        {
+            "source": "department",
+            "target": "faculty",
+            "type": "parent_child",
+            "description": "Department has multiple faculty members"
+        }
+    ]
+}

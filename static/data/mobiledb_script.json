@@ -1,0 +1,15 @@
+{
+    "script": "Mobile databases are at the heart of modern mobile applications, offering efficient and secure data management directly on your device. They come in several types, including Embedded Databases that reside within the app for fast local storage, Client-Server Databases where the mobile device connects to remote servers for advanced processing, NoSQL Databases that provide flexible, schema-less storage, and Cloud-based Databases that offer scalable, managed services. Key features include robust local storage, seamless data synchronization, optimized performance for resource-constrained environments, and enhanced security measures designed for mobile use. The benefits of these systems are evident in improved responsiveness, offline capabilities, and reduced latency, while challenges such as battery consumption, network variability, and security risks require careful management. Mobile databases find applications in personal data management, social networking, enterprise solutions, and location-based services—making them indispensable in today’s dynamic mobile landscape. You can hover over any node in the animation to find a brief discription about each type of mobile database.",
+    "component_mappings": {
+      "mobile": "Mobile Database",
+      "embedded": "Embedded Databases",
+      "client-server": "Client-Server Databases",
+      "nosql": "NoSQL Databases",
+      "cloud": "Cloud-based Databases",
+      "features": "Features",
+      "benefits": "Benefits",
+      "challenges": "Challenges",
+      "applications": "Applications"
+    }
+  }
+  

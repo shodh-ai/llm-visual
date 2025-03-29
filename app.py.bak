@@ -1,0 +1,248 @@
+#app.py
+from pydantic import BaseModel, Field
+from openai import OpenAI
+import os
+from dotenv import load_dotenv
+import logging
+import json
+import argparse
+import sys
+from typing import List, Optional, Union
+from pathlib import Path
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# Load environment variables
+load_dotenv()
+
+# Define data models
+class VisualizationNode(BaseModel):
+    id: str
+    name: str
+    type: Optional[str] = None
+    attributes: Optional[List[dict]] = None
+
+class VisualizationEdge(BaseModel):
+    source: str
+    target: str
+    type: str
+    description: Optional[str] = None
+
+class WordTiming(BaseModel):
+    word: str
+    start_time: int = Field(description="Time in milliseconds from start")
+    end_time: int = Field(description="Time in milliseconds from start")
+    node_id: Optional[Union[str, List[str]]] = Field(None, description="ID of the node(s) to highlight")
+
+class VisualizationData(BaseModel):
+    nodes: List[VisualizationNode]
+    edges: List[VisualizationEdge]
+    topic: str
+    narration: Optional[str] = None
+    narration_timestamps: Optional[List[WordTiming]] = None
+
+class DoubtResponse(BaseModel):
+    narration: Optional[str] = None
+    narration_timestamps: Optional[List[WordTiming]] = None
+    highlights: Optional[List[str]] = None
+
+# Helper functions
+def generate_word_timings(text: str) -> List[WordTiming]:
+    """Generate simple word timings for narration."""
+    words = text.split()
+    total_duration = len(words) * 500  # Approximate 500ms per word
+    
+    timings = []
+    current_time = 0
+    
+    for word in words:
+        word_duration = len(word) * 30 + 200  # Longer words take more time
+        
+        timing = WordTiming(
+            word=word,
+            start_time=current_time,
+            end_time=current_time + word_duration
+        )
+        
+        timings.append(timing)
+        current_time += word_duration
+    
+    return timings
+
+def load_visualization_data(topic: str) -> VisualizationData:
+    """Load visualization data for a given topic."""
+    try:
+        # For the ER model, return a simple mock dataset
+        if topic == 'er':
+            # Create a simple ER diagram with entities and relationships
+            nodes = [
+                VisualizationNode(
+                    id="student",
+                    name="Student",
+                    type="entity",
+                    attributes=[
+                        {"name": "student_id", "isKey": True},
+                        {"name": "name", "isKey": False},
+                        {"name": "email", "isKey": False}
+                    ]
+                ),
+                VisualizationNode(
+                    id="course",
+                    name="Course",
+                    type="entity",
+                    attributes=[
+                        {"name": "course_id", "isKey": True},
+                        {"name": "title", "isKey": False},
+                        {"name": "credits", "isKey": False}
+                    ]
+                ),
+                VisualizationNode(
+                    id="enrollment",
+                    name="Enrolls",
+                    type="relationship"
+                )
+            ]
+            
+            edges = [
+                VisualizationEdge(
+                    source="student",
+                    target="enrollment",
+                    type="participates"
+                ),
+                VisualizationEdge(
+                    source="enrollment",
+                    target="course",
+                    type="participates"
+                )
+            ]
+            
+            # Create a simple narration
+            narration = "This Entity-Relationship diagram shows a Student entity connected to a Course entity through an Enrollment relationship. Each Student has attributes like student_id (primary key), name, and email. Each Course has attributes like course_id (primary key), title, and credits. The Enrollment relationship represents how students enroll in courses."
+            
+            # Generate simple word timings
+            narration_timestamps = generate_word_timings(narration)
+            
+            return VisualizationData(
+                nodes=nodes,
+                edges=edges,
+                topic=topic,
+                narration=narration,
+                narration_timestamps=narration_timestamps
+            )
+        
+        # For other topics, return a simple message
+        return VisualizationData(
+            nodes=[VisualizationNode(id="info", name=f"No data for {topic}", type="info")],
+            edges=[],
+            topic=topic,
+            narration=f"No visualization data available for {topic}. Please select another topic."
+        )
+    
+    except Exception as e:
+        logger.error(f"Error loading visualization data for {topic}: {str(e)}")
+        # Return a minimal valid response instead of raising an exception
+        return VisualizationData(
+            nodes=[VisualizationNode(id="error", name="Error", type="error")],
+            edges=[],
+            topic=topic,
+            narration=f"Error loading visualization: {str(e)}"
+        )
+
+def process_doubt(topic: str, doubt: str) -> DoubtResponse:
+    """Process a doubt about a visualization."""
+    try:
+        # Load the visualization data
+        viz_data = load_visualization_data(topic)
+        
+        # Try to use OpenAI to generate a response
+        try:
+            client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+            
+            # Prepare the prompt
+            prompt = f"""
+            Topic: {topic}
+            Doubt: {doubt}
+            
+            Visualization data:
+            Nodes: {viz_data.nodes}
+            Edges: {viz_data.edges}
+            
+            Please provide a clear explanation addressing this doubt about the visualization.
+            """
+            
+            # Get the response
+            response = client.chat.completions.create(
+                model="gpt-3.5-turbo",
+                messages=[
+                    {"role": "system", "content": "You are a helpful assistant explaining database visualizations."},
+                    {"role": "user", "content": prompt}
+                ]
+            )
+            
+            narration = response.choices[0].message.content
+        except Exception as api_error:
+            logger.error(f"OpenAI API error: {str(api_error)}")
+            # Fallback to a generic response
+            narration = f"I couldn't process your question about '{doubt}' due to a technical issue. The visualization shows {len(viz_data.nodes)} nodes and {len(viz_data.edges)} edges representing a {topic} diagram."
+        
+        # Generate word timings
+        narration_timestamps = generate_word_timings(narration)
+        
+        # Find relevant nodes to highlight
+        highlights = []
+        for node in viz_data.nodes:
+            if node.name.lower() in doubt.lower() or node.id.lower() in doubt.lower():
+                highlights.append(node.id)
+        
+        return DoubtResponse(
+            narration=narration,
+            narration_timestamps=narration_timestamps,
+            highlights=highlights
+        )
+    
+    except Exception as e:
+        logger.error(f"Error processing doubt: {str(e)}")
+        # Return a valid response even in case of error
+        return DoubtResponse(
+            narration=f"Sorry, I couldn't process your question about '{doubt}'. Please try again or ask a different question.",
+            narration_timestamps=[],
+            highlights=[]
+        )
+
+def main():
+    parser = argparse.ArgumentParser(description="Database Visualization CLI")
+    parser.add_argument("--topic", help="Topic to visualize")
+    parser.add_argument("--doubt", help="Doubt to process")
+    
+    args = parser.parse_args()
+    
+    try:
+        if args.topic and args.doubt:
+            # Process doubt
+            result = process_doubt(args.topic, args.doubt)
+            try:
+                # Try to use model_dump() first (Pydantic v2)
+                print(json.dumps(result.model_dump()))
+            except AttributeError:
+                # Fall back to dict() for older Pydantic versions
+                print(json.dumps(result.dict()))
+        elif args.topic:
+            # Load visualization
+            result = load_visualization_data(args.topic)
+            try:
+                # Try to use model_dump() first (Pydantic v2)
+                print(json.dumps(result.model_dump()))
+            except AttributeError:
+                # Fall back to dict() for older Pydantic versions
+                print(json.dumps(result.dict()))
+        else:
+            print(json.dumps({"error": "No topic specified"}))
+    
+    except Exception as e:
+        print(json.dumps({"error": str(e)}), file=sys.stderr)
+        sys.exit(1)
+
+if __name__ == "__main__":
+    main()

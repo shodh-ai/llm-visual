@@ -1,0 +1,51 @@
+{
+  "script": "Let's explore the shared memory architecture, where multiple processors efficiently access a common memory space.\n\n1. The system consists of multiple CPUs, each capable of executing tasks independently while having direct access to shared memory.\n\n2. The CPUs communicate through an 'Interconnection Network', which facilitates data exchange between processing units and shared resources.\n\n3. A central 'Shared Memory' module serves as a unified data store accessible by all CPUs, allowing efficient data sharing and coordination.\n\n4. The interconnection network also connects to multiple 'DISK' units, ensuring data persistence and enabling efficient input/output operations.\n\n5. This architecture enhances performance for parallel computing tasks by reducing redundancy in memory storage and improving communication efficiency.\n\nThrough this visualization, we see how shared memory enables efficient multi-processor collaboration while maintaining data consistency.",
+  "narration_timestamps": [
+    {
+      "word": "Introduction",
+      "start_time": 0,
+      "end_time": 5000,
+      "node_id": null
+    },
+    {
+      "word": "Multiple CPUs",
+      "start_time": 5000,
+      "end_time": 10000,
+      "node_ids": ["cpu1", "cpu2", "cpu3", "cpu4"]
+    },
+    {
+      "word": "Interconnection Network",
+      "start_time": 10000,
+      "end_time": 15000,
+      "node_id": "network"
+    },
+    {
+      "word": "Shared Memory",
+      "start_time": 15000,
+      "end_time": 20000,
+      "node_id": "sharedMemory"
+    },
+    {
+      "word": "Disk Storage",
+      "start_time": 20000,
+      "end_time": 25000,
+      "node_ids": ["disk1", "disk2"]
+    },
+    {
+      "word": "Performance Benefits",
+      "start_time": 25000,
+      "end_time": 30000,
+      "node_id": null
+    }
+  ],
+  "component_mappings": {
+      "cpu1": "CPU",
+      "cpu2": "CPU",
+      "cpu3": "CPU",
+      "cpu4": "CPU",
+      "network": "interconnection network",
+      "disk1": "disk storage",
+      "disk2": "disk storage",
+      "sharedMemory": "shared memory"
+  }
+}

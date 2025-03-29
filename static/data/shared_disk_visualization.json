@@ -1,0 +1,132 @@
+{
+    "nodes": [
+      {
+        "id": "memory1",
+        "name": "Private Memory",
+        "type": "memory"
+      },
+      {
+        "id": "memory2",
+        "name": "Private Memory",
+        "type": "memory"
+      },
+      {
+        "id": "memory3",
+        "name": "Private Memory",
+        "type": "memory"
+      },
+      {
+        "id": "memory4",
+        "name": "Private Memory",
+        "type": "memory"
+      },
+      {
+        "id": "cpu1",
+        "name": "CPU",
+        "type": "cpu"
+      },
+      {
+        "id": "cpu2",
+        "name": "CPU",
+        "type": "cpu"
+      },
+      {
+        "id": "cpu3",
+        "name": "CPU",
+        "type": "cpu"
+      },
+      {
+        "id": "cpu4",
+        "name": "CPU",
+        "type": "cpu"
+      },
+      {
+        "id": "network",
+        "name": "INTERCONNECTION NETWORK",
+        "type": "network"
+      },
+      {
+        "id": "disk1",
+        "name": "DISK",
+        "type": "disk"
+      },
+      {
+        "id": "disk2",
+        "name": "DISK",
+        "type": "disk"
+      },
+      {
+        "id": "disk3",
+        "name": "DISK",
+        "type": "disk"
+      }
+    ],
+    "edges": [
+      {
+        "source": "memory1",
+        "target": "cpu1",
+        "type": "bidirectional",
+        "description": "Memory-CPU"
+      },
+      {
+        "source": "memory2",
+        "target": "cpu2",
+        "type": "bidirectional",
+        "description": "Memory-CPU"
+      },
+      {
+        "source": "memory3",
+        "target": "cpu3",
+        "type": "bidirectional",
+        "description": "Memory-CPU"
+      },
+      {
+        "source": "memory4",
+        "target": "cpu4",
+        "type": "bidirectional",
+        "description": "Memory-CPU"
+      },
+      {
+        "source": "cpu1",
+        "target": "network",
+        "type": "bidirectional",
+        "description": "CPU-Network"
+      },
+      {
+        "source": "cpu2",
+        "target": "network",
+        "type": "bidirectional",
+        "description": "CPU-Network"
+      },
+      {
+        "source": "cpu3",
+        "target": "network",
+        "type": "bidirectional",
+        "description": "CPU-Network"
+      },
+      {
+        "source": "cpu4",
+        "target": "network",
+        "type": "bidirectional",
+        "description": "CPU-Network"
+      },
+      {
+        "source": "network",
+        "target": "disk1",
+        "type": "bidirectional",
+        "description": "Network-Disk"
+      },
+      {
+        "source": "network",
+        "target": "disk2",
+        "type": "bidirectional",
+        "description": "Network-Disk"
+      },
+      {
+        "source": "network",
+        "target": "disk3",
+        "type": "bidirectional",
+        "description": "Network-Disk"
+      }
+    ]
+  }

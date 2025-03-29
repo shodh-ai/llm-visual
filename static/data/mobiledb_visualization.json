@@ -1,0 +1,72 @@
+{
+    "nodes": [
+      {
+        "id": "root",
+        "name": "Mobile Database",
+        "type": "root",
+        "properties": [
+          "Stores data locally",
+          "Syncs with remote sources",
+          "Optimized for mobile devices"
+        ]
+      },
+      {
+        "id": "embedded",
+        "name": "Embedded Databases",
+        "type": "branch",
+        "properties": [
+          "These databases are integrated directly into mobile applications."
+        ]
+      },
+      {
+        "id": "client-server",
+        "name": "Client-Server Databases",
+        "type": "branch",
+        "properties": [
+          "The mobile device acts as a client that connects to a remote server, where the main database resides."
+        ]
+      },
+      {
+        "id": "nosql",
+        "name": "NoSQL Databases",
+        "type": "branch",
+        "properties": [
+          "These databases are designed to handle unstructured data and provide more flexibility than traditional SQL databases."
+        ]
+      },
+      {
+        "id": "cloud",
+        "name": "Cloud-based Databases",
+        "type": "branch",
+        "properties": [
+          "These databases are hosted on cloud platforms and provide managed services for data storage and access."
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "source": "root",
+        "target": "embedded",
+        "type": "type",
+        "description": "Local storage"
+      },
+      {
+        "source": "root",
+        "target": "client-server",
+        "type": "type",
+        "description": "Remote access"
+      },
+      {
+        "source": "root",
+        "target": "nosql",
+        "type": "type",
+        "description": "Flexible schema"
+      },
+      {
+        "source": "root",
+        "target": "cloud",
+        "type": "type",
+        "description": "Managed services"
+      }
+    ]
+  }

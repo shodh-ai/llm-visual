@@ -1,0 +1,3 @@
+{
+  "script": "This is a simple Entity-Relationship diagram showing the relationship between Students and Courses. Students can enroll in multiple courses, and courses can have multiple students enrolled."
+} 

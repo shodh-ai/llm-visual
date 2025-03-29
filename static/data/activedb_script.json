@@ -1,0 +1,136 @@
+{
+    "script": "Let me explain the differences between traditional and active databases and what are triggers and how they enhance database functionality. Traditional databases are designed primarily as passive data repositories: users or applications must manually execute operations like updates, insertions, or deletions. In contrast, active databases are built to be proactive. They incorporate triggers, rules, and automated actions that respond immediately to events without manual intervention. When a specific event occurs – for example, when a new record is inserted or data is modified – an active database automatically checks defined conditions and executes corresponding actions. This is known as the Event-Condition-Action (ECA) paradigm. Active databases consist of several key components: an event monitoring system that detects changes, a rule system that defines the conditions under which actions should be executed, and an action execution system that carries out the predefined operations. The types of rules can include assertion rules that maintain data integrity, production rules that enable expert system functionalities, and the widely used ECA rules. These features not only ensure greater consistency and reliability but also make active databases ideal for real-time applications such as fraud detection, e-commerce, and healthcare systems. In summary, active databases represent an evolution over traditional systems by embedding intelligence directly into the data management layer, thereby automating routine tasks and providing a more dynamic, responsive system.",
+    "timestamps": [
+        {
+            "word": "traditional",
+            "start_time": 1000,
+            "end_time": 1500,
+            "node_id": "manual_db"
+        },
+        {
+            "word": "active databases",
+            "start_time": 3000,
+            "end_time": 3500,
+            "node_id": "active_db"
+        },
+        {
+            "word": "triggers",
+            "start_time": 4000,
+            "end_time": 4500,
+            "node_id": "trigger"
+        },
+        {
+            "word": "rules",
+            "start_time": 4500,
+            "end_time": 5000,
+            "node_id": "rules"
+        },
+        {
+            "word": "events",
+            "start_time": 5000,
+            "end_time": 5500,
+            "node_id": "event"
+        },
+        {
+            "word": "Event-Condition-Action",
+            "start_time": 8000,
+            "end_time": 9000,
+            "node_id": "eca_paradigm"
+        },
+        {
+            "word": "components",
+            "start_time": 10000,
+            "end_time": 10500,
+            "node_id": "components"
+        },
+        {
+            "word": "applications",
+            "start_time": 15000,
+            "end_time": 15500,
+            "node_id": "applications"
+        }
+    ],
+    "animation_states": [
+        {
+            "component_id": "manual_db",
+            "state": {
+                "highlighted": true,
+                "opacity": 1,
+                "scale": 1.2,
+                "strokeColor": "#4299e1"
+            },
+            "duration": 2000
+        },
+        {
+            "component_id": "active_db",
+            "state": {
+                "highlighted": true,
+                "opacity": 1,
+                "scale": 1.2,
+                "strokeColor": "#48bb78"
+            },
+            "duration": 2000
+        },
+        {
+            "component_id": "trigger",
+            "state": {
+                "highlighted": true,
+                "opacity": 1,
+                "scale": 1.1,
+                "strokeColor": "#ed8936"
+            },
+            "duration": 1500
+        },
+        {
+            "component_id": "rules",
+            "state": {
+                "highlighted": true,
+                "opacity": 1,
+                "scale": 1.1,
+                "strokeColor": "#ed8936"
+            },
+            "duration": 1500
+        },
+        {
+            "component_id": "event",
+            "state": {
+                "highlighted": true,
+                "opacity": 1,
+                "scale": 1.1,
+                "strokeColor": "#ed8936"
+            },
+            "duration": 1500
+        },
+        {
+            "component_id": "eca_paradigm",
+            "state": {
+                "highlighted": true,
+                "opacity": 1,
+                "scale": 1.2,
+                "strokeColor": "#805ad5"
+            },
+            "duration": 2000
+        },
+        {
+            "component_id": "components",
+            "state": {
+                "highlighted": true,
+                "opacity": 1,
+                "scale": 1.1,
+                "strokeColor": "#38b2ac"
+            },
+            "duration": 2000
+        },
+        {
+            "component_id": "applications",
+            "state": {
+                "highlighted": true,
+                "opacity": 1,
+                "scale": 1.1,
+                "strokeColor": "#667eea"
+            },
+            "duration": 2000
+        }
+    ]
+}
+  

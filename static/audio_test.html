@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Playback Test</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        
+        .audio-container {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border: 2px solid #4CAF50;
+        }
+        
+        .audio-player {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        
+        .play-button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            display: block;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        
+        .play-button:hover {
+            background-color: #45a049;
+        }
+        
+        .status {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .status-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .status-error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .log-container {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            height: 200px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        
+        .log-entry {
+            margin-bottom: 5px;
+            padding: 5px;
+            border-bottom: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Audio Playback Test</h1>
+        
+        <div class="audio-container">
+            <h3>Test 1: Direct Audio Element</h3>
+            <audio id="direct-audio" class="audio-player" controls></audio>
+            <button id="direct-play-btn" class="play-button">Play Direct Audio</button>
+            <div id="direct-status" class="status"></div>
+        </div>
+        
+        <div class="audio-container">
+            <h3>Test 2: Audio from Blob</h3>
+            <audio id="blob-audio" class="audio-player" controls></audio>
+            <button id="blob-play-btn" class="play-button">Play Blob Audio</button>
+            <div id="blob-status" class="status"></div>
+        </div>
+        
+        <div class="audio-container">
+            <h3>Test 3: Socket.IO Audio</h3>
+            <audio id="socket-audio" class="audio-player" controls></audio>
+            <button id="socket-play-btn" class="play-button">Request Audio from Server</button>
+            <div id="socket-status" class="status"></div>
+        </div>
+        
+        <div class="log-container" id="log"></div>
+    </div>
+    
+    <!-- Load Socket.IO client -->
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    
+    <!-- Load our server configuration -->
+    <script src="/static/js/config.js"></script>
+    
+    <script>
+        // DOM elements
+        const directAudio = document.getElementById('direct-audio');
+        const directPlayBtn = document.getElementById('direct-play-btn');
+        const directStatus = document.getElementById('direct-status');
+        
+        const blobAudio = document.getElementById('blob-audio');
+        const blobPlayBtn = document.getElementById('blob-play-btn');
+        const blobStatus = document.getElementById('blob-status');
+        
+        const socketAudio = document.getElementById('socket-audio');
+        const socketPlayBtn = document.getElementById('socket-play-btn');
+        const socketStatus = document.getElementById('socket-status');
+        
+        const logContainer = document.getElementById('log');
+        
+        // Log function
+        function log(message) {
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logContainer.appendChild(entry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+            console.log(message);
+        }
+        
+        // Update status
+        function updateStatus(element, message, isError = false) {
+            element.textContent = message;
+            element.className = isError ? 'status status-error' : 'status status-success';
+            log(message);
+        }
+        
+        // Get server URL
+        const serverUrl = window.serverConfig ? window.serverConfig.getServerUrl() : window.location.origin;
+        log(`Using server URL: ${serverUrl}`);
+        
+        // Test 1: Direct Audio Element
+        directPlayBtn.addEventListener('click', () => {
+            try {
+                // Set the audio source to a test MP3 file
+                directAudio.src = `${serverUrl}/static/audio/test.mp3`;
+                directAudio.load();
+                
+                updateStatus(directStatus, 'Audio loaded, attempting to play...');
+                
+                // Try to play the audio
+                directAudio.play()
+                    .then(() => {
+                        updateStatus(directStatus, 'Audio playing successfully!');
+                    })
+                    .catch(error => {
+                        updateStatus(directStatus, `Error playing audio: ${error.message}`, true);
+                    });
+            } catch (error) {
+                updateStatus(directStatus, `Error setting up audio: ${error.message}`, true);
+            }
+        });
+        
+        // Test 2: Audio from Blob
+        blobPlayBtn.addEventListener('click', async () => {
+            try {
+                // Fetch an audio file and create a blob
+                updateStatus(blobStatus, 'Fetching audio file...');
+                
+                const response = await fetch(`${serverUrl}/static/audio/test.mp3`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const arrayBuffer = await response.arrayBuffer();
+                const audioBlob = new Blob([arrayBuffer], { type: 'audio/mpeg' });
+                
+                updateStatus(blobStatus, `Created audio blob of size: ${audioBlob.size} bytes`);
+                
+                // Create an object URL from the blob
+                const audioUrl = URL.createObjectURL(audioBlob);
+                blobAudio.src = audioUrl;
+                blobAudio.load();
+                
+                updateStatus(blobStatus, 'Audio blob loaded, attempting to play...');
+                
+                // Try to play the audio
+                blobAudio.play()
+                    .then(() => {
+                        updateStatus(blobStatus, 'Audio blob playing successfully!');
+                    })
+                    .catch(error => {
+                        updateStatus(blobStatus, `Error playing audio blob: ${error.message}`, true);
+                    });
+            } catch (error) {
+                updateStatus(blobStatus, `Error with audio blob: ${error.message}`, true);
+            }
+        });
+        
+        // Test 3: Socket.IO Audio
+        socketPlayBtn.addEventListener('click', () => {
+            try {
+                updateStatus(socketStatus, 'Connecting to Socket.IO server...');
+                
+                // Connect to Socket.IO server
+                const socket = io(serverUrl, {
+                    transports: ['websocket', 'polling'],
+                    reconnectionAttempts: 5,
+                    reconnectionDelay: 1000
+                });
+                
+                // Audio chunks array
+                const audioChunks = [];
+                
+                // Set up event handlers
+                socket.on('connect', () => {
+                    updateStatus(socketStatus, `Connected to Socket.IO server with ID: ${socket.id}`);
+                    
+                    // Request narration
+                    socket.emit('narration', {
+                        topic: 'businesspolicy',
+                        text: 'This is a test of the audio playback system. If you can hear this message, the audio is working correctly.'
+                    });
+                    
+                    updateStatus(socketStatus, 'Requested audio narration from server');
+                });
+                
+                socket.on('connect_error', (error) => {
+                    updateStatus(socketStatus, `Socket.IO connection error: ${error.message}`, true);
+                });
+                
+                socket.on('status', (status) => {
+                    updateStatus(socketStatus, `Server status: ${status.message}`);
+                });
+                
+                socket.on('audio_header', (headerInfo) => {
+                    log(`Received audio header: ${JSON.stringify(headerInfo)}`);
+                    // Reset audio chunks when a new stream starts
+                    audioChunks.length = 0;
+                });
+                
+                socket.on('audio_chunk', (chunk) => {
+                    // Handle binary data
+                    if (chunk instanceof ArrayBuffer) {
+                        audioChunks.push(chunk);
+                        log(`Received audio chunk of size: ${chunk.byteLength} bytes`);
+                    } else {
+                        log(`Received non-binary chunk: ${typeof chunk}`);
+                    }
+                });
+                
+                socket.on('error', (error) => {
+                    updateStatus(socketStatus, `Server error: ${error.message}`, true);
+                });
+                
+                socket.on('end', (data) => {
+                    log(`Received end signal: ${JSON.stringify(data)}`);
+                    
+                    if (audioChunks.length > 0) {
+                        // Combine chunks into a blob
+                        const audioBlob = new Blob(audioChunks, { type: 'audio/mpeg' });
+                        const audioUrl = URL.createObjectURL(audioBlob);
+                        
+                        updateStatus(socketStatus, `Created audio blob of size: ${audioBlob.size} bytes`);
+                        
+                        // Set the audio source
+                        socketAudio.src = audioUrl;
+                        socketAudio.load();
+                        
+                        // Try to play the audio
+                        socketAudio.play()
+                            .then(() => {
+                                updateStatus(socketStatus, 'Socket.IO audio playing successfully!');
+                            })
+                            .catch(error => {
+                                updateStatus(socketStatus, `Error playing Socket.IO audio: ${error.message}. Click play button on the audio player.`, true);
+                            });
+                    } else {
+                        updateStatus(socketStatus, 'No audio chunks received from server', true);
+                    }
+                    
+                    // Disconnect from the server
+                    socket.disconnect();
+                });
+            } catch (error) {
+                updateStatus(socketStatus, `Error with Socket.IO: ${error.message}`, true);
+            }
+        });
+        
+        // Set up audio event listeners
+        [directAudio, blobAudio, socketAudio].forEach(audio => {
+            audio.addEventListener('play', () => {
+                log(`Audio playing: ${audio.id}`);
+            });
+            
+            audio.addEventListener('pause', () => {
+                log(`Audio paused: ${audio.id}`);
+            });
+            
+            audio.addEventListener('ended', () => {
+                log(`Audio ended: ${audio.id}`);
+            });
+            
+            audio.addEventListener('error', (e) => {
+                log(`Audio error (${audio.id}): ${audio.error?.message || 'Unknown error'}`);
+            });
+        });
+        
+        // Log initial state
+        log('Audio test page loaded');
+    </script>
+</body>
+</html> 

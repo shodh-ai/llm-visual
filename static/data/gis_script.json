@@ -1,0 +1,17 @@
+{
+    "script": "This visualization presents a Geographic Information System (GIS), highlighting its definition, importance, and key components. A GIS is an integrated system for capturing, storing, managing, analyzing, and visualizing geographic data. It helps users make informed decisions based on spatial and non-spatial data, improves operational efficiency through spatial analysis, and supports various industries including urban planning, environmental management, and disaster response. The key components of GIS include Hardware (e.g., GPS Devices), Software (e.g., Google Earth), Data (e.g., Aerial Imagery), People (e.g., GIS Analyst), and Methods (e.g., Spatial Analysis), each playing a crucial role in enabling the system to analyze and visualize geographic information.",
+    "component_mappings": {
+      "gis": "gis",
+      "hardware": "hardware",
+      "software": "software",
+      "data": "data",
+      "people": "people",
+      "methods": "methods",
+      "google earth": "software",
+      "gps": "hardware",
+      "aerial imagery": "data",
+      "gis analyst": "people",
+      "spatial analysis": "methods"
+    }
+  }
+  

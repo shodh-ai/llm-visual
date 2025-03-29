@@ -1,0 +1,73 @@
+{
+    "script": "Let me walk you through the Entity-Relationship visualization. First, we have a Student entity that represents all students in our system. Each student has attributes like name, ID, and email. Next, we'll look at the Course entity, which contains information about different courses. Finally, we'll see how these entities are related through the Study relationship.",
+    "timestamps": [
+        {
+            "word": "Let",
+            "start_time": 0,
+            "end_time": 200
+        },
+        {
+            "word": "Student",
+            "start_time": 1000,
+            "end_time": 1500,
+            "node_id": "student-entity"
+        },
+        {
+            "word": "attributes",
+            "start_time": 2000,
+            "end_time": 3000,
+            "node_id": "student-attributes"
+        },
+        {
+            "word": "Course",
+            "start_time": 4000,
+            "end_time": 4500,
+            "node_id": "course-entity"
+        },
+        {
+            "word": "Study",
+            "start_time": 6000,
+            "end_time": 6500,
+            "node_id": "study-relationship"
+        }
+    ],
+    "animation_states": [
+        {
+            "component_id": "student-entity",
+            "state": {
+                "highlighted": true,
+                "opacity": 1,
+                "scale": 1.2
+            },
+            "duration": 1500
+        },
+        {
+            "component_id": "student-attributes",
+            "state": {
+                "highlighted": true,
+                "opacity": 1,
+                "textColor": "#4299e1"
+            },
+            "duration": 1000
+        },
+        {
+            "component_id": "course-entity",
+            "state": {
+                "highlighted": true,
+                "opacity": 1,
+                "scale": 1.2
+            },
+            "duration": 1500
+        },
+        {
+            "component_id": "study-relationship",
+            "state": {
+                "highlighted": true,
+                "opacity": 1,
+                "strokeWidth": 3,
+                "strokeColor": "#4299e1"
+            },
+            "duration": 1500
+        }
+    ]
+}

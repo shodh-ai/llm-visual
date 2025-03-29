@@ -1,0 +1,86 @@
+{
+    "nodes": [
+        {
+            "id": "manual_db",
+            "name": "Traditional Database",
+            "type": "root",
+            "properties": [
+                "Requires manual updates",
+                "Slower response time",
+                "Higher risk of inconsistency"
+            ]
+        },
+        {
+            "id": "active_db",
+            "name": "Active Database",
+            "type": "root",
+            "properties": [
+                "Automatically updates",
+                "Faster response time",
+                "Ensures consistency"
+            ]
+        },
+        {
+            "id": "user_manual",
+            "name": "User Input (Manual)",
+            "type": "branch",
+            "properties": [
+                "Data entered manually",
+                "Delays in updates"
+            ]
+        },
+        {
+            "id": "trigger_auto",
+            "name": "Trigger Mechanism",
+            "type": "branch",
+            "properties": [
+                "Automatically detects changes",
+                "Executes predefined actions"
+            ]
+        },
+        {
+            "id": "update_manual",
+            "name": "Update Process (Manual)",
+            "type": "leaf",
+            "properties": [
+                "Admin manually modifies records",
+                "Potential delays/errors"
+            ]
+        },
+        {
+            "id": "update_auto",
+            "name": "Real-time Update",
+            "type": "leaf",
+            "properties": [
+                "Instantly updates relevant data",
+                "Ensures accuracy"
+            ]
+        }
+    ],
+    "edges": [
+        {
+            "source": "manual_db",
+            "target": "user_manual",
+            "type": "parent_child",
+            "description": "Traditional DB relies on user input"
+        },
+        {
+            "source": "active_db",
+            "target": "trigger_auto",
+            "type": "parent_child",
+            "description": "Active DB uses triggers"
+        },
+        {
+            "source": "user_manual",
+            "target": "update_manual",
+            "type": "parent_child",
+            "description": "Manual input leads to delayed updates"
+        },
+        {
+            "source": "trigger_auto",
+            "target": "update_auto",
+            "type": "parent_child",
+            "description": "Triggers enable real-time updates"
+        }
+    ]
+}

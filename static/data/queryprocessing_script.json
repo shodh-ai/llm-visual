@@ -1,0 +1,10 @@
+{
+    "script": "This visualization represents the query processing and optimization in a relational database. It shows how table scans, join operations, and filters work together to execute a complex query. The optimizer determines the best join order and strategy to efficiently handle large volumes of rows, ensuring optimal performance.",
+    "component_mappings": {
+      "users": "users_scan",
+      "orders": "orders_scan",
+      "join": "join_users_orders",
+      "filter": "filter_high_amount"
+    }
+  }
+  

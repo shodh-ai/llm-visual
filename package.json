@@ -1,0 +1,44 @@
+{
+  "name": "llm-visual",
+  "version": "1.0.0",
+  "description": "Interactive database visualization with real-time communication",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:server": "node server.js",
+    "dev:client": "vite client",
+    "build": "vite build client",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "d3": "^7.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "socket.io": "^4.7.2",
+    "socket.io-client": "^4.7.2",
+    "uuid": "^11.1.0",
+    "ws": "^8.18.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.2.1",
+    "concurrently": "^8.2.2",
+    "vite": "^5.0.10"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shodh-ai/llm-visual.git"
+  },
+  "keywords": [
+    "database",
+    "visualization",
+    "interactive",
+    "socket.io",
+    "react"
+  ],
+  "author": "",
+  "license": "ISC"
+}

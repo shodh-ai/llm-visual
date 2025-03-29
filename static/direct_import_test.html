@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Direct Import Test</title>
+  <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="/static/js/direct_import.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #333;
+    }
+    .test-controls {
+      margin-bottom: 20px;
+      padding: 15px;
+      background-color: #f0f0f0;
+      border-radius: 4px;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      margin: 5px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    .visualization-container {
+      min-height: 400px;
+      border: 1px solid #ddd;
+      padding: 20px;
+      margin-top: 20px;
+      border-radius: 4px;
+    }
+    .log-container {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #f8f8f8;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      max-height: 300px;
+      overflow-y: auto;
+      font-family: monospace;
+    }
+    .log-entry {
+      margin: 5px 0;
+      padding: 5px;
+      border-bottom: 1px solid #eee;
+    }
+    .error {
+      color: red;
+    }
+    .success {
+      color: green;
+    }
+    .info {
+      color: blue;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Direct Import Test</h1>
+    
+    <div class="test-controls">
+      <h2>Test Controls</h2>
+      <div>
+        <label for="topic-select">Select Topic:</label>
+        <select id="topic-select">
+          <option value="er">Entity Relationship (ER)</option>
+          <option value="shared_memory">Shared Memory</option>
+          <option value="shared_disk">Shared Disk</option>
+          <option value="businesspolicy">Business Policy</option>
+          <option value="document">Document</option>
+        </select>
+        <button id="load-btn">Load Component</button>
+        <button id="render-btn" disabled>Render Component</button>
+        <button id="clear-btn">Clear</button>
+      </div>
+    </div>
+    
+    <div class="visualization-container" id="visualization"></div>
+    
+    <div class="log-container" id="log"></div>
+  </div>
+
+  <script type="text/babel">
+    // Log function
+    function log(message, type = 'info') {
+      const logContainer = document.getElementById('log');
+      const logEntry = document.createElement('div');
+      logEntry.className = `log-entry ${type}`;
+      logEntry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+      logContainer.appendChild(logEntry);
+      logContainer.scrollTop = logContainer.scrollHeight;
+    }
+
+    // Sample visualization data
+    const sampleData = {
+      er: {
+        nodes: [
+          { id: "customer", name: "Customer", type: "entity", attributes: ["id", "name", "email"] },
+          { id: "order", name: "Order", type: "entity", attributes: ["id", "date", "total"] },
+          { id: "places", name: "Places", type: "relationship" }
+        ],
+        edges: [
+          { source: "customer", target: "places" },
+          { source: "places", target: "order" }
+        ]
+      },
+      shared_memory: {
+        nodes: [
+          { id: "cpu1", name: "CPU 1", type: "processor" },
+          { id: "cpu2", name: "CPU 2", type: "processor" },
+          { id: "memory", name: "Shared Memory", type: "memory" }
+        ],
+        connections: [
+          { source: "cpu1", target: "memory" },
+          { source: "cpu2", target: "memory" }
+        ]
+      },
+      shared_disk: {
+        nodes: [
+          { id: "server1", name: "Server 1", type: "server" },
+          { id: "server2", name: "Server 2", type: "server" },
+          { id: "disk", name: "Shared Disk", type: "storage" }
+        ],
+        connections: [
+          { source: "server1", target: "disk" },
+          { source: "server2", target: "disk" }
+        ]
+      },
+      businesspolicy: {
+        rules: [
+          { id: "rule1", name: "Credit Check", condition: "credit_score > 700" },
+          { id: "rule2", name: "Income Verification", condition: "annual_income > 50000" }
+        ],
+        workflow: [
+          { step: 1, action: "Apply rule1" },
+          { step: 2, action: "If passed, apply rule2" }
+        ]
+      },
+      document: {
+        title: "Sample Document",
+        sections: [
+          { id: "sec1", title: "Introduction", content: "This is the introduction." },
+          { id: "sec2", title: "Methods", content: "These are the methods used." },
+          { id: "sec3", title: "Results", content: "These are the results." }
+        ]
+      }
+    };
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      const topicSelect = document.getElementById('topic-select');
+      const loadBtn = document.getElementById('load-btn');
+      const renderBtn = document.getElementById('render-btn');
+      const clearBtn = document.getElementById('clear-btn');
+      const visualizationContainer = document.getElementById('visualization');
+      
+      let currentComponent = null;
+      
+      // Check if direct import is available
+      if (window.loadVisualizationComponent) {
+        log('Direct import script detected', 'success');
+      } else {
+        log('Direct import script not found!', 'error');
+      }
+      
+      // Load component button
+      loadBtn.addEventListener('click', async () => {
+        const topic = topicSelect.value;
+        log(`Attempting to load component for topic: ${topic}`);
+        
+        try {
+          currentComponent = await window.loadVisualizationComponent(topic);
+          log(`Successfully loaded component for ${topic}`, 'success');
+          renderBtn.disabled = false;
+        } catch (error) {
+          log(`Failed to load component: ${error.message}`, 'error');
+        }
+      });
+      
+      // Render component button
+      renderBtn.addEventListener('click', () => {
+        const topic = topicSelect.value;
+        
+        if (!currentComponent) {
+          log('No component loaded to render', 'error');
+          return;
+        }
+        
+        log(`Rendering component for ${topic}`);
+        
+        try {
+          // Get sample data for the topic
+          const data = sampleData[topic] || {};
+          
+          // Create a React component to render
+          const VisualizationWrapper = () => {
+            const Component = currentComponent;
+            return <Component data={data} />;
+          };
+          
+          // Render the component
+          ReactDOM.render(
+            <VisualizationWrapper />,
+            visualizationContainer
+          );
+          
+          log(`Component rendered successfully`, 'success');
+        } catch (error) {
+          log(`Error rendering component: ${error.message}`, 'error');
+          console.error('Render error:', error);
+        }
+      });
+      
+      // Clear button
+      clearBtn.addEventListener('click', () => {
+        ReactDOM.unmountComponentAtNode(visualizationContainer);
+        visualizationContainer.innerHTML = '';
+        currentComponent = null;
+        renderBtn.disabled = true;
+        log('Visualization cleared');
+      });
+      
+      // Log available topics
+      if (window.VISUALIZATION_PATHS) {
+        log('Available topics:');
+        Object.keys(window.VISUALIZATION_PATHS).forEach(topic => {
+          log(`- ${topic}: ${window.VISUALIZATION_PATHS[topic]}`);
+        });
+      }
+    });
+  </script>
+</body>
+</html> 

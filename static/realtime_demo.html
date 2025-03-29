@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>real-time streaming demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        textarea {
+            width: 100%;
+            height: 100px;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        .controls {
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+        }
+        .controls button {
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+        .status {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #f8f9fa;
+            flex-grow: 1;
+            margin-left: 10px;
+        }
+        .word {
+            display: inline-block;
+            margin-right: 5px;
+            padding: 2px;
+        }
+        .word.active {
+            background-color: yellow;
+        }
+        #narrationOutput, #doubtOutput {
+            margin-top: 10px;
+            line-height: 1.6;
+        }
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0, 0, 0, 0.3);
+            border-radius: 50%;
+            border-top-color: #4CAF50;
+            animation: spin 1s ease-in-out infinite;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <h1>real-time streaming demo</h1>
+    
+    <div class="section">
+        <h2>Narration</h2>
+        <div>
+            <label for="topic">Topic:</label>
+            <input type="text" id="topic" value="schema" placeholder="Enter topic">
+        </div>
+        <div>
+            <textarea id="narrationText" placeholder="Enter text to narrate...">Database schemas define the structure of a database. They specify tables, fields, relationships, constraints, and other elements. A well-designed schema ensures data integrity and efficient queries. It's the foundation of any database system.</textarea>
+        </div>
+        <button id="startNarration">Generate Narration</button>
+        <div class="controls">
+            <button id="playPauseNarration" disabled title="Play/Pause"><i class="play-icon">▶</i></button>
+            <div class="status" id="narrationStatus">Ready</div>
+        </div>
+        <div id="narrationOutput"></div>
+    </div>
+    
+    <div class="section">
+        <h2>Doubt Handling</h2>
+        <div>
+            <label for="doubtTopic">Topic:</label>
+            <input type="text" id="doubtTopic" value="schema" placeholder="Enter topic">
+        </div>
+        <div>
+            <textarea id="doubtText" placeholder="Enter your doubt...">What is the difference between a primary key and a foreign key in a database schema?</textarea>
+        </div>
+        <button id="submitDoubt">Submit Doubt</button>
+        <div class="controls">
+            <button id="playPauseDoubt" disabled title="Play/Pause"><i class="play-icon">▶</i></button>
+            <div class="status" id="doubtStatus">Ready</div>
+        </div>
+        <div id="doubtOutput"></div>
+    </div>
+    
+    <div class="section">
+        <h2>Process Doubt (Real-time)</h2>
+        <div>
+            <label for="processDoubtTopic">Topic:</label>
+            <input type="text" id="processDoubtTopic" value="schema" placeholder="Enter topic">
+        </div>
+        <div>
+            <textarea id="processDoubtText" placeholder="Enter your doubt...">What is the difference between a primary key and a foreign key in a database schema?</textarea>
+        </div>
+        <button id="processDoubt">Process Doubt</button>
+        <div class="controls">
+            <button id="playPauseProcessDoubt" disabled title="Play/Pause"><i class="play-icon">▶</i></button>
+            <button id="forcePlayProcessDoubt" disabled title="Force Play">Force Play</button>
+            <button id="debugProcessDoubtAudio" disabled title="Debug Audio">Debug Audio</button>
+            <div class="status" id="processDoubtStatus">Ready</div>
+        </div>
+        <div id="processDoubtOutput"></div>
+        <div id="processDoubtResponseData" style="margin-top: 20px; padding: 10px; border: 1px dashed #ccc; display: none;">
+            <h3>Full Response Data</h3>
+            <pre style="white-space: pre-wrap;"></pre>
+        </div>
+    </div>
+    
+    <script src="/static/js/realtime_audio.js"></script>
+    <script>
+        // Debug logging function
+        function debugLog(message, type = 'info') {
+            const colors = {
+                'info': '#3498db',
+                'success': '#2ecc71',
+                'warning': '#f39c12',
+                'error': '#e74c3c'
+            };
+            
+            console.log(`%c[DEBUG] ${message}`, `color: ${colors[type]}; font-weight: bold;`);
+            
+            // Add to the active section's status if available
+            const section = document.querySelector('.section button[disabled]:not([id^="playPause"])')?.parentNode;
+            if (section) {
+                const statusElement = section.querySelector('.status');
+                if (statusElement) {
+                    const logEntry = document.createElement('div');
+                    logEntry.style.marginTop = '5px';
+                    logEntry.style.fontSize = '0.9em';
+                    logEntry.style.color = colors[type];
+                    logEntry.textContent = message;
+                    statusElement.appendChild(logEntry);
+                }
+            }
+        }
+
+        // Initialize the real-time audio client
+        const audioClient = new RealtimeAudioClient({
+            onTextReceived: (text) => {
+                console.log('Text received:', text);
+                
+                // Determine which output element to update based on the active section
+                const outputElement = document.querySelector('.section button[disabled]:not([id^="playPause"])')?.parentNode.querySelector('[id$="Output"]');
+                if (outputElement) {
+                    // Clear existing content
+                    outputElement.innerHTML = '';
+                    
+                    // Add each word as a span
+                    text.split(' ').forEach((word, index) => {
+                        const span = document.createElement('span');
+                        span.className = 'word';
+                        span.dataset.index = index;
+                        span.textContent = word;
+                        outputElement.appendChild(span);
+                        outputElement.appendChild(document.createTextNode(' '));
+                    });
+                }
+            },
+            onTimingReceived: (timings) => {
+                console.log('Timing data received:', timings);
+            },
+            onAudioChunk: (chunk) => {
+                console.log('Audio chunk received, size:', chunk.size);
+            },
+            onEnd: (data) => {
+                console.log('Streaming ended:', data);
+                
+                // Enable play button
+                const section = document.querySelector('.section button[disabled]:not([id^="playPause"])')?.parentNode;
+                if (section) {
+                    const playPauseButton = section.querySelector('[id^="playPause"]');
+                    if (playPauseButton) {
+                        playPauseButton.disabled = false;
+                    }
+                    
+                    // Re-enable the generate/submit button
+                    const actionButton = section.querySelector('button[disabled]:not([id^="playPause"])');
+                    if (actionButton) {
+                        actionButton.disabled = false;
+                    }
+                    
+                    // Update status
+                    const statusElement = section.querySelector('.status');
+                    if (statusElement) {
+                        statusElement.textContent = 'Ready to play';
+                    }
+                    
+                    // Remove loading indicator
+                    const loading = statusElement.querySelector('.loading');
+                    if (loading) {
+                        loading.remove();
+                    }
+                }
+            },
+            onPlaybackStateChanged: (isPlaying) => {
+                // Update play/pause button icon
+                const section = document.querySelector('.section button[disabled]:not([id^="playPause"])')?.parentNode || 
+                               document.querySelector('.section:has(#narrationOutput:not(:empty))') ||
+                               document.querySelector('.section:has(#doubtOutput:not(:empty))');
+                
+                if (section) {
+                    const playPauseButton = section.querySelector('[id^="playPause"]');
+                    if (playPauseButton) {
+                        const icon = playPauseButton.querySelector('i');
+                        if (icon) {
+                            icon.textContent = isPlaying ? '⏸' : '▶';
+                        }
+                    }
+                }
+            },
+            onError: (error) => {
+                console.error('Error:', error);
+                
+                // Update status with error
+                const statusElement = document.querySelector('.section button[disabled]:not([id^="playPause"])')?.parentNode.querySelector('.status');
+                if (statusElement) {
+                    statusElement.textContent = `Error: ${error}`;
+                    
+                    // Remove loading indicator
+                    const loading = statusElement.querySelector('.loading');
+                    if (loading) {
+                        loading.remove();
+                    }
+                }
+                
+                // Re-enable the button that was disabled
+                const button = document.querySelector('button[disabled]:not([id^="playPause"])');
+                if (button) {
+                    button.disabled = false;
+                }
+            }
+        });
+        
+        // Listen for word highlight events
+        window.addEventListener('wordHighlight', (event) => {
+            const { index } = event.detail;
+            
+            // Find the active section
+            const section = document.querySelector('.section:has(button[id^="playPause"]:not([disabled]))');
+            if (!section) return;
+            
+            const outputElement = section.querySelector('[id$="Output"]');
+            if (!outputElement) return;
+            
+            // Remove highlight from all words
+            outputElement.querySelectorAll('.word.active').forEach(el => {
+                el.classList.remove('active');
+            });
+            
+            // Add highlight to current word
+            const wordElement = outputElement.querySelector(`.word[data-index="${index}"]`);
+            if (wordElement) {
+                wordElement.classList.add('active');
+                
+                // Scroll to the word if needed
+                const rect = wordElement.getBoundingClientRect();
+                const outputRect = outputElement.getBoundingClientRect();
+                
+                if (rect.bottom > outputRect.bottom || rect.top < outputRect.top) {
+                    wordElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+        });
+        
+        // Event listener for narration button
+        document.getElementById('startNarration').addEventListener('click', async () => {
+            const topic = document.getElementById('topic').value.trim();
+            const text = document.getElementById('narrationText').value.trim();
+            
+            if (!topic || !text) {
+                alert('Please enter both topic and text');
+                return;
+            }
+            
+            try {
+                // Disable the button
+                const button = document.getElementById('startNarration');
+                button.disabled = true;
+                
+                // Disable play/pause button
+                document.getElementById('playPauseNarration').disabled = true;
+                
+                // Update status
+                const statusElement = document.getElementById('narrationStatus');
+                statusElement.textContent = 'Generating...';
+                
+                // Add loading indicator
+                const loading = document.createElement('div');
+                loading.className = 'loading';
+                statusElement.appendChild(loading);
+                
+                // Clear output
+                document.getElementById('narrationOutput').innerHTML = '';
+                
+                // Connect to the narration WebSocket
+                await audioClient.connectToNarration(topic, text);
+                
+                // Update status
+                statusElement.textContent = 'Processing...';
+            } catch (error) {
+                console.error('Error starting narration:', error);
+                
+                // Re-enable the button
+                document.getElementById('startNarration').disabled = false;
+                
+                // Update status
+                const statusElement = document.getElementById('narrationStatus');
+                statusElement.textContent = `Error: ${error.message || 'Unknown error'}`;
+                
+                // Remove loading indicator
+                const loading = statusElement.querySelector('.loading');
+                if (loading) {
+                    loading.remove();
+                }
+            }
+        });
+        
+        // Event listener for play/pause narration button
+        document.getElementById('playPauseNarration').addEventListener('click', () => {
+            audioClient.togglePlayPause();
+        });
+        
+        // Event listener for doubt button
+        document.getElementById('submitDoubt').addEventListener('click', async () => {
+            const topic = document.getElementById('doubtTopic').value.trim();
+            const doubt = document.getElementById('doubtText').value.trim();
+            
+            if (!topic || !doubt) {
+                alert('Please enter both topic and doubt');
+                return;
+            }
+            
+            try {
+                // Disable the button
+                const button = document.getElementById('submitDoubt');
+                button.disabled = true;
+                
+                // Disable play/pause button
+                document.getElementById('playPauseDoubt').disabled = true;
+                
+                // Update status
+                const statusElement = document.getElementById('doubtStatus');
+                statusElement.textContent = 'Processing...';
+                
+                // Add loading indicator
+                const loading = document.createElement('div');
+                loading.className = 'loading';
+                statusElement.appendChild(loading);
+                
+                // Clear output
+                document.getElementById('doubtOutput').innerHTML = '';
+                
+                // Connect to the doubt WebSocket
+                await audioClient.connectToDoubtHandler({
+                    topic: topic,
+                    doubt: doubt,
+                    current_state: {},
+                    visualization_description: `A visualization about ${topic}`
+                });
+                
+                // Update status
+                statusElement.textContent = 'Processing...';
+            } catch (error) {
+                console.error('Error submitting doubt:', error);
+                
+                // Re-enable the button
+                document.getElementById('submitDoubt').disabled = false;
+                
+                // Update status
+                const statusElement = document.getElementById('doubtStatus');
+                statusElement.textContent = `Error: ${error.message || 'Unknown error'}`;
+                
+                // Remove loading indicator
+                const loading = statusElement.querySelector('.loading');
+                if (loading) {
+                    loading.remove();
+                }
+            }
+        });
+        
+        // Event listener for play/pause doubt button
+        document.getElementById('playPauseDoubt').addEventListener('click', () => {
+            audioClient.togglePlayPause();
+        });
+        
+        // Event listener for process doubt button
+        document.getElementById('processDoubt').addEventListener('click', async () => {
+            const topic = document.getElementById('processDoubtTopic').value.trim();
+            const doubt = document.getElementById('processDoubtText').value.trim();
+            
+            if (!topic || !doubt) {
+                alert('Please enter both topic and doubt');
+                return;
+            }
+            
+            try {
+                // Disable the button
+                const button = document.getElementById('processDoubt');
+                button.disabled = true;
+                
+                // Disable play/pause button
+                document.getElementById('playPauseProcessDoubt').disabled = true;
+                
+                // Update status
+                const statusElement = document.getElementById('processDoubtStatus');
+                statusElement.textContent = 'Processing...';
+                
+                // Add loading indicator
+                const loading = document.createElement('div');
+                loading.className = 'loading';
+                statusElement.appendChild(loading);
+                
+                // Clear output
+                document.getElementById('processDoubtOutput').innerHTML = '';
+                
+                // Hide response data
+                const responseDataContainer = document.getElementById('processDoubtResponseData');
+                responseDataContainer.style.display = 'none';
+                responseDataContainer.querySelector('pre').textContent = '';
+                
+                // Connect to the process doubt WebSocket
+                await audioClient.connectToProcessDoubt({
+                    topic: topic,
+                    doubt: doubt,
+                    currentState: {},
+                    relevantNodes: []
+                }, (responseData) => {
+                    // Display the full response data
+                    const responseDataContainer = document.getElementById('processDoubtResponseData');
+                    responseDataContainer.style.display = 'block';
+                    responseDataContainer.querySelector('pre').textContent = JSON.stringify(responseData, null, 2);
+                });
+                
+                // Update status
+                statusElement.textContent = 'Processing...';
+            } catch (error) {
+                console.error('Error processing doubt:', error);
+                
+                // Re-enable the button
+                document.getElementById('processDoubt').disabled = false;
+                
+                // Update status
+                const statusElement = document.getElementById('processDoubtStatus');
+                statusElement.textContent = `Error: ${error.message || 'Unknown error'}`;
+                
+                // Remove loading indicator
+                const loading = statusElement.querySelector('.loading');
+                if (loading) {
+                    loading.remove();
+                }
+            }
+        });
+        
+        // Event listener for play/pause process doubt button
+        document.getElementById('playPauseProcessDoubt').addEventListener('click', () => {
+            audioClient.togglePlayPause();
+        });
+        
+        // Event listener for force play process doubt button
+        document.getElementById('forcePlayProcessDoubt').addEventListener('click', () => {
+            debugLog('Force play process doubt button clicked');
+            
+            // Try to resume audio context if suspended
+            if (audioClient.audioContext && audioClient.audioContext.state === 'suspended') {
+                audioClient.audioContext.resume().then(() => {
+                    debugLog('Audio context resumed', 'success');
+                }).catch(error => {
+                    debugLog(`Failed to resume audio context: ${error.message}`, 'error');
+                });
+            }
+            
+            // Try to play audio
+            const success = audioClient.play();
+            
+            if (!success) {
+                debugLog('Failed to play audio, trying debug approach', 'warning');
+                
+                // Try to create a debug audio element
+                const debugAudioElement = audioClient.debugAudio();
+                
+                if (debugAudioElement) {
+                    debugLog('Created debug audio element', 'info');
+                    
+                    // Add to the page
+                    const debugOutput = document.createElement('div');
+                    debugOutput.style.padding = '10px';
+                    debugOutput.style.margin = '10px 0';
+                    debugOutput.style.border = '1px solid #ff6b6b';
+                    debugOutput.style.borderRadius = '5px';
+                    debugOutput.innerHTML = '<h4>Debug Audio Player</h4><p>Try playing this audio:</p>';
+                    debugOutput.appendChild(debugAudioElement);
+                    
+                    // Add to the process doubt output
+                    const processDoubtOutput = document.getElementById('processDoubtOutput');
+                    processDoubtOutput.appendChild(debugOutput);
+                    
+                    // Try to play
+                    debugAudioElement.play()
+                        .then(() => {
+                            debugLog('Debug audio playing successfully', 'success');
+                        })
+                        .catch(error => {
+                            debugLog(`Error playing debug audio: ${error.message}`, 'error');
+                        });
+                } else {
+                    debugLog('No audio chunks available for debugging', 'error');
+                }
+            }
+        });
+        
+        // Event listener for debug process doubt audio button
+        document.getElementById('debugProcessDoubtAudio').addEventListener('click', () => {
+            debugLog('Debug process doubt audio button clicked');
+            
+            // Create a debug audio element
+            const debugAudioElement = audioClient.debugAudio();
+            
+            if (debugAudioElement) {
+                // Add to the page
+                const debugOutput = document.createElement('div');
+                debugOutput.style.padding = '10px';
+                debugOutput.style.margin = '10px 0';
+                debugOutput.style.border = '1px solid #ff6b6b';
+                debugOutput.style.borderRadius = '5px';
+                debugOutput.innerHTML = '<h4>Debug Audio Player</h4><p>Try playing this audio:</p>';
+                debugOutput.appendChild(debugAudioElement);
+                
+                // Add info about the audio
+                const info = document.createElement('div');
+                info.textContent = `Audio chunks: ${audioClient.audioChunks.length}, Content type: ${audioClient.audioContentType || 'unknown'}`;
+                debugOutput.appendChild(info);
+                
+                // Add to the process doubt output
+                const processDoubtOutput = document.getElementById('processDoubtOutput');
+                processDoubtOutput.appendChild(debugOutput);
+                
+                // Try to play
+                debugAudioElement.play()
+                    .then(() => {
+                        debugLog('Debug audio playing successfully', 'success');
+                    })
+                    .catch(error => {
+                        debugLog(`Error playing debug audio: ${error.message}`, 'error');
+                        
+                        // Add a play button that requires user interaction
+                        const playButton = document.createElement('button');
+                        playButton.textContent = 'Play (User Interaction)';
+                        playButton.onclick = () => {
+                            debugAudioElement.play()
+                                .then(() => debugLog('Audio played after user interaction', 'success'))
+                                .catch(e => debugLog(`Still failed: ${e.message}`, 'error'));
+                        };
+                        debugOutput.appendChild(playButton);
+                    });
+            } else {
+                debugLog('No audio chunks available for debugging', 'warning');
+            }
+        });
+    </script>
+</body>
+</html> 

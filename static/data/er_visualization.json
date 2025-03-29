@@ -1,0 +1,59 @@
+{
+    "nodes": [
+        {
+            "id": "student",
+            "name": "Student",
+            "type": "entity",
+            "attributes": [
+                {
+                    "name": "student_id",
+                    "isKey": true
+                },
+                {
+                    "name": "name",
+                    "isKey": false
+                },
+                {
+                    "name": "email",
+                    "isKey": false
+                }
+            ]
+        },
+        {
+            "id": "course",
+            "name": "Course",
+            "type": "entity",
+            "attributes": [
+                {
+                    "name": "course_id",
+                    "isKey": true
+                },
+                {
+                    "name": "title",
+                    "isKey": false
+                },
+                {
+                    "name": "credits",
+                    "isKey": false
+                }
+            ]
+        },
+        {
+            "id": "enrollment",
+            "name": "Enrolls",
+            "type": "relationship"
+        }
+    ],
+    "edges": [
+        {
+            "source": "student",
+            "target": "enrollment",
+            "type": "connection"
+        },
+        {
+            "source": "enrollment",
+            "target": "course",
+            "type": "connection"
+        }
+    ]
+}

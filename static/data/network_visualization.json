@@ -1,0 +1,96 @@
+{
+    "nodes": [
+        {
+            "id": "employee",
+            "name": "Employee",
+            "type": "entity",
+            "properties": [
+                {"name": "emp_id", "type": "INTEGER"},
+                {"name": "name", "type": "VARCHAR(100)"},
+                {"name": "email", "type": "VARCHAR(255)"},
+                {"name": "hire_date", "type": "DATE"}
+            ]
+        },
+        {
+            "id": "project",
+            "name": "Project",
+            "type": "entity",
+            "properties": [
+                {"name": "project_id", "type": "INTEGER"},
+                {"name": "name", "type": "VARCHAR(100)"},
+                {"name": "start_date", "type": "DATE"},
+                {"name": "end_date", "type": "DATE"},
+                {"name": "budget", "type": "DECIMAL(10,2)"}
+            ]
+        },
+        {
+            "id": "department",
+            "name": "Department",
+            "type": "entity",
+            "properties": [
+                {"name": "dept_id", "type": "INTEGER"},
+                {"name": "name", "type": "VARCHAR(50)"},
+                {"name": "location", "type": "VARCHAR(100)"}
+            ]
+        },
+        {
+            "id": "skill",
+            "name": "Skill",
+            "type": "entity",
+            "properties": [
+                {"name": "skill_id", "type": "INTEGER"},
+                {"name": "name", "type": "VARCHAR(50)"},
+                {"name": "category", "type": "VARCHAR(50)"}
+            ]
+        },
+        {
+            "id": "task",
+            "name": "Task",
+            "type": "entity",
+            "properties": [
+                {"name": "task_id", "type": "INTEGER"},
+                {"name": "title", "type": "VARCHAR(100)"},
+                {"name": "status", "type": "VARCHAR(20)"},
+                {"name": "deadline", "type": "DATE"}
+            ]
+        }
+    ],
+    "edges": [
+        {
+            "source": "employee",
+            "target": "department",
+            "type": "belongs_to",
+            "description": "MANY TO ONE"
+        },
+        {
+            "source": "employee",
+            "target": "project",
+            "type": "works_on",
+            "description": "MANY TO MANY"
+        },
+        {
+            "source": "employee",
+            "target": "skill",
+            "type": "has_skill",
+            "description": "MANY TO MANY"
+        },
+        {
+            "source": "project",
+            "target": "task",
+            "type": "contains",
+            "description": "ONE TO MANY"
+        },
+        {
+            "source": "employee",
+            "target": "task",
+            "type": "assigned_to",
+            "description": "MANY TO MANY"
+        },
+        {
+            "source": "employee",
+            "target": "employee",
+            "type": "reports_to",
+            "description": "MANY TO ONE"
+        }
+    ]
+}

@@ -1,0 +1,99 @@
+{
+    "nodes": [
+      {
+        "id": "site1",
+        "name": "Site 1",
+        "type": "server"
+      },
+      {
+        "id": "site2",
+        "name": "Site 2",
+        "type": "server"
+      },
+      {
+        "id": "site3",
+        "name": "Site 3",
+        "type": "server"
+      },
+      {
+        "id": "site4",
+        "name": "Site 4",
+        "type": "server"
+      },
+      {
+        "id": "network",
+        "name": "Computer network",
+        "type": "network"
+      },
+      {
+        "id": "db1",
+        "name": "DB",
+        "type": "disk"
+      },
+      {
+        "id": "db2",
+        "name": "DB",
+        "type": "disk"
+      },
+      {
+        "id": "db3",
+        "name": "DB",
+        "type": "disk"
+      },
+      {
+        "id": "db4",
+        "name": "DB",
+        "type": "disk"
+      }
+    ],
+    "edges": [
+      {
+        "source": "site1",
+        "target": "network",
+        "type": "bidirectional",
+        "description": "Site-Network"
+      },
+      {
+        "source": "site2",
+        "target": "network",
+        "type": "bidirectional",
+        "description": "Site-Network"
+      },
+      {
+        "source": "site3",
+        "target": "network",
+        "type": "bidirectional",
+        "description": "Site-Network"
+      },
+      {
+        "source": "site4",
+        "target": "network",
+        "type": "bidirectional",
+        "description": "Site-Network"
+      },
+      {
+        "source": "site1",
+        "target": "db1",
+        "type": "bidirectional",
+        "description": "Site-Database"
+      },
+      {
+        "source": "site2",
+        "target": "db2",
+        "type": "bidirectional",
+        "description": "Site-Database"
+      },
+      {
+        "source": "site3",
+        "target": "db3",
+        "type": "bidirectional",
+        "description": "Site-Database"
+      },
+      {
+        "source": "site4",
+        "target": "db4",
+        "type": "bidirectional",
+        "description": "Site-Database"
+      }
+    ]
+  }

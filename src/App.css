@@ -1,0 +1,42 @@
+.visualization-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.narration-controls {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.9);
+    padding: 10px 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.narration-controls button {
+    padding: 8px 16px;
+    background: #4a90e2;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.2s;
+}
+
+.narration-controls button:hover {
+    background: #357abd;
+}
+
+.timer {
+    font-size: 16px;
+    font-weight: 500;
+    color: #333;
+    min-width: 40px;
+}

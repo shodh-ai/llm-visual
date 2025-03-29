@@ -1,0 +1,66 @@
+{
+    "nodes": [
+      {
+        "id": "class",
+        "name": "Class",
+        "fields": ["Fields", "Methods"]
+      },
+      {
+        "id": "object",
+        "name": "Object",
+        "fields": ["State", "Behavior"]
+      },
+      {
+        "id": "inheritance",
+        "name": "Inheritance",
+        "fields": ["Superclass", "Subclass"]
+      },
+      {
+        "id": "polymorphism",
+        "name": "Polymorphism",
+        "fields": ["Overloading", "Overriding"]
+      },
+      {
+        "id": "encapsulation",
+        "name": "Encapsulation",
+        "fields": ["Data Hiding", "Data Binding"]
+      },
+      {
+        "id": "abstraction",
+        "name": "Abstraction",
+        "fields": ["Hiding Implementation", "Showing Functionality"]
+      }
+    ],
+    "edges": [
+      {
+        "source": "class",
+        "target": "object",
+        "type": "instantiates",
+        "label": "Instantiates"
+      },
+      {
+        "source": "class",
+        "target": "inheritance",
+        "type": "uses",
+        "label": "Uses"
+      },
+      {
+        "source": "class",
+        "target": "polymorphism",
+        "type": "uses",
+        "label": "Uses"
+      },
+      {
+        "source": "class",
+        "target": "encapsulation",
+        "type": "uses",
+        "label": "Uses"
+      },
+      {
+        "source": "class",
+        "target": "abstraction",
+        "type": "uses",
+        "label": "Uses"
+      }
+    ]
+  }

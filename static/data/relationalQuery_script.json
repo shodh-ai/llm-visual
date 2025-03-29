@@ -1,0 +1,12 @@
+{
+  "script": "Welcome to the Relational Query Language tutorial! In SQL, you build queries using several key clauses. The SELECT clause tells the database which columns you want to see. The FROM clause specifies the table(s) where the data comes from. JOIN combines data from multiple tables. WHERE filters records based on conditions. GROUP BY aggregates data into groups, and HAVING further filters these groups. ORDER BY sorts the results. This visualization shows how these pieces come together to form an SQL query. Explore each clause to understand its role in building powerful queries.",
+  "component_mappings": {
+    "select": "select",
+    "from": "from",
+    "join": "join",
+    "where": "where",
+    "groupby": "groupby",
+    "having": "having",
+    "orderby": "orderby"
+  }
+}

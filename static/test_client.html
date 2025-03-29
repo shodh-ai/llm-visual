@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RealtimeClient Test</title>
+    <!-- Load Socket.IO client -->
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <!-- Load our RealtimeClient -->
+    <script src="/static/js/realtime_client.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8fafc;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #1e293b;
+        }
+        .status {
+            margin: 20px 0;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .success {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+        .error {
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+        .info {
+            background-color: #e0f2fe;
+            color: #0369a1;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #2563eb;
+        }
+        button:disabled {
+            background-color: #94a3b8;
+            cursor: not-allowed;
+        }
+        pre {
+            background-color: #f1f5f9;
+            padding: 10px;
+            border-radius: 4px;
+            overflow: auto;
+            max-height: 300px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>RealtimeClient Test</h1>
+        
+        <div id="status" class="status info">
+            Checking if RealtimeClient is available...
+        </div>
+        
+        <div>
+            <button id="testConnection" disabled>Test Connection</button>
+            <button id="disconnect" disabled>Disconnect</button>
+        </div>
+        
+        <h2>Console Output</h2>
+        <pre id="console"></pre>
+    </div>
+    
+    <script>
+        // Helper function to log to our console element
+        function log(message, type = 'info') {
+            const consoleElement = document.getElementById('console');
+            const timestamp = new Date().toLocaleTimeString();
+            consoleElement.innerHTML += `[${timestamp}] ${message}\n`;
+            consoleElement.scrollTop = consoleElement.scrollHeight;
+            
+            console.log(message);
+        }
+        
+        // Helper function to update status
+        function updateStatus(message, type) {
+            const statusElement = document.getElementById('status');
+            statusElement.textContent = message;
+            statusElement.className = `status ${type}`;
+        }
+        
+        // Wait for DOM to be fully loaded
+        window.addEventListener('DOMContentLoaded', () => {
+            log('DOM fully loaded');
+            
+            // Check if RealtimeClient is available
+            if (typeof window.RealtimeClient !== 'undefined') {
+                log('RealtimeClient is available!');
+                updateStatus('RealtimeClient is available!', 'success');
+                
+                // Enable buttons
+                document.getElementById('testConnection').disabled = false;
+                
+                // Initialize the client
+                const socketUrl = 'http://' + window.location.hostname + ':3000';
+                log('Socket.IO server URL: ' + socketUrl);
+                
+                const client = new window.RealtimeClient({
+                    baseUrl: socketUrl,
+                    onTextChunk: (chunk) => {
+                        log(`Received text chunk: ${chunk.substring(0, 50)}...`);
+                    },
+                    onResponseData: (data) => {
+                        log(`Received response data: ${JSON.stringify(data, null, 2)}`);
+                    },
+                    onStatus: (status) => {
+                        log(`Status update: ${JSON.stringify(status)}`);
+                    },
+                    onError: (error) => {
+                        log(`Error: ${JSON.stringify(error)}`, 'error');
+                        updateStatus(`Error: ${error.message || 'Unknown error'}`, 'error');
+                    },
+                    onEnd: () => {
+                        log('Processing completed');
+                    }
+                });
+                
+                log('RealtimeClient initialized');
+                
+                // Set up test connection button
+                document.getElementById('testConnection').addEventListener('click', async () => {
+                    try {
+                        log('Connecting to Socket.IO server...');
+                        updateStatus('Connecting...', 'info');
+                        
+                        await client.connect();
+                        
+                        log('Connected to Socket.IO server!');
+                        updateStatus('Connected to Socket.IO server!', 'success');
+                        
+                        // Enable disconnect button
+                        document.getElementById('disconnect').disabled = false;
+                    } catch (error) {
+                        log(`Connection error: ${error.message}`, 'error');
+                        updateStatus(`Connection error: ${error.message}`, 'error');
+                    }
+                });
+                
+                // Set up disconnect button
+                document.getElementById('disconnect').addEventListener('click', () => {
+                    client.disconnect();
+                    log('Disconnected from Socket.IO server');
+                    updateStatus('Disconnected from Socket.IO server', 'info');
+                    document.getElementById('disconnect').disabled = true;
+                });
+            } else {
+                log('RealtimeClient is not available!', 'error');
+                updateStatus('RealtimeClient is not available! Check the console for errors.', 'error');
+            }
+        });
+    </script>
+</body>
+</html>

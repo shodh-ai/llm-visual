@@ -1,0 +1,19 @@
+{
+    "script": "Let me walk you through the three Entity-Relationship (ER) visualizations. \n\n1. The first visualization represents a simple ER model where a 'Student' entity is related to a 'Course' entity through the 'Study' relationship. This captures the fact that students enroll in and study different courses.\n\n2. The second visualization demonstrates the concept of Strong and Weak Entities. The 'Customer' entity is related to the 'Loan' weak entity through the 'Borrows' relationship. Since a weak entity cannot exist independently, the 'Loan' entity is identified through its relationship with 'Customer'. It also has attributes like 'L-name' and 'L-date', while 'Customer' has 'C-name' and 'C-id'.\n\n3. The third visualization highlights Multivalued and Associative Entities. The 'Employee' entity is connected to the 'Project' entity through the associative entity 'Works_On', which signifies an employee's involvement in different projects. Additionally, 'Skills' is a multivalued attribute associated with 'Employee', representing the fact that an employee can have multiple skills.",
+    "component_mappings": {
+        "student": "entity",
+        "course": "entity",
+        "study": "relationship",
+        "customer": "entity",
+        "loan": "weak-entity",
+        "borrows": "relationship",
+        "c_id": "attribute",
+        "c_name": "attribute",
+        "l_name": "attribute",
+        "l_date": "attribute",
+        "employee": "entity",
+        "project": "entity",
+        "works_on": "associative",
+        "skills": "multivalued"
+    }
+}

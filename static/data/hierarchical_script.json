@@ -1,0 +1,14 @@
+{
+    "script": "Let me explain how the Hierarchical Data Model works using a university system as an example. At the root level, we have the University entity, which contains basic institutional information. Each University can have multiple Colleges, creating our first parent-child relationship. Moving down the hierarchy, each College contains multiple Departments, forming another level in our tree structure. Finally, at the leaf level, each Department manages both Courses and Faculty members. This tree-like organization is perfect for representing naturally hierarchical data, where each entity has exactly one parent but can have multiple children. Notice how the relationships flow downward, with each level providing more specific details about the organization.",
+    "component_mappings": {
+        "university": "root",
+        "root": "root",
+        "college": "college",
+        "colleges": "college",
+        "department": "department",
+        "departments": "department",
+        "course": "course",
+        "courses": "course",
+        "faculty": "faculty"
+    }
+}

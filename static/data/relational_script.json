@@ -1,0 +1,8 @@
+{
+  "script": "This visualization represents a relational database schema. Each table is displayed as a box with a header showing the table name and rows for each column—including data types and key designations (PK for primary key and FK for foreign key). Dashed lines indicate relationships between tables. For example, the Orders table has a foreign key that references the Users table. This diagram helps illustrate how data is structured and interrelated in a relational database.",
+  "component_mappings": {
+    "users": "users",
+    "orders": "orders",
+    "products": "products"
+  }
+}

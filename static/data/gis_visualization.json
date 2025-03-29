@@ -1,0 +1,91 @@
+{
+    "nodes": [
+      {
+        "id": "gis",
+        "name": "GIS System",
+        "type": "system",
+        "properties": [
+          "Integrated system for geographic data"
+        ],
+        "example": "Integrated Platform"
+      },
+      {
+        "id": "hardware",
+        "name": "Hardware",
+        "type": "component",
+        "properties": [
+          "Computers, GPS devices, servers, and mobile devices"
+        ],
+        "example": "GPS Devices"
+      },
+      {
+        "id": "software",
+        "name": "Software",
+        "type": "component",
+        "properties": [
+          "ArcGIS, QGIS, Google Earth and other GIS software"
+        ],
+        "example": "Google Earth"
+      },
+      {
+        "id": "data",
+        "name": "Data",
+        "type": "component",
+        "properties": [
+          "Spatial and attribute data, maps, aerial imagery"
+        ],
+        "example": "Aerial Imagery"
+      },
+      {
+        "id": "people",
+        "name": "People",
+        "type": "component",
+        "properties": [
+          "GIS analysts, cartographers, and developers"
+        ],
+        "example": "GIS Analyst"
+      },
+      {
+        "id": "methods",
+        "name": "Methods",
+        "type": "component",
+        "properties": [
+          "Mapping, spatial analysis, and modeling"
+        ],
+        "example": "Spatial Analysis"
+      }
+    ],
+    "edges": [
+      {
+        "source": "gis",
+        "target": "hardware",
+        "type": "relationship",
+        "description": "GIS relies on Hardware"
+      },
+      {
+        "source": "gis",
+        "target": "software",
+        "type": "relationship",
+        "description": "GIS uses Software tools"
+      },
+      {
+        "source": "gis",
+        "target": "data",
+        "type": "relationship",
+        "description": "GIS manages and analyzes Data"
+      },
+      {
+        "source": "gis",
+        "target": "people",
+        "type": "relationship",
+        "description": "GIS is operated by People"
+      },
+      {
+        "source": "gis",
+        "target": "methods",
+        "type": "relationship",
+        "description": "GIS employs Methods"
+      }
+    ]
+  }
+  

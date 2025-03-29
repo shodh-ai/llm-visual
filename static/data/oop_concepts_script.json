@@ -1,0 +1,12 @@
+{
+    "script": "Let's explore the fundamental concepts of Object-Oriented Programming (OOP) through this visualization.\n\n1. At the core of OOP is the 'Class'. A class serves as a blueprint for creating objects. It contains 'Fields' that store data and 'Methods' that define behaviors.\n\n2. The 'Object' is an instance of a class. Each object has a 'State' (represented by its fields) and 'Behavior' (determined by its methods).\n\n3. 'Inheritance' allows a new class (Subclass) to acquire the properties and behaviors of an existing class (Superclass). This promotes code reusability and hierarchy.\n\n4. 'Polymorphism' enables a single interface to be used for different data types. It includes 'Overloading' (multiple methods with the same name but different parameters) and 'Overriding' (modifying inherited methods).\n\n5. 'Encapsulation' is the concept of restricting direct access to certain details of an object. It involves 'Data Hiding' (limiting access to data) and 'Data Binding' (associating methods with data).\n\n6. 'Abstraction' focuses on 'Hiding Implementation' while 'Showing Functionality'. It allows users to interact with the necessary parts without knowing the complex internal workings.\n\nThrough this visualization, you can see how these OOP concepts interact and form the foundation of modern programming.",
+    "component_mappings": {
+        "class": "blueprint",
+        "object": "instance",
+        "inheritance": "relationship",
+        "polymorphism": "dynamic behavior",
+        "encapsulation": "data protection",
+        "abstraction": "interface design"
+    }
+}
+

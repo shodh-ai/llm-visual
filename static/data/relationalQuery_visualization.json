@@ -1,0 +1,113 @@
+{
+    "nodes": [
+      {
+        "id": "sql",
+        "name": "SQL Query",
+        "type": "query",
+        "properties": [
+          { "name": "A language to manage and query relational data", "type": "description" }
+        ]
+      },
+      {
+        "id": "select",
+        "name": "SELECT",
+        "type": "clause",
+        "properties": [
+          { "name": "Specifies the columns to retrieve", "type": "description" }
+        ]
+      },
+      {
+        "id": "from",
+        "name": "FROM",
+        "type": "clause",
+        "properties": [
+          { "name": "Identifies the table(s) to query", "type": "description" }
+        ]
+      },
+      {
+        "id": "join",
+        "name": "JOIN",
+        "type": "clause",
+        "properties": [
+          { "name": "Combines rows from related tables", "type": "description" }
+        ]
+      },
+      {
+        "id": "where",
+        "name": "WHERE",
+        "type": "clause",
+        "properties": [
+          { "name": "Filters records based on conditions", "type": "description" }
+        ]
+      },
+      {
+        "id": "groupby",
+        "name": "GROUP BY",
+        "type": "clause",
+        "properties": [
+          { "name": "Groups rows sharing a common attribute", "type": "description" }
+        ]
+      },
+      {
+        "id": "having",
+        "name": "HAVING",
+        "type": "clause",
+        "properties": [
+          { "name": "Filters groups based on aggregate conditions", "type": "description" }
+        ]
+      },
+      {
+        "id": "orderby",
+        "name": "ORDER BY",
+        "type": "clause",
+        "properties": [
+          { "name": "Sorts the result set", "type": "description" }
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "source": "sql",
+        "target": "select",
+        "type": "contains",
+        "description": "Defines which columns to return"
+      },
+      {
+        "source": "sql",
+        "target": "from",
+        "type": "contains",
+        "description": "Specifies the data source"
+      },
+      {
+        "source": "sql",
+        "target": "join",
+        "type": "contains",
+        "description": "Merges data from related tables"
+      },
+      {
+        "source": "sql",
+        "target": "where",
+        "type": "contains",
+        "description": "Filters rows"
+      },
+      {
+        "source": "sql",
+        "target": "groupby",
+        "type": "contains",
+        "description": "Groups similar rows"
+      },
+      {
+        "source": "sql",
+        "target": "having",
+        "type": "contains",
+        "description": "Filters grouped rows"
+      },
+      {
+        "source": "sql",
+        "target": "orderby",
+        "type": "contains",
+        "description": "Sorts the output"
+      }
+    ]
+  }
+  

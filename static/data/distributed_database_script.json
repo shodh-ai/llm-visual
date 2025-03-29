@@ -1,0 +1,157 @@
+{
+    "script": "The Distributed Database Architecture consists of multiple sites, each with its own database and connected through a computer network.\n\n1. Each site (Site 1, Site 2, Site 3, and Site 4) represents a server responsible for handling database requests.\n\n2. These sites are interconnected via a central Computer Network, enabling communication and data exchange between them.\n\n3. Each site has its own dedicated database (DB), meaning Site 1 manages DB1, Site 2 manages DB2, and so on.\n\nThis architecture ensures data distribution, redundancy, and fault tolerance, making it ideal for large-scale and geographically dispersed applications.",
+    "timestamps": [
+        {
+            "word": "Distributed Database Architecture",
+            "start_time": 0,
+            "end_time": 1500
+        },
+        {
+            "word": "Site 1",
+            "start_time": 2000,
+            "end_time": 2500,
+            "node_id": "site1"
+        },
+        {
+            "word": "Site 2",
+            "start_time": 2500,
+            "end_time": 3000,
+            "node_id": "site2"
+        },
+        {
+            "word": "Site 3",
+            "start_time": 3000,
+            "end_time": 3500,
+            "node_id": "site3"
+        },
+        {
+            "word": "Site 4",
+            "start_time": 3500,
+            "end_time": 4000,
+            "node_id": "site4"
+        },
+        {
+            "word": "Computer Network",
+            "start_time": 5000,
+            "end_time": 6000,
+            "node_id": "network"
+        },
+        {
+            "word": "DB1",
+            "start_time": 7000,
+            "end_time": 7500,
+            "node_id": "db1"
+        },
+        {
+            "word": "DB2",
+            "start_time": 7500,
+            "end_time": 8000,
+            "node_id": "db2"
+        },
+        {
+            "word": "DB3",
+            "start_time": 8000,
+            "end_time": 8500,
+            "node_id": "db3"
+        },
+        {
+            "word": "DB4",
+            "start_time": 8500,
+            "end_time": 9000,
+            "node_id": "db4"
+        }
+    ],
+    "animation_states": [
+        {
+            "component_id": "site1",
+            "state": {
+                "highlighted": true,
+                "opacity": 1,
+                "scale": 1.2,
+                "strokeColor": "#4299e1"
+            },
+            "duration": 1000
+        },
+        {
+            "component_id": "site2",
+            "state": {
+                "highlighted": true,
+                "opacity": 1,
+                "scale": 1.2,
+                "strokeColor": "#4299e1"
+            },
+            "duration": 1000
+        },
+        {
+            "component_id": "site3",
+            "state": {
+                "highlighted": true,
+                "opacity": 1,
+                "scale": 1.2,
+                "strokeColor": "#4299e1"
+            },
+            "duration": 1000
+        },
+        {
+            "component_id": "site4",
+            "state": {
+                "highlighted": true,
+                "opacity": 1,
+                "scale": 1.2,
+                "strokeColor": "#4299e1"
+            },
+            "duration": 1000
+        },
+        {
+            "component_id": "network",
+            "state": {
+                "highlighted": true,
+                "opacity": 1,
+                "strokeWidth": 3,
+                "strokeColor": "#48bb78",
+                "strokeDasharray": "5,5"
+            },
+            "duration": 2000
+        },
+        {
+            "component_id": "db1",
+            "state": {
+                "highlighted": true,
+                "opacity": 1,
+                "scale": 1.1,
+                "strokeColor": "#805ad5"
+            },
+            "duration": 1000
+        },
+        {
+            "component_id": "db2",
+            "state": {
+                "highlighted": true,
+                "opacity": 1,
+                "scale": 1.1,
+                "strokeColor": "#805ad5"
+            },
+            "duration": 1000
+        },
+        {
+            "component_id": "db3",
+            "state": {
+                "highlighted": true,
+                "opacity": 1,
+                "scale": 1.1,
+                "strokeColor": "#805ad5"
+            },
+            "duration": 1000
+        },
+        {
+            "component_id": "db4",
+            "state": {
+                "highlighted": true,
+                "opacity": 1,
+                "scale": 1.1,
+                "strokeColor": "#805ad5"
+            },
+            "duration": 1000
+        }
+    ]
+}

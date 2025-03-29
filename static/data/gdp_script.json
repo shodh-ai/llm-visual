@@ -1,0 +1,402 @@
+{
+    "script": "Let me walk you through India's GDP growth from 2000 to 2025. In 2000, India's GDP was $0.47 trillion, with a growth rate of 3.8%. By 2001, it rose to $0.49 trillion, growing at 4.8%. In 2002, amid economic reforms, GDP reached $0.52 trillion with 3.8% growth. The year 2003 saw significant growth during the IT boom, pushing GDP to $0.60 trillion and a 7.9% growth rate. By 2004, outsourcing growth propelled GDP to $0.72 trillion, while the service sector expansion in 2005 led to a GDP of $0.82 trillion and an impressive 9.3% growth. Manufacturing expansion in 2006 increased GDP to $0.94 trillion, maintaining a 9.3% growth rate. In 2007, a peak growth period, GDP reached $1.22 trillion with a 9.8% increase. The global financial crisis in 2008 slowed growth to 3.9%, with GDP at $1.19 trillion. India recovered quickly in 2009, with GDP reaching $1.35 trillion and 8.5% growth. In 2010, a strong recovery pushed GDP to $1.66 trillion with 10.3% growth, the highest in this period. Inflation concerns in 2011 slowed growth to 6.6%, with GDP at $1.82 trillion. In 2012, policy paralysis held GDP at $1.83 trillion with 5.5% growth, and currency depreciation in 2013 saw GDP reach $1.86 trillion with 6.4% growth. A new government in 2014 helped boost GDP to $2.04 trillion, growing at 7.4%. The 'Make in India' initiative in 2015 supported growth, pushing GDP to $2.10 trillion with 8.0% growth. Despite the demonetization in 2016, GDP still grew to $2.29 trillion at 8.3%. GST implementation in 2017 saw GDP at $2.65 trillion with 6.8% growth, and banking reforms in 2018 pushed GDP to $2.70 trillion with 6.5% growth. Growth slowed in 2019 to 4.0%, with GDP at $2.87 trillion. The COVID-19 pandemic in 2020 caused a significant contraction, with GDP falling to $2.66 trillion and a negative growth rate of -7.0%. A strong recovery in 2021 lifted GDP to $3.15 trillion with 8.7% growth. Post-pandemic momentum continued in 2022, with GDP reaching $3.39 trillion and 7.0% growth. Advances in the digital economy in 2023 pushed GDP to $3.73 trillion with 6.7% growth, and infrastructure investment in 2024 increased GDP to $4.10 trillion with 6.5% growth. By 2025, India is projected to reach $4.51 trillion, approaching its $5 trillion economy goal with a growth rate of 6.3%.",
+    "timestamps": [
+      {
+        "word": "2000",
+        "start_time": 0,
+        "end_time": 2000,
+        "node_id": "year_2000"
+      },
+      {
+        "word": "2001",
+        "start_time": 2000,
+        "end_time": 4000,
+        "node_id": "year_2001"
+      },
+      {
+        "word": "2002",
+        "start_time": 4000,
+        "end_time": 6000,
+        "node_id": "year_2002"
+      },
+      {
+        "word": "2003",
+        "start_time": 6000,
+        "end_time": 8000,
+        "node_id": "year_2003"
+      },
+      {
+        "word": "2004",
+        "start_time": 8000,
+        "end_time": 10000,
+        "node_id": "year_2004"
+      },
+      {
+        "word": "2005",
+        "start_time": 10000,
+        "end_time": 12000,
+        "node_id": "year_2005"
+      },
+      {
+        "word": "2006",
+        "start_time": 12000,
+        "end_time": 14000,
+        "node_id": "year_2006"
+      },
+      {
+        "word": "2007",
+        "start_time": 14000,
+        "end_time": 16000,
+        "node_id": "year_2007"
+      },
+      {
+        "word": "2008",
+        "start_time": 16000,
+        "end_time": 18000,
+        "node_id": "year_2008"
+      },
+      {
+        "word": "2009",
+        "start_time": 18000,
+        "end_time": 20000,
+        "node_id": "year_2009"
+      },
+      {
+        "word": "2010",
+        "start_time": 20000,
+        "end_time": 22000,
+        "node_id": "year_2010"
+      },
+      {
+        "word": "2011",
+        "start_time": 22000,
+        "end_time": 24000,
+        "node_id": "year_2011"
+      },
+      {
+        "word": "2012",
+        "start_time": 24000,
+        "end_time": 26000,
+        "node_id": "year_2012"
+      },
+      {
+        "word": "2013",
+        "start_time": 26000,
+        "end_time": 28000,
+        "node_id": "year_2013"
+      },
+      {
+        "word": "2014",
+        "start_time": 28000,
+        "end_time": 30000,
+        "node_id": "year_2014"
+      },
+      {
+        "word": "2015",
+        "start_time": 30000,
+        "end_time": 32000,
+        "node_id": "year_2015"
+      },
+      {
+        "word": "2016",
+        "start_time": 32000,
+        "end_time": 34000,
+        "node_id": "year_2016"
+      },
+      {
+        "word": "2017",
+        "start_time": 34000,
+        "end_time": 36000,
+        "node_id": "year_2017"
+      },
+      {
+        "word": "2018",
+        "start_time": 36000,
+        "end_time": 38000,
+        "node_id": "year_2018"
+      },
+      {
+        "word": "2019",
+        "start_time": 38000,
+        "end_time": 40000,
+        "node_id": "year_2019"
+      },
+      {
+        "word": "2020",
+        "start_time": 40000,
+        "end_time": 42000,
+        "node_id": "year_2020"
+      },
+      {
+        "word": "2021",
+        "start_time": 42000,
+        "end_time": 44000,
+        "node_id": "year_2021"
+      },
+      {
+        "word": "2022",
+        "start_time": 44000,
+        "end_time": 46000,
+        "node_id": "year_2022"
+      },
+      {
+        "word": "2023",
+        "start_time": 46000,
+        "end_time": 48000,
+        "node_id": "year_2023"
+      },
+      {
+        "word": "2024",
+        "start_time": 48000,
+        "end_time": 50000,
+        "node_id": "year_2024"
+      },
+      {
+        "word": "2025",
+        "start_time": 50000,
+        "end_time": 52000,
+        "node_id": "year_2025"
+      }
+    ],
+    "animation_states": [
+      {
+        "component_id": "year_2000",
+        "state": {
+          "highlighted": true,
+          "opacity": 1,
+          "scale": 1.1
+        },
+        "duration": 2000
+      },
+      {
+        "component_id": "year_2001",
+        "state": {
+          "highlighted": true,
+          "opacity": 1,
+          "scale": 1.1
+        },
+        "duration": 2000
+      },
+      {
+        "component_id": "year_2002",
+        "state": {
+          "highlighted": true,
+          "opacity": 1,
+          "scale": 1.1
+        },
+        "duration": 2000
+      },
+      {
+        "component_id": "year_2003",
+        "state": {
+          "highlighted": true,
+          "opacity": 1,
+          "scale": 1.1
+        },
+        "duration": 2000
+      },
+      {
+        "component_id": "year_2004",
+        "state": {
+          "highlighted": true,
+          "opacity": 1,
+          "scale": 1.1
+        },
+        "duration": 2000
+      },
+      {
+        "component_id": "year_2005",
+        "state": {
+          "highlighted": true,
+          "opacity": 1,
+          "scale": 1.1
+        },
+        "duration": 2000
+      },
+      {
+        "component_id": "year_2006",
+        "state": {
+          "highlighted": true,
+          "opacity": 1,
+          "scale": 1.1
+        },
+        "duration": 2000
+      },
+      {
+        "component_id": "year_2007",
+        "state": {
+          "highlighted": true,
+          "opacity": 1,
+          "scale": 1.1
+        },
+        "duration": 2000
+      },
+      {
+        "component_id": "year_2008",
+        "state": {
+          "highlighted": true,
+          "opacity": 1,
+          "scale": 1.1
+        },
+        "duration": 2000
+      },
+      {
+        "component_id": "year_2009",
+        "state": {
+          "highlighted": true,
+          "opacity": 1,
+          "scale": 1.1
+        },
+        "duration": 2000
+      },
+      {
+        "component_id": "year_2010",
+        "state": {
+          "highlighted": true,
+          "opacity": 1,
+          "scale": 1.1
+        },
+        "duration": 2000
+      },
+      {
+        "component_id": "year_2011",
+        "state": {
+          "highlighted": true,
+          "opacity": 1,
+          "scale": 1.1
+        },
+        "duration": 2000
+      },
+      {
+        "component_id": "year_2012",
+        "state": {
+          "highlighted": true,
+          "opacity": 1,
+          "scale": 1.1
+        },
+        "duration": 2000
+      },
+      {
+        "component_id": "year_2013",
+        "state": {
+          "highlighted": true,
+          "opacity": 1,
+          "scale": 1.1
+        },
+        "duration": 2000
+      },
+      {
+        "component_id": "year_2014",
+        "state": {
+          "highlighted": true,
+          "opacity": 1,
+          "scale": 1.1
+        },
+        "duration": 2000
+      },
+      {
+        "component_id": "year_2015",
+        "state": {
+          "highlighted": true,
+          "opacity": 1,
+          "scale": 1.1
+        },
+        "duration": 2000
+      },
+      {
+        "component_id": "year_2016",
+        "state": {
+          "highlighted": true,
+          "opacity": 1,
+          "scale": 1.1
+        },
+        "duration": 2000
+      },
+      {
+        "component_id": "year_2017",
+        "state": {
+          "highlighted": true,
+          "opacity": 1,
+          "scale": 1.1
+        },
+        "duration": 2000
+      },
+      {
+        "component_id": "year_2018",
+        "state": {
+          "highlighted": true,
+          "opacity": 1,
+          "scale": 1.1
+        },
+        "duration": 2000
+      },
+      {
+        "component_id": "year_2019",
+        "state": {
+          "highlighted": true,
+          "opacity": 1,
+          "scale": 1.1
+        },
+        "duration": 2000
+      },
+      {
+        "component_id": "year_2020",
+        "state": {
+          "highlighted": true,
+          "opacity": 1,
+          "scale": 1.1,
+          "strokeWidth": 3,
+          "strokeColor": "#FC8181"
+        },
+        "duration": 2000
+      },
+      {
+        "component_id": "year_2021",
+        "state": {
+          "highlighted": true,
+          "opacity": 1,
+          "scale": 1.1
+        },
+        "duration": 2000
+      },
+      {
+        "component_id": "year_2022",
+        "state": {
+          "highlighted": true,
+          "opacity": 1,
+          "scale": 1.1
+        },
+        "duration": 2000
+      },
+      {
+        "component_id": "year_2023",
+        "state": {
+          "highlighted": true,
+          "opacity": 1,
+          "scale": 1.1
+        },
+        "duration": 2000
+      },
+      {
+        "component_id": "year_2024",
+        "state": {
+          "highlighted": true,
+          "opacity": 1,
+          "scale": 1.1
+        },
+        "duration": 2000
+      },
+      {
+        "component_id": "year_2025",
+        "state": {
+          "highlighted": true,
+          "opacity": 1,
+          "scale": 1.1,
+          "strokeWidth": 3,
+          "strokeColor": "#4FD1C5"
+        },
+        "duration": 2000
+      }
+    ]
+  }
+  

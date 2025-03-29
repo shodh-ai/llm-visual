@@ -1,0 +1,174 @@
+{
+    "nodes": [
+        {
+            "id": "xml_core",
+            "name": "XML Core Concepts",
+            "type": "core",
+            "properties": [
+                "Elements",
+                "Attributes",
+                "Namespaces",
+                "DTD/Schema"
+            ]
+        },
+        {
+            "id": "elements",
+            "name": "Elements",
+            "type": "concept",
+            "document": {
+                "example": "<book>\n  <title>Database Systems</title>\n  <author>John Doe</author>\n</book>"
+            },
+            "properties": [
+                "Hierarchical structure",
+                "Nested elements",
+                "Start/End tags",
+                "Content model"
+            ]
+        },
+        {
+            "id": "attributes",
+            "name": "Attributes",
+            "type": "concept",
+            "document": {
+                "example": "<book isbn=\"123-456-789\">\n  <title lang=\"en\">Database Systems</title>\n</book>"
+            },
+            "properties": [
+                "Name-value pairs",
+                "Unique identifiers",
+                "Metadata storage",
+                "Simple values only"
+            ]
+        },
+        {
+            "id": "storage",
+            "name": "XML Storage",
+            "type": "storage",
+            "properties": [
+                "Native XML DB",
+                "XML-Enabled DB",
+                "File System",
+                "Hybrid Storage"
+            ]
+        },
+        {
+            "id": "query",
+            "name": "Query Languages",
+            "type": "query",
+            "properties": [
+                "XPath",
+                "XQuery",
+                "XSLT",
+                "SQL/XML"
+            ]
+        },
+        {
+            "id": "xpath",
+            "name": "XPath",
+            "type": "language",
+            "document": {
+                "example": "//book[author='John Doe']/title"
+            },
+            "properties": [
+                "Node selection",
+                "Path expressions",
+                "Predicates",
+                "Functions"
+            ]
+        },
+        {
+            "id": "xquery",
+            "name": "XQuery",
+            "type": "language",
+            "document": {
+                "example": "for $b in //book\nwhere $b/price < 100\nreturn $b/title"
+            },
+            "properties": [
+                "FLWOR expressions",
+                "Complex queries",
+                "Data transformation",
+                "Integration"
+            ]
+        },
+        {
+            "id": "schema",
+            "name": "Schema/DTD",
+            "type": "validation",
+            "document": {
+                "example": "<!ELEMENT book (title, author)>\n<!ATTLIST book\n  isbn ID #REQUIRED>"
+            },
+            "properties": [
+                "Structure validation",
+                "Data types",
+                "Constraints",
+                "Documentation"
+            ]
+        },
+        {
+            "id": "apis",
+            "name": "XML APIs",
+            "type": "programming",
+            "properties": [
+                "DOM",
+                "SAX",
+                "StAX",
+                "JAXP"
+            ]
+        }
+    ],
+    "edges": [
+        {
+            "source": "xml_core",
+            "target": "elements",
+            "type": "contains",
+            "description": "Contains"
+        },
+        {
+            "source": "xml_core",
+            "target": "attributes",
+            "type": "contains",
+            "description": "Contains"
+        },
+        {
+            "source": "xml_core",
+            "target": "schema",
+            "type": "validates",
+            "description": "Validates"
+        },
+        {
+            "source": "elements",
+            "target": "attributes",
+            "type": "has",
+            "description": "Has"
+        },
+        {
+            "source": "storage",
+            "target": "xml_core",
+            "type": "manages",
+            "description": "Manages"
+        },
+        {
+            "source": "query",
+            "target": "xpath",
+            "type": "includes",
+            "description": "Includes"
+        },
+        {
+            "source": "query",
+            "target": "xquery",
+            "type": "includes",
+            "description": "Includes"
+        },
+        {
+            "source": "xpath",
+            "target": "xquery",
+            "type": "used_by",
+            "description": "Used by"
+        },
+        {
+            "source": "apis",
+            "target": "xml_core",
+            "type": "processes",
+            "description": "Processes"
+        }
+    ]
+}
